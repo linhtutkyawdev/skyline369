@@ -12,13 +12,13 @@ import { motion } from "framer-motion";
 import { Switch } from "@/components/ui/switch";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+// import {
+//   Select,
+//   SelectContent,
+//   SelectItem,
+//   SelectTrigger,
+//   SelectValue,
+// } from "@/components/ui/select";
 
 const Settings = () => {
   const navigate = useNavigate();
@@ -80,7 +80,7 @@ const Settings = () => {
               ) : (
                 <VolumeX className="text-casino-silver" />
               )}
-              <span className="text-white">{t("sound_effects")}</span>
+              <span className="text-white">{t("settings.sound_effects")}</span>
             </div>
             <Switch
               checked={soundEnabled}
@@ -108,7 +108,7 @@ const Settings = () => {
                 <span className="text-white">Language</span>
               </div>
 
-              <Select
+              {/* <Select
                 defaultValue={i18n.language}
                 onValueChange={i18n.changeLanguage}
               >
@@ -119,7 +119,16 @@ const Settings = () => {
                   <SelectItem value="en">English</SelectItem>
                   <SelectItem value="my">Myanmar</SelectItem>
                 </SelectContent>
-              </Select>
+              </Select> */}
+
+              <button
+                onClick={() =>
+                  i18n.changeLanguage(i18n.language == "en" ? "my" : "en")
+                }
+                className="bg-casino-deep-blue text-white border border-casino-light-blue rounded-md px-3 py-1 max-w-40"
+              >
+                {i18n.language == "en" ? "English" : "Myanmar"}
+              </button>
             </div>
           </div>
         </div>
