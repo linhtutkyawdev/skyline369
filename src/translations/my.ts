@@ -1,19 +1,19 @@
 export default {
   translation: {
     header: {
-      guest_user: "Guest User",
-      share: "Share",
-      contact_us: "Contact Us",
-      messages: "Messages",
-      settings: "Settings",
+      guest_user: "ဧည့်သည်",
+      share: "ရှယ်မယ်",
+      contact_us: "ဆက်သွယ်ရန်",
+      messages: "မက်ဆေ့ခ်ျများ",
+      settings: "ဆက်တင်",
     },
     footer: {
       deposit: "ငွေသွင်း",
       withdraw: "ငွေထုတ်",
-      history: "History",
+      history: "သမိုင်း",
     },
     profile: {
-      balance: "Balnace",
+      balance: "Balance",
       transactions: "Transactions",
       bonuses: "Bonuses & Rewards",
       game_history: "Game History",

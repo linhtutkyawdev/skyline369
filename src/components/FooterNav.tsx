@@ -21,9 +21,8 @@ const FooterNav = () => {
           <span className="text-casino-deep-blue font-bold">$</span>
         </div>
         <span className="text-casino-silver text-xs lg:mt-1">
-          {t("deposit")}
+          {t("footer.deposit")}
         </span>
-        {/* ငွေသွင်း */}
       </div>
 
       <div
@@ -33,8 +32,9 @@ const FooterNav = () => {
         <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full gold-badge flex items-center justify-center lg:mb-1">
           <span className="text-casino-deep-blue font-bold">$</span>
         </div>
-        <span className="text-casino-silver text-xs lg:mt-1">Withdraw</span>
-        {/* ငွေထုတ် */}
+        <span className="text-casino-silver text-xs lg:mt-1">
+          {t("footer.withdraw")}
+        </span>
       </div>
 
       <div
@@ -44,7 +44,9 @@ const FooterNav = () => {
         <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full gold-badge flex items-center justify-center lg:mb-1">
           <span className="text-casino-deep-blue font-bold">H</span>
         </div>
-        <span className="text-casino-silver text-xs lg:mt-1">History</span>
+        <span className="text-casino-silver text-xs lg:mt-1">
+          {t("footer.history")}
+        </span>
       </div>
     </motion.footer>
   );

@@ -13,7 +13,7 @@ export default {
       history: "History",
     },
     profile: {
-      balance: "Balnace",
+      balance: "Balance",
       transactions: "Transactions",
       bonuses: "Bonuses & Rewards",
       game_history: "Game History",
