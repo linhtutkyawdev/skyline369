@@ -18,7 +18,7 @@ type Store = {
   setError: (error: Error) => void;
 };
 
-export const useStore = create<Store>()((set) => ({
+export const useDataStore = create<Store>()((set) => ({
   data: {
     loading: false,
     games: [],

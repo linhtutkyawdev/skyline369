@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   UserPlus,
@@ -12,16 +12,18 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useModalStore } from "@/store/modal";
 
 type Step = "email" | "otp" | "details";
 
-const RegisterModal = ({ isOpen, onClose, onLogin }) => {
+const RegisterModal = () => {
   const [step, setStep] = useState<Step>("email");
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [fullname, setFullname] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const { activeModal, setActiveModal } = useModalStore();
   const { toast } = useToast();
 
   const validateEmail = (email: string) => {
@@ -33,10 +35,14 @@ const RegisterModal = ({ isOpen, onClose, onLogin }) => {
       toast({
         variant: "destructive",
         title: "Invalid email",
-        description: "Please enter a valid email address",
+        description: "Please enter a valid email address!",
       });
       return;
     }
+    toast({
+      title: "OTP has been sent",
+      description: "Check your inbox for the OTP!",
+    });
     setStep("otp");
   };
 
@@ -45,10 +51,14 @@ const RegisterModal = ({ isOpen, onClose, onLogin }) => {
       toast({
         variant: "destructive",
         title: "Invalid OTP",
-        description: "Please enter a valid 6-digit OTP",
+        description: "Please enter a valid 6-digit OTP!",
       });
       return;
     }
+    toast({
+      title: "OTP verified",
+      description: "Please fill in your details!",
+    });
     setStep("details");
   };
 
@@ -57,7 +67,7 @@ const RegisterModal = ({ isOpen, onClose, onLogin }) => {
       toast({
         variant: "destructive",
         title: "Missing information",
-        description: "Please fill in all fields",
+        description: "Please fill in all fields!",
       });
       return;
     }
@@ -65,49 +75,86 @@ const RegisterModal = ({ isOpen, onClose, onLogin }) => {
       toast({
         variant: "destructive",
         title: "Passwords don't match",
-        description: "Please ensure both passwords match",
+        description: "Please ensure both passwords match!",
       });
       return;
     }
     toast({
       title: "Registration successful",
-      description: "Welcome to Skyline365!",
+      description: "Welcome to Skyline369 🎉",
     });
-    onClose();
+    setStep("email");
+    setActiveModal();
   };
+
+  useEffect(() => {
+    const handleEscKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setActiveModal();
+      if (e.key === "Enter")
+        switch (step) {
+          case "email":
+            handleEmailSubmit();
+            break;
+          case "otp":
+            handleOtpSubmit();
+            break;
+          case "details":
+            handleRegister();
+            break;
+        }
+    };
+
+    if (activeModal === "register") {
+      window.addEventListener("keydown", handleEscKey);
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleEscKey);
+    };
+  }, [activeModal, email, otp, fullname, password, confirmPassword]);
 
   return (
     <AnimatePresence>
-      {isOpen && (
+      {activeModal === "register" && (
         <motion.div
-          className="fixed inset-0 bg-black/50 backdrop-blur z-50 flex items-center justify-center px-4"
+          className="fixed inset-0 bg-main z-50 flex items-center justify-center px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="bg-casino-blue w-full max-w-md rounded-lg border border-casino-light-blue p-6 modal-container"
+            className="bg-casino-deep-blue/30 w-full max-w-md rounded-lg border border-casino-light-blue p-6 modal-container"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex justify-between items-center mb-6">
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex justify-between items-center mb-6"
+            >
               <h2 className="text-xl font-semibold text-casino-silver">
                 Register
               </h2>
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={onClose}
+                onClick={() => setActiveModal()}
                 className="text-casino-silver"
               >
                 <X className="h-5 w-5" />
               </Button>
-            </div>
+            </motion.div>
 
             {step === "email" && (
-              <div className="space-y-4">
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="space-y-4"
+              >
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 h-5 w-5 text-casino-silver" />
                   <Input
@@ -124,11 +171,31 @@ const RegisterModal = ({ isOpen, onClose, onLogin }) => {
                 >
                   Continue <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
-              </div>
+                <div className="text-center mt-4 space-y-2">
+                  <div className="flex items-center justify-center gap-2">
+                    <span className="text-casino-silver text-sm">
+                      Already have an account?
+                    </span>
+                    <button
+                      className="text-casino-gold hover:text-casino-gold/80 text-sm font-medium"
+                      onClick={() => {
+                        setActiveModal("login");
+                      }}
+                    >
+                      Login
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
             )}
 
             {step === "otp" && (
-              <div className="space-y-4">
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="space-y-4"
+              >
                 <p className="text-casino-silver text-sm">
                   Please enter the verification code sent to {email}
                 </p>
@@ -148,11 +215,16 @@ const RegisterModal = ({ isOpen, onClose, onLogin }) => {
                 >
                   Verify <CheckCircle2 className="ml-2 h-4 w-4" />
                 </Button>
-              </div>
+              </motion.div>
             )}
 
             {step === "details" && (
-              <div className="space-y-4">
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="space-y-4"
+              >
                 <div className="relative">
                   <User className="absolute left-3 top-3 h-5 w-5 text-casino-silver" />
                   <Input
@@ -189,7 +261,7 @@ const RegisterModal = ({ isOpen, onClose, onLogin }) => {
                 >
                   Register <UserPlus className="ml-2 h-4 w-4" />
                 </Button>
-              </div>
+              </motion.div>
             )}
           </motion.div>
         </motion.div>

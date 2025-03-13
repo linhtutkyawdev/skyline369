@@ -1,40 +1,18 @@
-import {
-  Share,
-  MessageSquare,
-  User,
-  Settings,
-  Fullscreen,
-  LogIn,
-  UserPlus,
-} from "lucide-react";
-import { useState } from "react";
+import { Share, MessageSquare, User, Settings } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import RegisterModal from "./RegisterModal";
-import LoginModal from "./LoginModal";
+import { useModalStore } from "@/store/modal";
 
 const NavBar = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [showRegister, setShowRegister] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
-
-  const handleOpenRegister = () => {
-    setShowLogin(false);
-    setShowRegister(true);
-  };
-
-  const handleOpenLogin = () => {
-    setShowRegister(false);
-    setShowLogin(true);
-  };
-
+  const { setActiveModal } = useModalStore();
   return (
     <>
       <header className="fixed top-0 w-full p-4 z-50 flex justify-between items-center lg:glass-effect animate-fade-in">
         <div className="flex items-center gap-2 lg:gap-4 ml-4">
           <div
-            onClick={() => handleOpenLogin()}
+            onClick={() => setActiveModal("login")}
             // navigate("/profile")}
             className="w-10 h-10 lg:w-16 lg:h-16 rounded-full overflow-hidden border-2 border-casino-gold flex items-center justify-center cursor-pointer transition-all hover:border-4 hover:scale-105"
           >
@@ -48,7 +26,10 @@ const NavBar = () => {
         </div>
 
         <div className="flex items-center gap-3 mr-2 lg:gap-8 lg:mr-4">
-          <div className="nav-icon group" onClick={() => navigate("/share")}>
+          <div
+            className="nav-icon group"
+            onClick={() => setActiveModal("share")}
+          >
             <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full metal-badge flex items-center justify-center lg:mb-1 group-hover:animate-pulse-glow">
               <Share className="w-5 h-5 lg:w-6 lg:h-6 text-casino-deep-blue" />
             </div>
@@ -57,7 +38,10 @@ const NavBar = () => {
             </span>
           </div>
 
-          <div className="nav-icon group" onClick={() => navigate("/contact")}>
+          <div
+            className="nav-icon group"
+            onClick={() => setActiveModal("contact_us")}
+          >
             <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full metal-badge flex items-center justify-center lg:mb-1 group-hover:animate-pulse-glow">
               <span className="text-casino-deep-blue font-bold text-sm">
                 US
@@ -77,7 +61,10 @@ const NavBar = () => {
             </span>
           </div>
 
-          <div className="nav-icon group" onClick={() => navigate("/settings")}>
+          <div
+            className="nav-icon group"
+            onClick={() => setActiveModal("settings")}
+          >
             <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full metal-badge flex items-center justify-center lg:mb-1 group-hover:animate-pulse-glow">
               <Settings className="w-5 h-5 lg:w-6 lg:h-6 text-casino-deep-blue" />
             </div>
@@ -87,17 +74,6 @@ const NavBar = () => {
           </div>
         </div>
       </header>
-
-      <RegisterModal
-        isOpen={showRegister}
-        onClose={() => setShowRegister(false)}
-        onLogin={handleOpenLogin}
-      />
-      <LoginModal
-        isOpen={showLogin}
-        onClose={() => setShowLogin(false)}
-        onRegister={handleOpenRegister}
-      />
     </>
   );
 };

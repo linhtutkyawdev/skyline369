@@ -20,6 +20,7 @@ import History from "./pages/History";
 import Share from "./pages/Share";
 import Messages from "./pages/Messages";
 import Category from "./pages/Category";
+import ModalContainer from "./components/ModalContainer";
 
 const queryClient = new QueryClient();
 
@@ -85,6 +86,7 @@ const App = () => {
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <ModalContainer />
           </BrowserRouter>
         </TooltipProvider>
       </QueryClientProvider>

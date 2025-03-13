@@ -1,32 +1,41 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LogIn, X, Mail, Lock, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useModalStore } from "@/store/modal";
 
-const LoginModal = ({
-  isOpen,
-  onClose,
-  onRegister,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  onRegister: () => void;
-}) => {
+const LoginModal = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [resetEmail, setResetEmail] = useState("");
   const [resetSent, setResetSent] = useState(false);
+  const { activeModal, setActiveModal } = useModalStore();
   const { toast } = useToast();
+
+  useEffect(() => {
+    const handleEscKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setActiveModal();
+      if (e.key === "Enter") handleLogin();
+    };
+
+    if (activeModal === "login") {
+      window.addEventListener("keydown", handleEscKey);
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleEscKey);
+    };
+  }, [activeModal, email, password]);
 
   const handleLogin = () => {
     if (!email || !password) {
       toast({
         variant: "destructive",
         title: "Missing information",
-        description: "Please fill in all fields",
+        description: "Please fill in all fields!",
       });
       return;
     }
@@ -34,9 +43,9 @@ const LoginModal = ({
     // Handle login logic here
     toast({
       title: "Login successful",
-      description: "Welcome back to Skyline365!",
+      description: "Welcome back to Skyline369 🎉",
     });
-    onClose();
+    setActiveModal();
   };
 
   const handleForgotPassword = () => {
@@ -44,7 +53,7 @@ const LoginModal = ({
       toast({
         variant: "destructive",
         title: "Missing information",
-        description: "Please enter your email address",
+        description: "Please enter your email address!",
       });
       return;
     }
@@ -55,7 +64,7 @@ const LoginModal = ({
       toast({
         variant: "destructive",
         title: "Invalid email",
-        description: "Please enter a valid email address",
+        description: "Please enter a valid email address!",
       });
       return;
     }
@@ -63,13 +72,18 @@ const LoginModal = ({
     // Handle password reset logic here
     toast({
       title: "Reset email sent",
-      description: "Check your inbox for password reset instructions",
+      description: "Check your inbox for password reset instructions!",
     });
     setResetSent(true);
   };
 
   const renderForgotPasswordForm = () => (
-    <div className="space-y-4">
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3 }}
+      className="space-y-4"
+    >
       {resetSent ? (
         <div className="text-center space-y-4">
           <div className="text-casino-silver">
@@ -120,11 +134,16 @@ const LoginModal = ({
           </Button>
         </>
       )}
-    </div>
+    </motion.div>
   );
 
   const renderLoginForm = () => (
-    <div className="space-y-4">
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.3 }}
+      className="space-y-4"
+    >
       <div className="relative">
         <Mail className="absolute left-3 top-3 h-5 w-5 text-casino-silver" />
         <Input
@@ -165,46 +184,50 @@ const LoginModal = ({
           <button
             className="text-casino-gold hover:text-casino-gold/80 text-sm font-medium"
             onClick={() => {
-              onClose();
-              onRegister();
+              setActiveModal("register");
             }}
           >
             Register
           </button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 
   return (
     <AnimatePresence>
-      {isOpen && (
+      {activeModal === "login" && (
         <motion.div
-          className="fixed inset-0 bg-black/50 backdrop-blur z-50 flex items-center justify-center px-4"
+          className="fixed inset-0 bg-main z-50 flex items-center justify-center px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="bg-casino-blue w-full max-w-md rounded-lg border border-casino-light-blue p-6 modal-container"
+            className="bg-casino-deep-blue/30 w-full max-w-md rounded-lg border border-casino-light-blue p-6 modal-container"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="flex justify-between items-center mb-6">
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex justify-between items-center mb-6"
+            >
               <h2 className="text-xl font-semibold text-casino-silver">
                 {isForgotPassword ? "Reset Password" : "Login"}
               </h2>
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={onClose}
+                onClick={() => setActiveModal()}
                 className="text-casino-silver"
               >
                 <X className="h-5 w-5" />
               </Button>
-            </div>
+            </motion.div>
 
             {isForgotPassword ? renderForgotPasswordForm() : renderLoginForm()}
           </motion.div>

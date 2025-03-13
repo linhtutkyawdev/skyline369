@@ -6,7 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { isMobile } from "react-device-detect";
-import { useStore } from "@/store/page";
+import { useDataStore } from "@/store/data";
 
 export default function Category() {
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ export default function Category() {
     setLoading,
     setPage,
     addGames,
-  } = useStore();
+  } = useDataStore();
 
   const [filteredGames, setFilteredGames] = useState<Game[]>([]);
   const [providers, setProviders] = useState<string[]>([]);
