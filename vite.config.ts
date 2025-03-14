@@ -23,5 +23,6 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     outDir: "/www/wwwroot/skyline/public", // Change this to your desired folder
+    emptyOutDir: true,
   },
 }));
