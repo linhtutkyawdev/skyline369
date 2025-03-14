@@ -21,4 +21,7 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    outDir: "/www/wwwroot/skyline/public", // Change this to your desired folder
+  },
 }));
