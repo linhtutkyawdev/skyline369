@@ -1,10 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
+import { useModalStore } from "@/store/modal";
 
 const FooterNav = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { activeModal, setActiveModal } = useModalStore();
 
   return (
     <motion.footer
@@ -15,7 +17,7 @@ const FooterNav = () => {
     >
       <div
         className="flex flex-col items-center cursor-pointer"
-        onClick={() => navigate("/deposit")}
+        onClick={() => setActiveModal("deposit")}
       >
         <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full gold-badge flex items-center justify-center lg:mb-1">
           <span className="text-casino-deep-blue font-bold">$</span>
@@ -27,7 +29,7 @@ const FooterNav = () => {
 
       <div
         className="flex flex-col items-center cursor-pointer"
-        onClick={() => navigate("/withdraw")}
+        onClick={() => setActiveModal("withdraw")}
       >
         <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full gold-badge flex items-center justify-center lg:mb-1">
           <span className="text-casino-deep-blue font-bold">$</span>

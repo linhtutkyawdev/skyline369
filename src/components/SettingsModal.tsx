@@ -1,21 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  LogIn,
-  X,
-  Mail,
-  Lock,
-  ArrowLeft,
-  Copy,
-  Phone,
-  MessageSquare,
-  Moon,
-  Sun,
-  Volume2,
-  VolumeX,
-  Bell,
-  Languages,
-} from "lucide-react";
+import { X, Moon, Sun, Volume2, VolumeX, Bell, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useModalStore } from "@/store/modal";
 import { useTranslation } from "react-i18next";
@@ -80,9 +65,9 @@ const SettingsModal = () => {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="space-y-6"
+              className="space-y-4"
             >
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between bg-casino-deep-blue rounded-lg p-4">
                 <div className="flex items-center gap-3">
                   {darkMode ? (
                     <Moon className="text-casino-silver" />
@@ -98,7 +83,7 @@ const SettingsModal = () => {
                 />
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between bg-casino-deep-blue rounded-lg p-4">
                 <div className="flex items-center gap-3">
                   {soundEnabled ? (
                     <Volume2 className="text-casino-silver" />
@@ -116,7 +101,7 @@ const SettingsModal = () => {
                 />
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between bg-casino-deep-blue rounded-lg p-4">
                 <div className="flex items-center gap-3">
                   <Bell className="text-casino-silver" />
                   <span className="text-white">Notifications</span>
@@ -136,17 +121,17 @@ const SettingsModal = () => {
                   </div>
 
                   {/* <Select
-                defaultValue={i18n.language}
-                onValueChange={i18n.changeLanguage}
-              >
-                <SelectTrigger className="bg-casino-deep-blue text-white border border-casino-light-blue rounded-md px-3 py-1 max-w-40">
-                  <SelectValue placeholder="English" />
-                </SelectTrigger>
-                <SelectContent className="bg-casino-deep-blue text-white border border-casino-light-blue rounded-md p-1">
-                  <SelectItem value="en">English</SelectItem>
-                  <SelectItem value="my">Myanmar</SelectItem>
-                </SelectContent>
-              </Select> */}
+                    defaultValue={i18n.language}
+                    onValueChange={i18n.changeLanguage}
+                  >
+                    <SelectTrigger className="bg-casino-deep-blue text-white border border-casino-light-blue rounded-md px-3 py-1 max-w-40">
+                      <SelectValue placeholder="English" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-casino-deep-blue text-white border border-casino-light-blue rounded-md p-1">
+                      <SelectItem value="en">English</SelectItem>
+                      <SelectItem value="my">Myanmar</SelectItem>
+                    </SelectContent>
+                  </Select> */}
 
                   <button
                     onClick={() =>

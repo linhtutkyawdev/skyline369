@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { LogIn, X, Mail, Lock, ArrowLeft, Copy } from "lucide-react";
+import { X, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useModalStore } from "@/store/modal";
 
@@ -74,9 +73,9 @@ const ShareModal = () => {
           <g
             id="Icons"
             stroke="none"
-            stroke-width="1"
+            strokeWidth="1"
             fill="none"
-            fill-rule="evenodd"
+            fillRule="evenodd"
           >
             <g
               id="Color-"
@@ -154,7 +153,7 @@ const ShareModal = () => {
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="bg-casino-deep-blue/30 w-full max-w-md rounded-lg border border-casino-light-blue p-6 modal-container"
+            className="bg-casino-deep-blue/30 w-full max-w-xl max-h-[90vh] rounded-lg border border-casino-light-blue p-8 modal-container"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
@@ -164,7 +163,7 @@ const ShareModal = () => {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="flex justify-between items-center mb-6"
+              className="flex justify-between items-center"
             >
               <h2 className="text-xl font-semibold text-casino-silver">
                 Share
@@ -182,12 +181,9 @@ const ShareModal = () => {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="space-y-4"
+              className="space-y-4 py-4"
             >
-              <p className="text-casino-silver text-sm">
-                Copy this link to share with your friends
-              </p>
-              <div className="flex items-center justify-between gap-2 bg-casino-deep-blue border border-casino-light-blue rounded-lg p-4 mb-4">
+              <div className="flex items-center justify-between gap-2 bg-casino-light-blue border border-casino-light-blue rounded-lg px-4 py-2">
                 <input
                   type="text"
                   value={link}
@@ -203,18 +199,14 @@ const ShareModal = () => {
                   {copied ? "Copied!" : <Copy className="w-4 h-4" />}
                 </Button>
               </div>
-
-              <p className="text-casino-silver text-sm">
-                Click the links bellow to share to a social media
-              </p>
-              <div className="flex flex-wrap gap-6 justify-center">
+              <div className="flex justify-between bg-casino-deep-blue p-6 gap-4 rounded-lg">
                 {shareOptions.map((option) => (
                   <button
                     key={option.name}
-                    className="glass-effect p-4 rounded-lg hover:scale-105 transition-all"
-                    style={{ backgroundColor: `${option.color}40` }}
+                    className="justify-items-center glass-effect p-4 rounded-md hover:scale-105 transition-all"
+                    style={{ backgroundColor: `${option.color}70` }}
                   >
-                    <div className="text-white flex flex-col items-center w-12">
+                    <div className="text-white flex flex-col items-center w-10">
                       {option.icon}
                       <span className="text-xs mt-2">{option.name}</span>
                     </div>

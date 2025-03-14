@@ -84,7 +84,8 @@ const RegisterModal = () => {
       description: "Welcome to Skyline369 🎉",
     });
     setStep("email");
-    setActiveModal();
+    // setActiveModal();
+    setActiveModal("profile");
   };
 
   useEffect(() => {

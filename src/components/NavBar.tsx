@@ -20,7 +20,10 @@ const NavBar = () => {
               <User className="w-6 h-6 lg:w-10 lg:h-10 text-casino-silver" />
             </div>
           </div>
-          <span className="text-casino-silver uppercase tracking-wider text-sm">
+          <span
+            onClick={() => setActiveModal("profile")}
+            className="text-casino-silver uppercase tracking-wider text-sm"
+          >
             {t("header.guest_user")}
           </span>
         </div>

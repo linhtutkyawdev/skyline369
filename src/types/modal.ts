@@ -1,6 +1,7 @@
 export type Modal =
   | "register"
   | "login"
+  | "profile"
   | "share"
   | "contact_us"
   | "messages"
