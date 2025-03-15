@@ -9,7 +9,7 @@ const headers = {
 };
 
 const slotgatorAxiosInstance = axios.create({
-  baseURL: `${import.meta.env.VITE_API_BASE_URL}`, // set default api base url
+  baseURL: `${import.meta.env.VITE_SLOTGATOR_API_BASE_URL}`, // set default api base url
   headers, // set defaut headers
 });
 
