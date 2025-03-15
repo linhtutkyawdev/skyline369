@@ -1,4 +1,3 @@
-import { useModalStore } from "@/store/modal";
 import LoginModal from "./LoginModal";
 import RegisterModal from "./RegisterModal";
 import ShareModal from "./ShareModal";
@@ -9,7 +8,6 @@ import ProfileModal from "./ProfileModal";
 import WithdrawModal from "./WithdrawModal";
 
 const ModalContainer = () => {
-  const { activeModal, setActiveModal } = useModalStore();
   return (
     <>
       <LoginModal />

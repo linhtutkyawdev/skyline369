@@ -58,7 +58,7 @@ const WithdrawModal = () => {
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="bg-casino-deep-blue/30 w-full max-w-3xl max-h-[90vh] rounded-lg border border-casino-light-blue p-6 modal-container"
+            className="bg-casino-deep-blue/50 w-full max-w-3xl max-h-[90vh] rounded-lg border border-casino-light-blue p-6 modal-container"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}

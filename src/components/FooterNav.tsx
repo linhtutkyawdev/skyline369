@@ -22,19 +22,19 @@ const FooterNav = () => {
         <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full gold-badge flex items-center justify-center lg:mb-1">
           <span className="text-casino-deep-blue font-bold">$</span>
         </div>
-        <span className="text-casino-silver text-xs lg:mt-1">
+        <span className="text-casino-silver text-xs mt-1">
           {t("footer.deposit")}
         </span>
       </div>
 
       <div
         className="flex flex-col items-center cursor-pointer"
-        onClick={() => setActiveModal("withdraw")}
+        onClick={() => navigate("/withdraw")}
       >
         <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full gold-badge flex items-center justify-center lg:mb-1">
           <span className="text-casino-deep-blue font-bold">$</span>
         </div>
-        <span className="text-casino-silver text-xs lg:mt-1">
+        <span className="text-casino-silver text-xs mt-1">
           {t("footer.withdraw")}
         </span>
       </div>
@@ -46,7 +46,7 @@ const FooterNav = () => {
         <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full gold-badge flex items-center justify-center lg:mb-1">
           <span className="text-casino-deep-blue font-bold">H</span>
         </div>
-        <span className="text-casino-silver text-xs lg:mt-1">
+        <span className="text-casino-silver text-xs mt-1">
           {t("footer.history")}
         </span>
       </div>

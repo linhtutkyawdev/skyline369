@@ -1,7 +1,7 @@
 export default {
   translation: {
     header: {
-      guest_user: "Guest User",
+      guest_user: "Register / Login",
       share: "Share",
       contact_us: "Contact Us",
       messages: "Messages",

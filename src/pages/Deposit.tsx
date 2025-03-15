@@ -14,7 +14,7 @@ const Deposit = () => {
   };
 
   return (
-    <div className="h-screen overflow-y-scroll pb-20 pt-6 px-6">
+    <div className="h-screen overflow-y-scroll scrollbar-none pb-20 pt-6 px-6">
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}

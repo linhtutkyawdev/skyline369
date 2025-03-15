@@ -13,7 +13,7 @@ const DepositModal = () => {
 
   const [amount, setAmount] = useState<number>(0);
 
-  const presetAmounts = [50, 100, 500, 1000, 5000];
+  const presetAmounts = [50, 200, 500, 1000, 5000];
 
   const handlePresetAmount = (value: number) => {
     setAmount(value);
@@ -58,7 +58,7 @@ const DepositModal = () => {
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="bg-casino-deep-blue/30 w-full max-w-3xl max-h-[90vh] rounded-lg border border-casino-light-blue p-6 modal-container"
+            className="bg-casino-deep-blue/50 w-full max-w-3xl max-h-[calc(100vh-1rem)] rounded-lg border border-casino-light-blue p-6 modal-container"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
@@ -68,7 +68,7 @@ const DepositModal = () => {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="flex justify-between items-center mb-6"
+              className="flex justify-between items-center mb-2"
             >
               <h2 className="text-xl font-semibold text-casino-silver">
                 {t("footer.deposit")}
@@ -98,7 +98,7 @@ const DepositModal = () => {
                   placeholder="Enter amount"
                 />
 
-                <div className="grid grid-cols-3 gap-2 mt-4">
+                <div className="grid grid-cols-2 gap-2 mt-4">
                   {presetAmounts.map((amt) => (
                     <button
                       key={amt}
@@ -125,15 +125,22 @@ const DepositModal = () => {
                   <Building className="text-casino-gold w-6 h-6" />
                   <span className="text-white">Wave Pay</span>
                 </button>
+
+                <div className="col-span-2 p-3 bg-blue-900 bg-opacity-30 rounded-lg flex items-start gap-3 mb-6">
+                  <AlertCircle className="text-blue-400 w-5 h-5 mt-0.5 flex-shrink-0" />
+                  <p className="text-blue-100 text-sm">
+                    Deposits will typically be process within 24-48 hours.
+                    Minimum deposit amount is $50.
+                  </p>
+                </div>
               </div>
 
-              <div className="col-span-2 p-3 bg-blue-900 bg-opacity-30 rounded-lg flex items-start gap-3 mb-6">
-                <AlertCircle className="text-blue-400 w-5 h-5 mt-0.5 flex-shrink-0" />
-                <p className="text-blue-100 text-sm">
-                  Deposits will typically be process within 24-48 hours. Minimum
-                  deposit amount is $50.
-                </p>
-              </div>
+              <button
+                onClick={handleDeposit}
+                className="w-full col-span-2 py-3 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
+              >
+                Proceed to Payment
+              </button>
             </motion.div>
           </motion.div>
         </motion.div>

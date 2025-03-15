@@ -3,22 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState } from "react";
 
-const historyData = [
-  { id: 1, game: "Baccarat", date: "2023-05-15", amount: 350, status: "win" },
-  { id: 2, game: "Poker", date: "2023-05-14", amount: -120, status: "loss" },
-  { id: 3, game: "Slots", date: "2023-05-14", amount: 75, status: "win" },
-];
-
 const filterOptions = ["global", "personal", "support"];
 
 const Messages = () => {
   const navigate = useNavigate();
   const [selectedFilter, setSelectedFilter] = useState("global");
-
-  const filteredHistory =
-    selectedFilter === "global"
-      ? historyData
-      : historyData.filter((item) => item.status === selectedFilter);
 
   return (
     <div className="h-screen pb-8 pt-12 lg:pt-16 px-6">
@@ -78,25 +67,7 @@ const Messages = () => {
           transition={{ delay: 0.2 }}
           className="space-y-4 overflow-y-scroll scrollbar-none max-h-[calc(100vh-10rem)] lg:max-h-[calc(100vh-13.5rem)]"
         >
-          {filteredHistory.map((item) => (
-            <div
-              key={item.id}
-              className="glass-effect rounded-lg p-4 flex justify-between items-center"
-            >
-              <div>
-                <h3 className="text-white font-medium">{item.game}</h3>
-                <p className="text-casino-silver text-sm">{item.date}</p>
-              </div>
-              <div
-                className={`font-bold ${
-                  item.amount > 0 ? "text-green-400" : "text-red-400"
-                }`}
-              >
-                {item.amount > 0 ? "+" : ""}
-                {item.amount.toLocaleString()}
-              </div>
-            </div>
-          ))}
+          Still in development
         </motion.div>
       </div>
     </div>

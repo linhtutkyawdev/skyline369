@@ -11,6 +11,8 @@ import {
   Club,
   Diamond,
   Square,
+  Table2,
+  Clover,
 } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import Logo from "@/components/Logo";
@@ -62,93 +64,120 @@ const Index = () => {
   const items = [
     {
       title: "SLOTS",
-      icon: <Smartphone className="w-16 h-16 text-casino-silver" />,
+      icon: (
+        <img
+          src="/slots.png"
+          className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]"
+        />
+      ),
       path: "/slots",
       isLive: false,
     },
     {
       title: "ROULETTE",
-      icon: <Dice5 className="w-16 h-16 text-casino-silver" />,
+      icon: (
+        <img
+          src="/roulette.png"
+          className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]"
+        />
+      ),
       path: "/roulette",
       isLive: false,
     },
     {
       title: "BLACKJACK",
-      icon: <Spade className="w-16 h-16 text-casino-silver" />,
+      icon: (
+        <img
+          src="/blackjack.png"
+          className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]"
+        />
+      ),
       path: "/blackjack",
       isLive: true,
     },
     {
       title: "POKER",
       icon: (
-        <div className="bg-casino-deep-blue p-3 rounded-full">
-          <Spade className="w-12 h-12 text-casino-silver" />
-        </div>
+        <img
+          src="/poker.png"
+          className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]"
+        />
       ),
       path: "/poker",
       isLive: true,
     },
     {
       title: "DRAGON TIGER",
-      icon: <Trophy className="w-16 h-16 text-casino-silver" />,
+      icon: (
+        <img
+          src="/dragon_tiger.png"
+          className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]"
+        />
+      ),
       path: "/dragon-tiger",
       isLive: false,
     },
     {
       title: "SIC BO",
       icon: (
-        <div className="flex gap-2">
-          <div className="bg-casino-blue p-2 rounded-md">
-            <Dice1 className="w-8 h-8 text-red-500" />
-          </div>
-          <div className="bg-casino-blue p-2 rounded-md">
-            <Dice1 className="w-8 h-8 text-red-500" />
-          </div>
-        </div>
+        <img
+          src="/sicbo.png"
+          className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]"
+        />
       ),
       path: "/sic-bo",
       isLive: false,
     },
     {
-      title: "BACCARAT",
-      icon: <Layers className="w-16 h-16 text-casino-silver" />,
-      path: "/baccarat",
-      isLive: false,
-    },
-    {
       title: "TABLE",
-      icon: <Diamond className="w-16 h-16 text-casino-silver" />,
+      icon: <Table2 className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]" />,
       path: "/table",
       isLive: false,
     },
     {
       title: "LOTTERY",
-      icon: <Gift className="w-16 h-16 text-casino-silver" />,
+      icon: <Clover className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]" />,
       path: "/lottery",
       isLive: false,
     },
     {
-      title: "POKER",
-      icon: <Club className="w-16 h-16 text-casino-silver" />,
-      path: "/poker-game",
-      isLive: false,
-    },
-    {
       title: "CARD",
-      icon: <Heart className="w-16 h-16 text-casino-silver" />,
+      icon: <Spade className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]" />,
       path: "/card",
       isLive: false,
     },
     {
       title: "Shan Koe Mee",
-      icon: <Spade className="w-16 h-16 text-casino-silver" />,
+      icon: <Heart className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]" />,
       path: "/skm",
       isLive: false,
     },
     {
       title: "Pai Gow",
-      icon: <Square className="w-16 h-16 text-casino-silver" />,
-      path: "/pg",
+      icon: <Dice5 className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]" />,
+      path: "/paigow",
+      isLive: false,
+    },
+    {
+      title: "POKER",
+      icon: (
+        <img
+          src="/poker.png"
+          className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]"
+        />
+      ),
+      path: "/poker-game",
+      isLive: false,
+    },
+    {
+      title: "BACCARAT",
+      icon: (
+        <img
+          src="/baccarat.png"
+          className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]"
+        />
+      ),
+      path: "/baccarat",
       isLive: false,
     },
   ];

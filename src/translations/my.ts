@@ -1,7 +1,7 @@
 export default {
   translation: {
     header: {
-      guest_user: "ဧည့်သည်",
+      guest_user: "အကောင့်ဝင်ပါ",
       share: "ရှယ်မယ်",
       contact_us: "ဆက်သွယ်ရန်",
       messages: "မက်ဆေ့ခ်ျများ",
@@ -10,7 +10,7 @@ export default {
     footer: {
       deposit: "ငွေသွင်း",
       withdraw: "ငွေထုတ်",
-      history: "သမိုင်း",
+      history: "မှတ်တမ်း",
     },
     profile: {
       balance: "Balance",
