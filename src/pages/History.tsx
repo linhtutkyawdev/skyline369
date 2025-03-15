@@ -30,19 +30,20 @@ const historyData = [
 
 const History = () => {
   const navigate = useNavigate();
-  const [selectedFilter, setSelectedFilter] = useState("all");
-
+  const [selectedFilter, setSelectedFilter] = useState<"all" | "win" | "loss">(
+    "all"
+  );
   const filteredHistory =
     selectedFilter === "all"
       ? historyData
       : historyData.filter((item) => item.status === selectedFilter);
 
   return (
-    <div className="h-screen overflow-y-scroll pb-28 pt-28 px-6">
+    <div className="h-screen pb-8 pt-12 lg:pt-16 px-6">
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
-        className="flex items-center mb-8 absolute top-6 left-6"
+        className="flex items-center mb-4 absolute top-6 left-6"
       >
         <button
           onClick={() => navigate("/")}
@@ -56,18 +57,17 @@ const History = () => {
       <motion.h1
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-3xl font-bold text-center text-white mb-8"
+        className="text-3xl font-bold text-center text-white lg:mb-8"
       >
         Game History
       </motion.h1>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        className="max-w-2xl mx-auto"
-      >
-        <div className="flex items-center justify-between mb-6">
+      <div className="max-w-3xl mx-auto space-y-4 lg:space-y-4">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex items-center justify-between"
+        >
           <div className="flex gap-2">
             <button
               onClick={() => setSelectedFilter("all")}
@@ -109,9 +109,14 @@ const History = () => {
               <Search className="w-5 h-5" />
             </button>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="space-y-4">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="space-y-4 overflow-y-scroll scrollbar-none max-h-[calc(100vh-10rem)] lg:max-h-[calc(100vh-13.5rem)]"
+        >
           {filteredHistory.map((item) => (
             <div
               key={item.id}
@@ -132,8 +137,8 @@ const History = () => {
               </div>
             </div>
           ))}
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
     </div>
   );
 };
