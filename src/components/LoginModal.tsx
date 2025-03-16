@@ -8,8 +8,8 @@ import { useModalStore } from "@/store/modal";
 import { useForm, SubmitHandler, FieldErrors } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  ForgotPasswordInputs,
-  forgotPasswordSchema,
+  EmailInput,
+  emailSchema,
   LoginInputs,
   loginSchema,
 } from "@/types/validations";
@@ -39,8 +39,8 @@ const LoginModal = () => {
     handleSubmit: handleForgotPasswordSubmit,
     formState: { errors: forgotPasswordErrors },
     reset: resetForgotPasswordForm,
-  } = useForm<ForgotPasswordInputs>({
-    resolver: zodResolver(forgotPasswordSchema),
+  } = useForm<EmailInput>({
+    resolver: zodResolver(emailSchema),
   });
   const onLoginSubmit: SubmitHandler<LoginInputs> = async (data) => {
     const res = await axiosInstance.post<{
@@ -69,9 +69,7 @@ const LoginModal = () => {
       setActiveModal();
     }
   };
-  const onForgotPasswordSubmit: SubmitHandler<ForgotPasswordInputs> = (
-    data
-  ) => {
+  const onForgotPasswordSubmit: SubmitHandler<EmailInput> = (data) => {
     // Handle login logic here
     toast({
       title: "Request successful!",

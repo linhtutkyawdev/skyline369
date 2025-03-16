@@ -13,37 +13,68 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useModalStore } from "@/store/modal";
+import { SubmitHandler, useForm } from "react-hook-form";
+import {
+  EmailInput,
+  emailSchema,
+  RegisterInputs,
+  registerSchema,
+} from "@/types/validations";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
+import axiosInstance from "@/lib/axiosInstance";
 
 type Step = "email" | "otp" | "details";
 
 const RegisterModal = () => {
   const [step, setStep] = useState<Step>("email");
-  const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [fullname, setFullname] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const { activeModal, setActiveModal } = useModalStore();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
-  const validateEmail = (email: string) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
+  const {
+    register: registerEmailForm,
+    handleSubmit: handleEmailSubmit,
+    formState: { errors: emailErrors },
+    reset: resetEmailForm,
+    watch,
+  } = useForm<EmailInput>({
+    resolver: zodResolver(emailSchema),
+  });
 
-  const handleEmailSubmit = () => {
-    if (!validateEmail(email)) {
+  const {
+    register: registerFinalForm,
+    handleSubmit: handleFinalSubmit,
+    formState: { errors: finalErrors },
+    reset: resetFinalForm,
+  } = useForm<RegisterInputs>({ resolver: zodResolver(registerSchema) });
+
+  const onEmailSubmit: SubmitHandler<EmailInput> = async (data) => {
+    const res = await axiosInstance.post<{
+      status: {
+        errorCode: number;
+        msg: string;
+        mess: string;
+      };
+      data: Promise<{ email: string }>;
+    }>("/check_register_player", data);
+
+    if (res.data.status.mess)
       toast({
-        variant: "destructive",
-        title: "Invalid email",
-        description: "Please enter a valid email address!",
+        title: res.data.status.mess,
+        description: t("responses." + res.data.status.mess),
+        variant: res.data.status.errorCode === 1 ? "destructive" : "default",
       });
-      return;
+
+    if (res.data.data) {
+      const response = await res.data.data;
+      console.log(response.email);
+      setStep("otp");
     }
-    toast({
-      title: "OTP has been sent",
-      description: "Check your inbox for the OTP!",
-    });
-    setStep("otp");
   };
 
   const handleOtpSubmit = () => {
@@ -91,18 +122,6 @@ const RegisterModal = () => {
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setActiveModal();
-      if (e.key === "Enter")
-        switch (step) {
-          case "email":
-            handleEmailSubmit();
-            break;
-          case "otp":
-            handleOtpSubmit();
-            break;
-          case "details":
-            handleRegister();
-            break;
-        }
     };
 
     if (activeModal === "register") {
@@ -112,7 +131,7 @@ const RegisterModal = () => {
     return () => {
       window.removeEventListener("keydown", handleEscKey);
     };
-  }, [activeModal, email, otp, fullname, password, confirmPassword]);
+  }, [activeModal]);
 
   return (
     <AnimatePresence>
@@ -160,15 +179,24 @@ const RegisterModal = () => {
                   <Mail className="absolute left-3 top-3 h-5 w-5 text-casino-silver" />
                   <Input
                     type="email"
-                    placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Email"
                     className="pl-10"
+                    {...registerEmailForm("email")}
+                    required
                   />
+                  {emailErrors.email && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="absolute -bottom-5 ml-4 text-red-500 text-xs"
+                    >
+                      {emailErrors.email.message}
+                    </motion.p>
+                  )}
                 </div>
                 <Button
                   className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-deep-blue"
-                  onClick={handleEmailSubmit}
+                  onClick={handleEmailSubmit(onEmailSubmit)}
                 >
                   Continue <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -198,7 +226,7 @@ const RegisterModal = () => {
                 className="space-y-4"
               >
                 <p className="text-casino-silver text-sm">
-                  Please enter the verification code sent to {email}
+                  Please enter the verification code sent to {watch("email")}
                 </p>
                 <Input
                   type="text"
