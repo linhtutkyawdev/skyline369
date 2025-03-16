@@ -1,24 +1,90 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { LogIn, X, Mail, Lock, ArrowLeft } from "lucide-react";
+import { LogIn, X, Mail, Lock, ArrowLeft, Watch } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { useModalStore } from "@/store/modal";
+import { useForm, SubmitHandler, FieldErrors } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  ForgotPasswordInputs,
+  forgotPasswordSchema,
+  LoginInputs,
+  loginSchema,
+} from "@/types/validations";
+import axiosInstance from "@/lib/axiosInstance";
+import { useTranslation } from "react-i18next";
+import { User } from "@/types/user";
+import { useUserStore } from "@/store/user";
 
 const LoginModal = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [isForgotPassword, setIsForgotPassword] = useState(false);
-  const [resetEmail, setResetEmail] = useState("");
   const [resetSent, setResetSent] = useState(false);
   const { activeModal, setActiveModal } = useModalStore();
   const { toast } = useToast();
+  const { t } = useTranslation();
+  const { setUser } = useUserStore();
+
+  const {
+    register: registerLoginForm,
+    handleSubmit: handleLoginSubmit,
+    formState: { errors: loginErrors },
+    reset: resetLoginForm,
+    watch,
+  } = useForm<LoginInputs>({ resolver: zodResolver(loginSchema) });
+
+  const {
+    register: registerForgotPasswordForm,
+    handleSubmit: handleForgotPasswordSubmit,
+    formState: { errors: forgotPasswordErrors },
+    reset: resetForgotPasswordForm,
+  } = useForm<ForgotPasswordInputs>({
+    resolver: zodResolver(forgotPasswordSchema),
+  });
+  const onLoginSubmit: SubmitHandler<LoginInputs> = async (data) => {
+    const res = await axiosInstance.post<{
+      status: {
+        errorCode: number;
+        msg: string;
+        mess: string;
+      };
+      data: Promise<User>;
+    }>("/login", {
+      name: data.email,
+      password: data.password,
+    });
+
+    if (res.data.status.mess)
+      toast({
+        title: res.data.status.mess,
+        description: t("responses." + res.data.status.mess),
+        variant: res.data.status.errorCode === 1 ? "destructive" : "default",
+      });
+
+    if (res.data.data) {
+      const response = await res.data.data;
+      setUser(response);
+      resetLoginForm();
+      setActiveModal();
+    }
+  };
+  const onForgotPasswordSubmit: SubmitHandler<ForgotPasswordInputs> = (
+    data
+  ) => {
+    // Handle login logic here
+    toast({
+      title: "Request successful!",
+      description: "We've sent instructions to reset your password",
+    });
+
+    resetForgotPasswordForm();
+    setActiveModal();
+  };
 
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setActiveModal();
-      if (e.key === "Enter") handleLogin();
     };
 
     if (activeModal === "login") {
@@ -28,68 +94,22 @@ const LoginModal = () => {
     return () => {
       window.removeEventListener("keydown", handleEscKey);
     };
-  }, [activeModal, email, password]);
-
-  const handleLogin = () => {
-    if (!email || !password) {
-      toast({
-        variant: "destructive",
-        title: "Missing information",
-        description: "Please fill in all fields!",
-      });
-      return;
-    }
-
-    // Handle login logic here
-    toast({
-      title: "Login successful",
-      description: "Welcome back to Skyline369 🎉",
-    });
-    setActiveModal();
-  };
-
-  const handleForgotPassword = () => {
-    if (!resetEmail) {
-      toast({
-        variant: "destructive",
-        title: "Missing information",
-        description: "Please enter your email address!",
-      });
-      return;
-    }
-
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(resetEmail)) {
-      toast({
-        variant: "destructive",
-        title: "Invalid email",
-        description: "Please enter a valid email address!",
-      });
-      return;
-    }
-
-    // Handle password reset logic here
-    toast({
-      title: "Reset email sent",
-      description: "Check your inbox for password reset instructions!",
-    });
-    setResetSent(true);
-  };
+  }, [activeModal]);
 
   const renderForgotPasswordForm = () => (
-    <motion.div
+    <motion.form
+      onSubmit={handleForgotPasswordSubmit(onForgotPasswordSubmit)}
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3 }}
-      className="space-y-4"
+      className="space-y-6"
     >
       {resetSent ? (
         <div className="text-center space-y-4">
           <div className="text-casino-silver">
             <h3 className="text-lg font-medium mb-2">Email Sent!</h3>
             <p className="text-sm">
-              We've sent instructions to reset your password to {resetEmail}
+              We've sent instructions to reset your password to {watch("email")}
             </p>
           </div>
           <Button
@@ -97,7 +117,7 @@ const LoginModal = () => {
             onClick={() => {
               setIsForgotPassword(false);
               setResetSent(false);
-              setResetEmail("");
+              resetForgotPasswordForm();
             }}
           >
             Back to Login
@@ -114,15 +134,21 @@ const LoginModal = () => {
             <Input
               type="email"
               placeholder="Email"
-              value={resetEmail}
-              onChange={(e) => setResetEmail(e.target.value)}
               className="pl-10"
+              {...registerForgotPasswordForm("email")}
+              required
             />
+            {forgotPasswordErrors.email && (
+              <motion.p
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="absolute -bottom-5 ml-4 text-red-500 text-xs"
+              >
+                {forgotPasswordErrors.email.message}
+              </motion.p>
+            )}
           </div>
-          <Button
-            className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-deep-blue"
-            onClick={handleForgotPassword}
-          >
+          <Button className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-deep-blue">
             Send Reset Instructions
           </Button>
           <Button
@@ -134,39 +160,58 @@ const LoginModal = () => {
           </Button>
         </>
       )}
-    </motion.div>
+    </motion.form>
   );
 
   const renderLoginForm = () => (
-    <motion.div
+    <motion.form
+      onSubmit={handleLoginSubmit(onLoginSubmit)}
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.3 }}
-      className="space-y-4"
+      className="space-y-6"
     >
       <div className="relative">
         <Mail className="absolute left-3 top-3 h-5 w-5 text-casino-silver" />
         <Input
           type="email"
           placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
           className="pl-10"
+          {...registerLoginForm("email")}
+          required
         />
+        {loginErrors.email && (
+          <motion.p
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="absolute -bottom-5 ml-4 text-red-500 text-xs"
+          >
+            {loginErrors.email.message}
+          </motion.p>
+        )}
       </div>
       <div className="relative">
         <Lock className="absolute left-3 top-3 h-5 w-5 text-casino-silver" />
         <Input
           type="password"
           placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
           className="pl-10"
+          {...registerLoginForm("password")}
+          required
         />
+        {loginErrors.password && (
+          <motion.p
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="absolute -bottom-5 ml-4 text-red-500 text-xs"
+          >
+            {loginErrors.password.message}
+          </motion.p>
+        )}
       </div>
       <Button
         className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-deep-blue"
-        onClick={handleLogin}
+        type="submit"
       >
         Login <LogIn className="ml-2 h-4 w-4" />
       </Button>
@@ -174,6 +219,7 @@ const LoginModal = () => {
         <button
           className="text-casino-silver hover:text-casino-gold text-sm"
           onClick={() => setIsForgotPassword(true)}
+          type="button"
         >
           Forgot Password?
         </button>
@@ -186,12 +232,13 @@ const LoginModal = () => {
             onClick={() => {
               setActiveModal("register");
             }}
+            type="button"
           >
             Register
           </button>
         </div>
       </div>
-    </motion.div>
+    </motion.form>
   );
 
   return (

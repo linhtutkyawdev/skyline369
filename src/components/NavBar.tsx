@@ -2,17 +2,19 @@ import { Share, MessageSquare, User, Settings } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useModalStore } from "@/store/modal";
+import { useUserStore } from "@/store/user";
 
 const NavBar = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { setActiveModal } = useModalStore();
+  const { user } = useUserStore();
   return (
     <>
       <header className="fixed top-0 w-full p-4 z-50 flex justify-between items-center lg:glass-effect animate-fade-in">
         <div className="flex items-center gap-2 lg:gap-4 ml-4">
           <div
-            onClick={() => setActiveModal("login")}
+            onClick={() => setActiveModal("profile")}
             // navigate("/profile")}
             className="w-10 h-10 lg:w-16 lg:h-16 rounded-full overflow-hidden border-2 border-casino-gold flex items-center justify-center cursor-pointer transition-all hover:border-4 hover:scale-105"
           >
@@ -22,12 +24,13 @@ const NavBar = () => {
           </div>
           {/* Username and Balance  */}
 
-          <div
-            onClick={() => setActiveModal("profile")}
-            className="flex flex-col items-start"
-          >
-            <span className="text-casino-silver font-semibold">Guest User</span>
-            <span className="text-casino-gold text-sm">$10,000.00</span>
+          <div className="flex flex-col items-start">
+            <span className="text-casino-silver font-semibold">
+              {(user && user.name) || "Guest User"}
+            </span>
+            <span className="text-casino-gold text-sm">
+              ${(user && user.balance) || "10,000.00"}
+            </span>
           </div>
         </div>
 

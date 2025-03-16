@@ -40,11 +40,15 @@ export default {
         "Our customer support team is available 24 hours a day, 7 days a week.",
     },
     settings: {
-      tittle: "Settings",
+      title: "Settings",
       dark_mode: "Dark Mode",
       notifications: "Notifications",
       sound_effects: "Sound Effects",
       language: "Language",
+    },
+    responses: {
+      "Login Successfully": "Successfully logged in to your account. 🎉",
+      "Wrong Password.": "Please enter a valid password!",
     },
   },
 };

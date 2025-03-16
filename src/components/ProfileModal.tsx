@@ -3,9 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, History, Wallet, Sparkles, LogOut, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useModalStore } from "@/store/modal";
+import { useUserStore } from "@/store/user";
 
 const ProfileModal = () => {
   const { activeModal, setActiveModal } = useModalStore();
+  const { user, setUser } = useUserStore();
 
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
@@ -20,6 +22,8 @@ const ProfileModal = () => {
       window.removeEventListener("keydown", handleEscKey);
     };
   }, [activeModal]);
+
+  if (!user && activeModal === "profile") setActiveModal("login");
 
   return (
     <AnimatePresence>
@@ -65,19 +69,29 @@ const ProfileModal = () => {
                 <div className="bg-casino-light-blue w-full h-full"></div>
               </div>
               <h2 className="mt-4 text-xl font-semibold text-white">
-                Guest User
+                {user.name}
               </h2>
-              <p className="text-casino-silver text-sm">ID: SL369-28401</p>
+              <p className="text-casino-silver text-sm">{user.email}</p>
               <div className="space-y-4 w-full">
                 <div className="bg-casino-deep-blue rounded-xl p-4 w-full flex justify-between items-center mt-4">
                   <span className="text-casino-silver">Balance</span>
                   <span className="text-casino-gold font-bold text-xl">
-                    $10,000.00
+                    {user.balance}
                   </span>
                 </div>
                 <button className="p-3 rounded-lg bg-casino-light-blue w-full flex items-center justify-center gap-3 transition-all hover:bg-opacity-80">
                   <Edit className="w-5 h-5 text-casino-gold" />
                   <span className="text-white">Edit Profile</span>
+                </button>
+                <button
+                  onClick={() => {
+                    setActiveModal();
+                    setUser();
+                  }}
+                  className="p-3 rounded-lg bg-red-600/70 w-full flex items-center justify-center gap-3 transition-all hover:bg-red-600/60"
+                >
+                  <LogOut className="w-5 h-5 text-casino-gold" />
+                  <span className="text-white">Logout</span>
                 </button>
               </div>
             </motion.div>
