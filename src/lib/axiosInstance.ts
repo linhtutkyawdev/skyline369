@@ -39,7 +39,15 @@ const axiosInstance = axios.create({
 // }
 
 export async function decrypt(edata) {
-  const key = await window.crypto.subtle.importKey(
+  const subtleCrypto = window?.crypto?.subtle; // Ensure crypto.subtle exists
+
+  if (!subtleCrypto) {
+    return console.error(
+      "Web Crypto API is not available in this environment."
+    );
+  }
+
+  const key = await subtleCrypto.importKey(
     "raw",
     new TextEncoder().encode(import.meta.env.VITE_AES_KEY),
     { name: "AES-CBC" },
