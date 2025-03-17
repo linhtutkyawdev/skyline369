@@ -15,6 +15,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useModalStore } from "@/store/modal";
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
+  EmailAndOtpInput,
+  emailAndOtpSchema,
   EmailInput,
   emailSchema,
   RegisterInputs,
@@ -23,27 +25,36 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import axiosInstance from "@/lib/axiosInstance";
+import { useUserStore } from "@/store/user";
 
 type Step = "email" | "otp" | "details";
 
 const RegisterModal = () => {
   const [step, setStep] = useState<Step>("email");
-  const [otp, setOtp] = useState("");
   const [fullname, setFullname] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const { activeModal, setActiveModal } = useModalStore();
   const { toast } = useToast();
   const { t } = useTranslation();
+  const { setUser } = useUserStore();
 
   const {
     register: registerEmailForm,
     handleSubmit: handleEmailSubmit,
     formState: { errors: emailErrors },
     reset: resetEmailForm,
-    watch,
+    watch: watchEmail,
   } = useForm<EmailInput>({
     resolver: zodResolver(emailSchema),
+  });
+
+  const {
+    register: registerEmailAndOtpForm,
+    handleSubmit: handleEmailAndOtpSubmit,
+    formState: { errors: emailAndOtpErrors },
+    reset: resetEmailAndOtpForm,
+    watch: watchOtp,
+  } = useForm<EmailAndOtpInput>({
+    resolver: zodResolver(emailAndOtpSchema),
   });
 
   const {
@@ -60,8 +71,8 @@ const RegisterModal = () => {
         msg: string;
         mess: string;
       };
-      data: Promise<{ email: string }>;
-    }>("/check_register_player", data);
+      data: Promise<EmailInput>;
+    }>("/check_register_player", { type: "email", email: data.email });
 
     if (res.data.status.mess)
       toast({
@@ -77,46 +88,63 @@ const RegisterModal = () => {
     }
   };
 
-  const handleOtpSubmit = () => {
-    if (otp.length !== 6) {
-      toast({
-        variant: "destructive",
-        title: "Invalid OTP",
-        description: "Please enter a valid 6-digit OTP!",
-      });
-      return;
-    }
-    toast({
-      title: "OTP verified",
-      description: "Please fill in your details!",
+  const onEmailAndOtpSubmit: SubmitHandler<EmailAndOtpInput> = async (data) => {
+    const res = await axiosInstance.post<{
+      status: {
+        errorCode: number;
+        msg: string;
+        mess: string;
+      };
+      data: Promise<EmailAndOtpInput>;
+    }>("/check_otp_code", {
+      type: "email",
+      email: data.email,
+      otp: data.otp,
     });
-    setStep("details");
+
+    if (res.data.status.mess)
+      toast({
+        title: res.data.status.mess,
+        description: t("responses." + res.data.status.mess),
+        variant: res.data.status.errorCode === 1 ? "destructive" : "default",
+      });
+
+    if (res.data.data) {
+      const response = await res.data.data;
+      console.log(response.otp);
+      setStep("details");
+    }
   };
 
-  const handleRegister = () => {
-    if (!fullname || !password || !confirmPassword) {
-      toast({
-        variant: "destructive",
-        title: "Missing information",
-        description: "Please fill in all fields!",
-      });
-      return;
-    }
-    if (password !== confirmPassword) {
-      toast({
-        variant: "destructive",
-        title: "Passwords don't match",
-        description: "Please ensure both passwords match!",
-      });
-      return;
-    }
-    toast({
-      title: "Registration successful",
-      description: "Welcome to Skyline369 🎉",
+  const onRegisterSubmit: SubmitHandler<RegisterInputs> = async (data) => {
+    const res = await axiosInstance.post("/register_player", {
+      type: "email",
+      email: data.email,
+      otp: data.otp,
+      password: data.password,
+      confirm_password: data.confirmPassword,
     });
-    setStep("email");
-    // setActiveModal();
-    setActiveModal("profile");
+
+    if (res.data.status.mess)
+      toast({
+        title: res.data.status.mess,
+        description: t("responses." + res.data.status.mess),
+        variant: res.data.status.errorCode === 1 ? "destructive" : "default",
+      });
+
+    if (res.data.data) {
+      const response = await res.data.data;
+      setStep("email");
+      setUser(response);
+      toast({
+        title: "Registration successful",
+        description: "Welcome to Skyline369 🎉",
+      });
+      resetEmailForm();
+      resetEmailAndOtpForm();
+      resetFinalForm();
+      setActiveModal();
+    }
   };
 
   useEffect(() => {
@@ -195,6 +223,7 @@ const RegisterModal = () => {
                   )}
                 </div>
                 <Button
+                  type="button"
                   className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-deep-blue"
                   onClick={handleEmailSubmit(onEmailSubmit)}
                 >
@@ -226,21 +255,36 @@ const RegisterModal = () => {
                 className="space-y-4"
               >
                 <p className="text-casino-silver text-sm">
-                  Please enter the verification code sent to {watch("email")}
+                  Please enter the verification code sent to{" "}
+                  {watchEmail("email")}
                 </p>
+                <input
+                  className="hidden"
+                  {...registerEmailAndOtpForm("email")}
+                  required
+                  value={watchEmail("email")}
+                />
                 <Input
                   type="text"
                   placeholder="Enter 6-digit code"
-                  value={otp}
-                  onChange={(e) =>
-                    setOtp(e.target.value.replace(/[^0-9]/g, "").slice(0, 6))
-                  }
                   className="text-center tracking-widest"
                   maxLength={6}
+                  {...registerEmailAndOtpForm("otp")}
+                  required
                 />
+                {emailAndOtpErrors.otp && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="absolute -bottom-5 ml-4 text-red-500 text-xs"
+                  >
+                    {emailAndOtpErrors.otp.message}
+                  </motion.p>
+                )}
                 <Button
+                  type="button"
                   className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-deep-blue"
-                  onClick={handleOtpSubmit}
+                  onClick={handleEmailAndOtpSubmit(onEmailAndOtpSubmit)}
                 >
                   Verify <CheckCircle2 className="ml-2 h-4 w-4" />
                 </Button>
@@ -256,6 +300,19 @@ const RegisterModal = () => {
               >
                 <div className="relative">
                   <User className="absolute left-3 top-3 h-5 w-5 text-casino-silver" />
+
+                  <input
+                    className="hidden"
+                    {...registerFinalForm("email")}
+                    required
+                    value={watchOtp("email")}
+                  />
+                  <input
+                    className="hidden"
+                    {...registerFinalForm("otp")}
+                    required
+                    value={watchOtp("otp")}
+                  />
                   <Input
                     type="text"
                     placeholder="Full Name"
@@ -269,9 +326,9 @@ const RegisterModal = () => {
                   <Input
                     type="password"
                     placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
                     className="pl-10"
+                    {...registerFinalForm("password")}
+                    required
                   />
                 </div>
                 <div className="relative">
@@ -279,14 +336,14 @@ const RegisterModal = () => {
                   <Input
                     type="password"
                     placeholder="Confirm Password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
                     className="pl-10"
+                    {...registerFinalForm("confirmPassword")}
+                    required
                   />
                 </div>
                 <Button
                   className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-deep-blue"
-                  onClick={handleRegister}
+                  onClick={handleFinalSubmit(onRegisterSubmit)}
                 >
                   Register <UserPlus className="ml-2 h-4 w-4" />
                 </Button>

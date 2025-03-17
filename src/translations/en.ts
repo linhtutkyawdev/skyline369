@@ -46,9 +46,9 @@ export default {
       sound_effects: "Sound Effects",
       language: "Language",
     },
-    responses: {
-      a: "hello",
-      Login_Successfully: "Successfully logged in to your account. 🎉",
+    onses: {
+      "Login Successfully": "Successfully logged in to your account. 🎉",
+      "Wrong Password.": "Please enter a valid password!",
     },
   },
 };

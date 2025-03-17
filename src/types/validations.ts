@@ -21,11 +21,11 @@ export const emailSchema = z.object({
   email: z.string().email().min(1, { message: "Email is required" }),
 });
 
-export type EmailOtpInput = EmailInput & {
+export type EmailAndOtpInput = EmailInput & {
   otp?: string;
 };
 
-export const emailOtpSchema = emailSchema
+export const emailAndOtpSchema = emailSchema
   .extend({
     otp: z.string().min(6, { message: "OTP is required" }),
   })
@@ -34,7 +34,7 @@ export const emailOtpSchema = emailSchema
     path: ["otp"],
   });
 
-export type RegisterInputs = EmailOtpInput & {
+export type RegisterInputs = EmailAndOtpInput & {
   password?: string;
   confirmPassword?: string;
 };

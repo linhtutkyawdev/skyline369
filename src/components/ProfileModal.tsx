@@ -23,8 +23,6 @@ const ProfileModal = () => {
     };
   }, [activeModal]);
 
-  if (!user && activeModal === "profile") setActiveModal("login");
-
   return (
     <AnimatePresence>
       {activeModal === "profile" && (

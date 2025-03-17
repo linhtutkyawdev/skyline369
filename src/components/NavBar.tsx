@@ -14,7 +14,7 @@ const NavBar = () => {
       <header className="fixed top-0 w-full p-4 z-50 flex justify-between items-center lg:glass-effect animate-fade-in">
         <div className="flex items-center gap-2 lg:gap-4 ml-4">
           <div
-            onClick={() => setActiveModal("profile")}
+            onClick={() => setActiveModal(user ? "profile" : "login")}
             // navigate("/profile")}
             className="w-10 h-10 lg:w-16 lg:h-16 rounded-full overflow-hidden border-2 border-casino-gold flex items-center justify-center cursor-pointer transition-all hover:border-4 hover:scale-105"
           >
@@ -26,7 +26,7 @@ const NavBar = () => {
 
           <div className="flex flex-col items-start">
             <span className="text-casino-silver font-semibold">
-              {(user && user.name) || "Guest User"}
+              {(user && user.name) || t("header.guest_user")}
             </span>
             <span className="text-casino-gold text-sm">
               ${(user && user.balance) || "10,000.00"}
