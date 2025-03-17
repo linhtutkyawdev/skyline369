@@ -39,7 +39,7 @@ const axiosInstance = axios.create({
 // }
 
 export async function decrypt(edata) {
-  const key = await crypto.subtle.importKey(
+  const key = await window.crypto.subtle.importKey(
     "raw",
     new TextEncoder().encode(import.meta.env.VITE_AES_KEY),
     { name: "AES-CBC" },
