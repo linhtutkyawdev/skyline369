@@ -38,35 +38,55 @@ const axiosInstance = axios.create({
 //   }
 // }
 
-export async function decrypt(edata) {
-  const subtleCrypto = window?.crypto?.subtle; // Ensure crypto.subtle exists
+// export async function decrypt(edata) {
+//   const subtleCrypto = window?.crypto?.subtle; // Ensure crypto.subtle exists
 
-  if (!subtleCrypto) {
-    return console.error(
-      "Web Crypto API is not available in this environment."
-    );
-  }
+//   if (!subtleCrypto) {
+//     return console.error(
+//       "Web Crypto API is not available in this environment."
+//     );
+//   }
 
-  const key = await subtleCrypto.importKey(
-    "raw",
-    new TextEncoder().encode(import.meta.env.VITE_AES_KEY),
-    { name: "AES-CBC" },
-    false,
-    ["decrypt"]
-  );
+//   const key = await subtleCrypto.importKey(
+//     "raw",
+//     new TextEncoder().encode(import.meta.env.VITE_AES_KEY),
+//     { name: "AES-CBC" },
+//     false,
+//     ["decrypt"]
+//   );
 
-  const iv = new TextEncoder().encode(import.meta.env.VITE_AES_IV);
-  const encryptedData = Uint8Array.from(atob(edata), (c) => c.charCodeAt(0));
+//   const iv = new TextEncoder().encode(import.meta.env.VITE_AES_IV);
+//   const encryptedData = Uint8Array.from(atob(edata), (c) => c.charCodeAt(0));
 
+//   try {
+//     const decryptedBuffer = await crypto.subtle.decrypt(
+//       { name: "AES-CBC", iv },
+//       key,
+//       encryptedData
+//     );
+
+//     const decryptedText = new TextDecoder().decode(decryptedBuffer);
+//     return JSON.parse(decryptedText);
+//   } catch (error) {
+//     console.error("Decryption failed:", error);
+//     throw new Error("Failed to decrypt data");
+//   }
+// }
+
+import CryptoJS from "crypto-js";
+
+export function decrypt(edata: string): any {
   try {
-    const decryptedBuffer = await crypto.subtle.decrypt(
-      { name: "AES-CBC", iv },
-      key,
-      encryptedData
-    );
+    const key = CryptoJS.enc.Utf8.parse(import.meta.env.VITE_AES_KEY);
+    const iv = CryptoJS.enc.Utf8.parse(import.meta.env.VITE_AES_IV);
 
-    const decryptedText = new TextDecoder().decode(decryptedBuffer);
-    return JSON.parse(decryptedText);
+    const decrypted = CryptoJS.AES.decrypt(edata, key, {
+      iv: iv,
+      mode: CryptoJS.mode.CBC,
+      padding: CryptoJS.pad.Pkcs7,
+    });
+
+    return JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));
   } catch (error) {
     console.error("Decryption failed:", error);
     throw new Error("Failed to decrypt data");
