@@ -36,46 +36,49 @@ const NavBar = () => {
 
         <div className="flex items-center gap-3 mr-2 lg:gap-8 lg:mr-4">
           <div
-            className="nav-icon group"
+            className="nav-icon group cursor-pointer"
             onClick={() => setActiveModal("share")}
           >
             <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full metal-badge flex items-center justify-center lg:mb-1 group-hover:animate-pulse-glow">
               <Share className="w-5 h-5 lg:w-6 lg:h-6 text-casino-silver" />
             </div>
-            <span className="text-casino-silver text-xs lg:text-sm">
+            <span className="text-casino-silver text-xs lg:text-base">
               {t("header.share")}
             </span>
           </div>
 
           <div
-            className="nav-icon group"
+            className="nav-icon group cursor-pointer"
             onClick={() => setActiveModal("contact_us")}
           >
             <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full metal-badge flex items-center justify-center lg:mb-1 group-hover:animate-pulse-glow">
               <span className="text-[#b3c8e7] font-bold text-sm">US</span>
             </div>
-            <span className="text-casino-silver text-xs lg:text-sm">
+            <span className="text-casino-silver text-xs lg:text-base">
               {t("header.contact_us")}
             </span>
           </div>
 
-          <div className="nav-icon group" onClick={() => navigate("/messages")}>
+          <div
+            className="nav-icon group cursor-pointer"
+            onClick={() => navigate("/messages")}
+          >
             <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full metal-badge flex items-center justify-center lg:mb-1 group-hover:animate-pulse-glow">
               <MessageSquare className="w-5 h-5 lg:w-6 lg:h-6 text-[#b3c8e7]" />
             </div>
-            <span className="text-casino-silver text-xs lg:text-sm">
+            <span className="text-casino-silver text-xs lg:text-base">
               {t("header.messages")}
             </span>
           </div>
 
           <div
-            className="nav-icon group"
+            className="nav-icon group cursor-pointer"
             onClick={() => setActiveModal("settings")}
           >
             <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-full metal-badge flex items-center justify-center lg:mb-1 group-hover:animate-pulse-glow">
               <Settings className="w-5 h-5 lg:w-6 lg:h-6 text-[#b3c8e7]" />
             </div>
-            <span className="text-casino-silver text-xs lg:text-sm">
+            <span className="text-casino-silver text-xs lg:text-base">
               {t("header.settings")}
             </span>
           </div>
