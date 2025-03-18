@@ -45,10 +45,8 @@ export default {
     office_hours: "Office Hours",
     office_hours_value:
       "Our customer support team is available 24 hours a day, 7 days a week.",
-    title: "Settings",
-    dark_mode: "Dark Mode",
     notifications: "Notifications",
-    sound_effects: "Sound Effects",
+    sound_effects: "Music",
     language: "Language",
     "Login Successfully": "Successfully logged in to your account. 🎉",
     "Wrong Password.": "Please enter a valid password!",

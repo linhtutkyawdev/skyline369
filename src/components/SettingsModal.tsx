@@ -5,18 +5,11 @@ import { Button } from "@/components/ui/button";
 import { useModalStore } from "@/store/modal";
 import { useTranslation } from "react-i18next";
 import { Switch } from "./ui/switch";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
 import { SupportedLanguages } from "@/i18n";
 import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 
 const SettingsModal = () => {
   const { activeModal, setActiveModal } = useModalStore();
-  const [darkMode, setDarkMode] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const { t, i18n } = useTranslation();
@@ -58,7 +51,7 @@ const SettingsModal = () => {
               className="flex justify-between items-center mb-6"
             >
               <h2 className="text-xl font-semibold text-casino-silver">
-                Settings
+                {t("settings")}
               </h2>
               <Button
                 variant="ghost"
@@ -75,7 +68,7 @@ const SettingsModal = () => {
               transition={{ delay: 0.3 }}
               className="space-y-4"
             >
-              <div className="flex items-center justify-between bg-casino-deep-blue rounded-lg p-4">
+              {/* <div className="flex items-center justify-between bg-casino-deep-blue rounded-lg p-4">
                 <div className="flex items-center gap-3">
                   {darkMode ? (
                     <Moon className="text-casino-silver" />
@@ -89,7 +82,7 @@ const SettingsModal = () => {
                   onCheckedChange={setDarkMode}
                   className="data-[state=checked]:bg-casino-gold"
                 />
-              </div>
+              </div> */}
 
               <div className="flex items-center justify-between bg-casino-deep-blue rounded-lg p-4">
                 <div className="flex items-center gap-3">
@@ -110,7 +103,7 @@ const SettingsModal = () => {
               <div className="flex items-center justify-between bg-casino-deep-blue rounded-lg p-4">
                 <div className="flex items-center gap-3">
                   <Bell className="text-casino-silver" />
-                  <span className="text-white">Notifications</span>
+                  <span className="text-white">{t("notifications")}</span>
                 </div>
                 <Switch
                   checked={notificationsEnabled}
@@ -123,7 +116,7 @@ const SettingsModal = () => {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <Languages className="text-casino-silver" />
-                    <span className="text-white">Language</span>
+                    <span className="text-white">{t("language")}</span>
                   </div>
 
                   <ToggleGroup
