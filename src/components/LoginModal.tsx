@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { LogIn, X, Mail, Lock, ArrowLeft, Watch } from "lucide-react";
+import { LogIn, X, Mail, Lock, ArrowLeft, Watch, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -29,7 +29,7 @@ const LoginModal = () => {
   const {
     register: registerLoginForm,
     handleSubmit: handleLoginSubmit,
-    formState: { errors: loginErrors },
+    formState: { errors: loginErrors, isSubmitting: isLoginSubmitting },
     reset: resetLoginForm,
     watch,
   } = useForm<LoginInputs>({ resolver: zodResolver(loginSchema) });
@@ -58,7 +58,7 @@ const LoginModal = () => {
     if (res.data.status.mess)
       toast({
         title: res.data.status.mess,
-        description: t("responses." + res.data.status.mess),
+        description: t("" + res.data.status.mess),
         variant: res.data.status.errorCode === 1 ? "destructive" : "default",
       });
 
@@ -72,12 +72,12 @@ const LoginModal = () => {
   const onForgotPasswordSubmit: SubmitHandler<EmailInput> = (data) => {
     // Handle login logic here
     toast({
-      title: "Request successful!",
-      description: "We've sent instructions to reset your password",
+      title: t("request_successful"),
+      description: t("weve_sent", { email: data.email }),
     });
 
+    setResetSent(true);
     resetForgotPasswordForm();
-    setActiveModal();
   };
 
   useEffect(() => {
@@ -105,27 +105,22 @@ const LoginModal = () => {
       {resetSent ? (
         <div className="text-center space-y-4">
           <div className="text-casino-silver">
-            <h3 className="text-lg font-medium mb-2">Email Sent!</h3>
+            <h3 className="text-lg font-medium mb-2">{t("email_sent")}</h3>
             <p className="text-sm">
-              We've sent instructions to reset your password to {watch("email")}
+              {t("weve_sent", { email: watch("email") })}
             </p>
           </div>
           <Button
-            className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-deep-blue"
-            onClick={() => {
-              setIsForgotPassword(false);
-              setResetSent(false);
-              resetForgotPasswordForm();
-            }}
+            className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-deep-blue "
+            onClick={() => setIsForgotPassword(false) ?? setResetSent(false)}
           >
-            Back to Login
+            <ArrowLeft className="h-4 w-4" /> {t("back_to_login")}
           </Button>
         </div>
       ) : (
         <>
           <div className="text-casino-silver text-sm mb-4">
-            Enter your email address and we'll send you instructions to reset
-            your password.
+            {t("enter_your_email")}
           </div>
           <div className="relative">
             <Mail className="absolute left-3 top-3 h-5 w-5 text-casino-silver" />
@@ -146,15 +141,19 @@ const LoginModal = () => {
               </motion.p>
             )}
           </div>
-          <Button className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-deep-blue">
-            Send Reset Instructions
+          <Button
+            type="button"
+            onClick={handleForgotPasswordSubmit(onForgotPasswordSubmit)}
+            className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-deep-blue"
+          >
+            {t("send_reset_instructions")}
           </Button>
           <Button
             variant="ghost"
             className="w-full text-casino-silver flex items-center justify-center gap-2"
             onClick={() => setIsForgotPassword(false)}
           >
-            <ArrowLeft className="h-4 w-4" /> Back to Login
+            <ArrowLeft className="h-4 w-4" /> {t("back_to_login")}
           </Button>
         </>
       )}
@@ -173,7 +172,7 @@ const LoginModal = () => {
         <Mail className="absolute left-3 top-3 h-5 w-5 text-casino-silver" />
         <Input
           type="email"
-          placeholder="Email"
+          placeholder={t("email")}
           className="pl-10"
           {...registerLoginForm("email")}
           required
@@ -192,7 +191,7 @@ const LoginModal = () => {
         <Lock className="absolute left-3 top-3 h-5 w-5 text-casino-silver" />
         <Input
           type="password"
-          placeholder="Password"
+          placeholder={t("password")}
           className="pl-10"
           {...registerLoginForm("password")}
           required
@@ -209,9 +208,15 @@ const LoginModal = () => {
       </div>
       <Button
         className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-deep-blue"
+        disabled={isLoginSubmitting}
         type="submit"
       >
-        Login <LogIn className="ml-2 h-4 w-4" />
+        {t("login") + " "}
+        {isLoginSubmitting ? (
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+        ) : (
+          <LogIn className="mr-2 h-4 w-4" />
+        )}
       </Button>
       <div className="text-center mt-4 space-y-2">
         <button
@@ -219,20 +224,22 @@ const LoginModal = () => {
           onClick={() => setIsForgotPassword(true)}
           type="button"
         >
-          Forgot Password?
+          {t("forgot_password")}
         </button>
         <div className="flex items-center justify-center gap-2">
           <span className="text-casino-silver text-sm">
-            Don't have an account?
+            {t("dont_have_an_account")}
           </span>
           <button
             className="text-casino-gold hover:text-casino-gold/80 text-sm font-medium"
             onClick={() => {
+              resetLoginForm();
+              setIsForgotPassword(false);
               setActiveModal("register");
             }}
             type="button"
           >
-            Register
+            {t("register")}
           </button>
         </div>
       </div>
@@ -262,12 +269,16 @@ const LoginModal = () => {
               className="flex justify-between items-center mb-6"
             >
               <h2 className="text-xl font-semibold text-casino-silver">
-                {isForgotPassword ? "Reset Password" : "Login"}
+                {isForgotPassword ? t("reset_password") : t("login")}
               </h2>
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setActiveModal()}
+                onClick={() =>
+                  resetLoginForm() ??
+                  setIsForgotPassword(false) ??
+                  setActiveModal()
+                }
                 className="text-casino-silver"
               >
                 <X className="h-5 w-5" />

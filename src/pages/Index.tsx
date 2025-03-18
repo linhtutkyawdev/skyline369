@@ -1,19 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import {
-  Spade,
-  Dice1,
-  Smartphone,
-  Layers,
-  Dice5,
-  Trophy,
-  Heart,
-  Gift,
-  Club,
-  Diamond,
-  Square,
-  Table2,
-  Clover,
-} from "lucide-react";
+import { Spade, Dice5, Heart, Table2, Clover } from "lucide-react";
 import NavBar from "@/components/NavBar";
 import Logo from "@/components/Logo";
 import FooterNav from "@/components/FooterNav";

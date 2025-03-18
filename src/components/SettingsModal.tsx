@@ -5,6 +5,14 @@ import { Button } from "@/components/ui/button";
 import { useModalStore } from "@/store/modal";
 import { useTranslation } from "react-i18next";
 import { Switch } from "./ui/switch";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
+import { SupportedLanguages } from "@/i18n";
+import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 
 const SettingsModal = () => {
   const { activeModal, setActiveModal } = useModalStore();
@@ -90,9 +98,7 @@ const SettingsModal = () => {
                   ) : (
                     <VolumeX className="text-casino-silver" />
                   )}
-                  <span className="text-white">
-                    {t("settings.sound_effects")}
-                  </span>
+                  <span className="text-white">{t("sound_effects")}</span>
                 </div>
                 <Switch
                   checked={soundEnabled}
@@ -120,27 +126,20 @@ const SettingsModal = () => {
                     <span className="text-white">Language</span>
                   </div>
 
-                  {/* <Select
+                  <ToggleGroup
+                    type="single"
+                    className="bg-casino-deep-blue rounded-lg p-1"
                     defaultValue={i18n.language}
-                    onValueChange={i18n.changeLanguage}
+                    onValueChange={(lang) => {
+                      if (lang) i18n.changeLanguage(lang);
+                    }}
                   >
-                    <SelectTrigger className="bg-casino-deep-blue text-white border border-casino-light-blue rounded-md px-3 py-1 max-w-40">
-                      <SelectValue placeholder="English" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-casino-deep-blue text-white border border-casino-light-blue rounded-md p-1">
-                      <SelectItem value="en">English</SelectItem>
-                      <SelectItem value="my">Myanmar</SelectItem>
-                    </SelectContent>
-                  </Select> */}
-
-                  <button
-                    onClick={() =>
-                      i18n.changeLanguage(i18n.language == "en" ? "my" : "en")
-                    }
-                    className="bg-casino-deep-blue text-white border border-casino-light-blue rounded-md px-3 py-1 max-w-40"
-                  >
-                    {i18n.language == "en" ? "English" : "Myanmar"}
-                  </button>
+                    {SupportedLanguages.map((lang) => (
+                      <ToggleGroupItem value={lang} key={lang}>
+                        {t(lang)}
+                      </ToggleGroupItem>
+                    ))}
+                  </ToggleGroup>
                 </div>
               </div>
             </motion.div>

@@ -26,10 +26,10 @@ const NavBar = () => {
 
           <div className="flex flex-col items-start">
             <span className="text-casino-silver font-semibold">
-              {(user && user.name) || t("header.guest_user")}
+              {(user && user.name) || t("register_login")}
             </span>
             <span className="text-casino-gold text-sm">
-              ${(user && user.balance) || "10,000.00"}
+              {user && user.balance ? parseFloat(user.balance).toFixed(2) : ""}
             </span>
           </div>
         </div>
@@ -43,7 +43,7 @@ const NavBar = () => {
               <Share className="w-5 h-5 lg:w-6 lg:h-6 text-casino-silver" />
             </div>
             <span className="text-casino-silver text-xs lg:text-base">
-              {t("header.share")}
+              {t("share")}
             </span>
           </div>
 
@@ -55,7 +55,7 @@ const NavBar = () => {
               <span className="text-[#b3c8e7] font-bold text-sm">US</span>
             </div>
             <span className="text-casino-silver text-xs lg:text-base">
-              {t("header.contact_us")}
+              {t("contact_us")}
             </span>
           </div>
 
@@ -67,7 +67,7 @@ const NavBar = () => {
               <MessageSquare className="w-5 h-5 lg:w-6 lg:h-6 text-[#b3c8e7]" />
             </div>
             <span className="text-casino-silver text-xs lg:text-base">
-              {t("header.messages")}
+              {t("messages")}
             </span>
           </div>
 
@@ -79,7 +79,7 @@ const NavBar = () => {
               <Settings className="w-5 h-5 lg:w-6 lg:h-6 text-[#b3c8e7]" />
             </div>
             <span className="text-casino-silver text-xs lg:text-base">
-              {t("header.settings")}
+              {t("settings")}
             </span>
           </div>
         </div>

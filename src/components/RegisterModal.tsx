@@ -6,8 +6,9 @@ import {
   CheckCircle2,
   X,
   ArrowRight,
-  User,
   Lock,
+  Loader2,
+  UserIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,6 +27,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import axiosInstance from "@/lib/axiosInstance";
 import { useUserStore } from "@/store/user";
+import { User } from "@/types/user";
 
 type Step = "email" | "otp" | "details";
 
@@ -40,7 +42,7 @@ const RegisterModal = () => {
   const {
     register: registerEmailForm,
     handleSubmit: handleEmailSubmit,
-    formState: { errors: emailErrors },
+    formState: { errors: emailErrors, isSubmitting: isEmailSubmitting },
     reset: resetEmailForm,
     watch: watchEmail,
   } = useForm<EmailInput>({
@@ -50,7 +52,10 @@ const RegisterModal = () => {
   const {
     register: registerEmailAndOtpForm,
     handleSubmit: handleEmailAndOtpSubmit,
-    formState: { errors: emailAndOtpErrors },
+    formState: {
+      errors: emailAndOtpErrors,
+      isSubmitting: isEmailAndOtpSubmitting,
+    },
     reset: resetEmailAndOtpForm,
     watch: watchOtp,
   } = useForm<EmailAndOtpInput>({
@@ -60,7 +65,7 @@ const RegisterModal = () => {
   const {
     register: registerFinalForm,
     handleSubmit: handleFinalSubmit,
-    formState: { errors: finalErrors },
+    formState: { errors: finalErrors, isSubmitting: isFinalSubmitting },
     reset: resetFinalForm,
   } = useForm<RegisterInputs>({ resolver: zodResolver(registerSchema) });
 
@@ -77,7 +82,7 @@ const RegisterModal = () => {
     if (res.data.status.mess)
       toast({
         title: res.data.status.mess,
-        description: t("responses." + res.data.status.mess),
+        description: t("" + res.data.status.mess),
         variant: res.data.status.errorCode === 1 ? "destructive" : "default",
       });
 
@@ -105,7 +110,7 @@ const RegisterModal = () => {
     if (res.data.status.mess)
       toast({
         title: res.data.status.mess,
-        description: t("responses." + res.data.status.mess),
+        description: t("" + res.data.status.mess),
         variant: res.data.status.errorCode === 1 ? "destructive" : "default",
       });
 
@@ -117,18 +122,24 @@ const RegisterModal = () => {
   };
 
   const onRegisterSubmit: SubmitHandler<RegisterInputs> = async (data) => {
-    const res = await axiosInstance.post("/register_player", {
-      type: "email",
-      email: data.email,
+    const res = await axiosInstance.post<{
+      status: {
+        errorCode: number;
+        msg: string;
+        mess: string;
+      };
+      data: Promise<User>;
+    }>("/register_player", {
+      type: "emial",
       otp: data.otp,
+      email: data.email,
       password: data.password,
-      confirm_password: data.confirmPassword,
     });
 
     if (res.data.status.mess)
       toast({
         title: res.data.status.mess,
-        description: t("responses." + res.data.status.mess),
+        description: t("" + res.data.status.mess),
         variant: res.data.status.errorCode === 1 ? "destructive" : "default",
       });
 
@@ -184,12 +195,18 @@ const RegisterModal = () => {
               className="flex justify-between items-center mb-6"
             >
               <h2 className="text-xl font-semibold text-casino-silver">
-                Register
+                {t("register")}
               </h2>
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setActiveModal()}
+                onClick={() =>
+                  resetEmailForm() ??
+                  resetEmailAndOtpForm() ??
+                  resetFinalForm() ??
+                  setStep("email") ??
+                  setActiveModal()
+                }
                 className="text-casino-silver"
               >
                 <X className="h-5 w-5" />
@@ -197,15 +214,17 @@ const RegisterModal = () => {
             </motion.div>
 
             {step === "email" && (
-              <motion.div
+              <motion.form
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="space-y-4"
+                className="space-y-6"
+                onSubmit={handleEmailSubmit(onEmailSubmit)}
               >
                 <div className="relative">
                   <Mail className="absolute left-3 top-3 h-5 w-5 text-casino-silver" />
                   <Input
+                    name="email"
                     type="email"
                     placeholder="Email"
                     className="pl-10"
@@ -223,11 +242,16 @@ const RegisterModal = () => {
                   )}
                 </div>
                 <Button
-                  type="button"
+                  type="submit"
+                  disabled={isEmailSubmitting}
                   className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-deep-blue"
-                  onClick={handleEmailSubmit(onEmailSubmit)}
                 >
-                  Continue <ArrowRight className="ml-2 h-4 w-4" />
+                  Continue{" "}
+                  {isEmailSubmitting ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <ArrowRight className="mr-2 h-4 w-4" />
+                  )}
                 </Button>
                 <div className="text-center mt-4 space-y-2">
                   <div className="flex items-center justify-center gap-2">
@@ -235,119 +259,163 @@ const RegisterModal = () => {
                       Already have an account?
                     </span>
                     <button
+                      type="button"
                       className="text-casino-gold hover:text-casino-gold/80 text-sm font-medium"
-                      onClick={() => {
-                        setActiveModal("login");
-                      }}
+                      onClick={() =>
+                        resetEmailForm() ??
+                        resetEmailAndOtpForm() ??
+                        resetFinalForm() ??
+                        setStep("email") ??
+                        setActiveModal("login")
+                      }
                     >
                       Login
                     </button>
                   </div>
                 </div>
-              </motion.div>
+              </motion.form>
             )}
 
             {step === "otp" && (
-              <motion.div
+              <motion.form
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="space-y-4"
+                className="space-y-6 relative"
+                onSubmit={handleEmailAndOtpSubmit(onEmailAndOtpSubmit)}
               >
-                <p className="text-casino-silver text-sm">
-                  Please enter the verification code sent to{" "}
-                  {watchEmail("email")}
-                </p>
-                <input
-                  className="hidden"
-                  {...registerEmailAndOtpForm("email")}
-                  required
-                  value={watchEmail("email")}
-                />
-                <Input
-                  type="text"
-                  placeholder="Enter 6-digit code"
-                  className="text-center tracking-widest"
-                  maxLength={6}
-                  {...registerEmailAndOtpForm("otp")}
-                  required
-                />
-                {emailAndOtpErrors.otp && (
-                  <motion.p
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="absolute -bottom-5 ml-4 text-red-500 text-xs"
-                  >
-                    {emailAndOtpErrors.otp.message}
-                  </motion.p>
-                )}
+                <div className="relative space-y-2">
+                  <p className="text-casino-silver text-sm">
+                    Please enter the verification code sent to{" "}
+                    {watchEmail("email")}
+                  </p>
+                  <input
+                    name="email"
+                    className="hidden"
+                    {...registerEmailAndOtpForm("email")}
+                    required
+                    value={watchEmail("email")}
+                  />
+                  <Input
+                    name="otp"
+                    type="text"
+                    placeholder="XXXXXX"
+                    className="text-center tracking-[1rem] font-2xl"
+                    {...registerEmailAndOtpForm("otp")}
+                    required
+                    maxLength={6}
+                  />
+                  {emailAndOtpErrors.otp && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="absolute -bottom-5 ml-4 text-red-500 text-xs"
+                    >
+                      {emailAndOtpErrors.otp.message}
+                    </motion.p>
+                  )}
+                </div>
                 <Button
-                  type="button"
+                  type="submit"
+                  disabled={isEmailAndOtpSubmitting}
                   className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-deep-blue"
-                  onClick={handleEmailAndOtpSubmit(onEmailAndOtpSubmit)}
                 >
-                  Verify <CheckCircle2 className="ml-2 h-4 w-4" />
+                  Verify{" "}
+                  {isEmailAndOtpSubmitting ? (
+                    <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <CheckCircle2 className="ml-2 h-4 w-4" />
+                  )}
                 </Button>
-              </motion.div>
+              </motion.form>
             )}
 
             {step === "details" && (
-              <motion.div
+              <motion.form
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="space-y-4"
+                className="space-y-6"
+                onSubmit={handleFinalSubmit(onRegisterSubmit)}
               >
                 <div className="relative">
-                  <User className="absolute left-3 top-3 h-5 w-5 text-casino-silver" />
-
+                  <UserIcon className="absolute left-3 top-3 h-5 w-5 text-casino-silver" />
                   <input
+                    name="email"
                     className="hidden"
                     {...registerFinalForm("email")}
                     required
                     value={watchOtp("email")}
                   />
                   <input
+                    name="otp"
                     className="hidden"
                     {...registerFinalForm("otp")}
                     required
                     value={watchOtp("otp")}
                   />
-                  <Input
+                  {/* <Input
+
                     type="text"
                     placeholder="Full Name"
                     value={fullname}
                     onChange={(e) => setFullname(e.target.value)}
                     className="pl-10"
-                  />
+                  /> */}
                 </div>
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 h-5 w-5 text-casino-silver" />
                   <Input
+                    name="password"
                     type="password"
                     placeholder="Password"
                     className="pl-10"
                     {...registerFinalForm("password")}
                     required
                   />
+                  {finalErrors.password && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="absolute -bottom-5 ml-4 text-red-500 text-xs"
+                    >
+                      {finalErrors.password.message}
+                    </motion.p>
+                  )}
                 </div>
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 h-5 w-5 text-casino-silver" />
                   <Input
+                    name="confirmPassword"
                     type="password"
                     placeholder="Confirm Password"
                     className="pl-10"
                     {...registerFinalForm("confirmPassword")}
                     required
                   />
+                  {finalErrors.confirmPassword && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="absolute -bottom-5 ml-4 text-red-500 text-xs"
+                    >
+                      {finalErrors.confirmPassword.message}
+                    </motion.p>
+                  )}
                 </div>
                 <Button
+                  type="submit"
+                  disabled={isFinalSubmitting}
                   className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-deep-blue"
-                  onClick={handleFinalSubmit(onRegisterSubmit)}
                 >
-                  Register <UserPlus className="ml-2 h-4 w-4" />
+                  Register{" "}
+                  {isFinalSubmitting ? (
+                    <Loader2 className="ml-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <UserPlus className="ml-2 h-4 w-4" />
+                  )}
                 </Button>
-              </motion.div>
+              </motion.form>
             )}
           </motion.div>
         </motion.div>

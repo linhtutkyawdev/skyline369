@@ -80,7 +80,7 @@ const Settings = () => {
               ) : (
                 <VolumeX className="text-casino-silver" />
               )}
-              <span className="text-white">{t("settings.sound_effects")}</span>
+              <span className="text-white">{t("sound_effects")}</span>
             </div>
             <Switch
               checked={soundEnabled}

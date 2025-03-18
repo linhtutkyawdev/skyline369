@@ -27,7 +27,7 @@ export type EmailAndOtpInput = EmailInput & {
 
 export const emailAndOtpSchema = emailSchema
   .extend({
-    otp: z.string().min(6, { message: "OTP is required" }),
+    otp: z.string().min(6, { message: "OTP needs to be 6 digits" }),
   })
   .refine((data) => /^\d+$/.test(data.otp), {
     message: "OTP should only contain digits",
@@ -41,6 +41,7 @@ export type RegisterInputs = EmailAndOtpInput & {
 
 export const registerSchema = emailSchema
   .extend({
+    otp: z.string().min(6, { message: "OTP is required" }),
     password: z
       .string()
       .min(8, { message: "Password is too short" })

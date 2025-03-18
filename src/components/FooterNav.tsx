@@ -23,7 +23,7 @@ const FooterNav = () => {
           <span className="text-casino-deep-blue font-bold">$</span>
         </div>
         <span className="text-casino-silver text-xs lg:text-base mt-1">
-          {t("footer.deposit")}
+          {t("deposit")}
         </span>
       </div>
 
@@ -35,7 +35,7 @@ const FooterNav = () => {
           <span className="text-casino-deep-blue font-bold">$</span>
         </div>
         <span className="text-casino-silver text-xs lg:text-base mt-1">
-          {t("footer.withdraw")}
+          {t("withdraw")}
         </span>
       </div>
 
@@ -47,7 +47,7 @@ const FooterNav = () => {
           <span className="text-casino-deep-blue font-bold">H</span>
         </div>
         <span className="text-casino-silver text-xs lg:text-base mt-1">
-          {t("footer.history")}
+          {t("history")}
         </span>
       </div>
     </motion.footer>

@@ -71,7 +71,7 @@ const DepositModal = () => {
               className="flex justify-between items-center mb-2"
             >
               <h2 className="text-xl font-semibold text-casino-silver">
-                {t("footer.deposit")}
+                {t("deposit")}
               </h2>
               <Button
                 variant="ghost"
