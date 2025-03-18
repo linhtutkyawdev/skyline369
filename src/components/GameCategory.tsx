@@ -14,7 +14,6 @@ interface GameCategoryProps {
 const GameCategory = ({
   title,
   icon,
-  bgColor = "bg-casino-light-blue",
   onClick,
   isSelected = false,
   isAdjacent = false,
@@ -29,10 +28,10 @@ const GameCategory = ({
       className={cn(
         "game-card flex flex-col items-center justify-center p-4 sm:p-6 relative my-5",
         isSelected
-          ? "h-[10rem] lg:h-56 w-full scale-105 z-10"
+          ? "h-40 2xl:h-56 w-full scale-105 z-10"
           : isAdjacent
-          ? "h-[9rem] lg:h-52 w-full scale-103 z-5"
-          : "h-[8rem] lg:h-48 w-full"
+          ? "h-36 2xl:h-52 w-full scale-103 z-5"
+          : "h-32 2xl:h-48 w-full"
       )}
       onClick={onClick}
     >

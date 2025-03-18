@@ -47,122 +47,83 @@ const Index = () => {
     return index === prevIndex || index === nextIndex;
   };
 
+  const IMAGE_CLASS_NAME = "w-20 h-20 2xl:w-[6.5rem] 2xl:h-[6.5rem]";
   const items = [
     {
       title: "SLOTS",
-      icon: (
-        <img
-          src="/slots.png"
-          className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]"
-        />
-      ),
+      icon: <img src="/slots.png" className={IMAGE_CLASS_NAME} />,
       path: "/slots",
       isLive: false,
     },
     {
       title: "ROULETTE",
-      icon: (
-        <img
-          src="/roulette.png"
-          className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]"
-        />
-      ),
+      icon: <img src="/roulette.png" className={IMAGE_CLASS_NAME} />,
       path: "/roulette",
       isLive: false,
     },
     {
       title: "BLACKJACK",
-      icon: (
-        <img
-          src="/blackjack.png"
-          className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]"
-        />
-      ),
+      icon: <img src="/blackjack.png" className={IMAGE_CLASS_NAME} />,
       path: "/blackjack",
       isLive: true,
     },
     {
       title: "POKER",
-      icon: (
-        <img
-          src="/poker.png"
-          className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]"
-        />
-      ),
+      icon: <img src="/poker.png" className={IMAGE_CLASS_NAME} />,
       path: "/poker",
       isLive: true,
     },
     {
       title: "DRAGON TIGER",
-      icon: (
-        <img
-          src="/dragon_tiger.png"
-          className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]"
-        />
-      ),
+      icon: <img src="/dragon_tiger.png" className={IMAGE_CLASS_NAME} />,
       path: "/dragon-tiger",
       isLive: false,
     },
     {
       title: "SIC BO",
-      icon: (
-        <img
-          src="/sicbo.png"
-          className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]"
-        />
-      ),
+      icon: <img src="/sicbo.png" className={IMAGE_CLASS_NAME} />,
       path: "/sic-bo",
       isLive: false,
     },
     {
       title: "TABLE",
-      icon: <Table2 className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]" />,
+      icon: <Table2 className={IMAGE_CLASS_NAME} />,
       path: "/table",
       isLive: false,
     },
     {
       title: "LOTTERY",
-      icon: <Clover className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]" />,
+      icon: <Clover className={IMAGE_CLASS_NAME} />,
       path: "/lottery",
       isLive: false,
     },
     {
       title: "CARD",
-      icon: <Spade className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]" />,
+      icon: <Spade className={IMAGE_CLASS_NAME} />,
       path: "/card",
       isLive: false,
     },
     {
       title: "Shan Koe Mee",
-      icon: <Heart className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]" />,
+      icon: <Heart className={IMAGE_CLASS_NAME} />,
       path: "/skm",
       isLive: false,
     },
     {
       title: "Pai Gow",
-      icon: <Dice5 className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]" />,
+      icon: <Dice5 className={IMAGE_CLASS_NAME} />,
       path: "/paigow",
       isLive: false,
     },
     {
       title: "POKER",
-      icon: (
-        <img
-          src="/poker.png"
-          className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]"
-        />
-      ),
+      icon: <img src="/poker.png" className={IMAGE_CLASS_NAME} />,
       path: "/poker-game",
       isLive: false,
     },
     {
       title: "BACCARAT",
-      icon: (
-        <img
-          src="/baccarat.png"
-          className="w-20 h-20 lg:w-[6.5rem] lg:h-[6.5rem]"
-        />
-      ),
+      icon: <img src="/baccarat.png" className={IMAGE_CLASS_NAME} />,
       path: "/baccarat",
       isLive: false,
     },
@@ -171,7 +132,7 @@ const Index = () => {
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       <NavBar />
-      <div className="flex flex-col items-center justify-center h-full -mt-8 md:pt-0">
+      <div className="flex flex-col items-center justify-center h-full -mt-12 lg:-mt-8">
         <Logo />
         <Carousel
           opts={{
@@ -200,9 +161,9 @@ const Index = () => {
             ))}
           </CarouselContent>
 
-          <div className="hidden lg:flex justify-center gap-6 lg:mt-8">
-            <CarouselPrevious className="static bg-casino-deep-blue border-casino-silver hover:bg-casino-light-blue text-white" />
-            <CarouselNext className="static bg-casino-deep-blue border-casino-silver hover:bg-casino-light-blue text-white" />
+          <div className="hidden xl:flex justify-center gap-6 lg:mt-8">
+            <CarouselPrevious className="static bg-casino-deep-blue border-casino-silver hover:bg-casino-light-blue text-white w-6 h-6 2xl:w-8 2xl:h-8" />
+            <CarouselNext className="static bg-casino-deep-blue border-casino-silver hover:bg-casino-light-blue text-white w-6 h-6 2xl:w-8 2xl:h-8" />
           </div>
         </Carousel>
       </div>
