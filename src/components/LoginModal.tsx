@@ -255,6 +255,13 @@ const LoginModal = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
+          <motion.img
+            src="/login_modal_bg.png"
+            className="absolute -top-[5%] left-0 h-[95%] xl:left-[5%] z-[60] object-cover"
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 30 }}
+          ></motion.img>
           <motion.div
             className="bg-casino-deep-blue/50 w-full max-w-md rounded-lg border border-casino-light-blue p-6 modal-container"
             initial={{ opacity: 0, scale: 0.8 }}
