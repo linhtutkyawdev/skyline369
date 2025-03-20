@@ -102,7 +102,10 @@ export default function Category() {
   // Setup intersection observer for infinite scroll
   const lastGameElementRef = useCallback(
     (node: HTMLDivElement | null) => {
-      if (loading) return;
+      const page = pages.find(
+        (p) => p.gameType === gameType && p.productCode === productCode
+      );
+      if (loading || page.currentPage >= page.lastPage) return;
       if (observer.current) observer.current.disconnect();
 
       observer.current = new IntersectionObserver(async (entries) => {
@@ -173,7 +176,7 @@ export default function Category() {
   return (
     <div
       ref={categoryRef}
-      className="h-screen overflow-y-scroll scrollbar-none"
+      className="h-screen overflow-y-scroll scrollbar-none xl:pb-16 pb-4"
     >
       <div
         className={cn(
