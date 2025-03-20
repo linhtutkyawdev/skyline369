@@ -75,7 +75,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="/type/:type" element={<Category />} />
+              <Route path="/type/:gameType" element={<Category />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/contact" element={<Contact />} />
               <Route path="/deposit" element={<Deposit />} />

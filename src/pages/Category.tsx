@@ -1,46 +1,101 @@
-import slotgatorAxiosInstance from "@/lib/slotgatorAxiosInstance";
-import { cn } from "@/lib/utils";
 import { Game } from "@/types/game";
 import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, LucideTriangle } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { isMobile } from "react-device-detect";
-import { useDataStore } from "@/store/data";
+import { useGameStore } from "@/store/game";
+import axiosInstance from "@/lib/axiosInstance";
+import { useUserStore } from "@/store/user";
+import { APIResponse } from "@/types/api_response";
+import { GameData } from "@/types/game_data";
+import { usePageStore } from "@/store/page";
+import { useProductCodeStore } from "@/store/productCode";
+import { s } from "node_modules/framer-motion/dist/types.d-6pKw1mTI";
+import { cn } from "@/lib/utils";
 
 export default function Category() {
-  const navigate = useNavigate();
-  const { type } = useParams();
-  const {
-    data: { games, loading, page, hasMore, error },
-    setLoading,
-    setPage,
-    addGames,
-  } = useDataStore();
-
-  const [filteredGames, setFilteredGames] = useState<Game[]>([]);
-  const [providers, setProviders] = useState<string[]>([]);
-  const [activeProvider, setActiveProvider] = useState("");
   const observer = useRef<IntersectionObserver | null>(null);
+  const navigate = useNavigate();
+
+  const [productCode, setProductCode] = useState("");
+  const [filteredGames, setFilteredGames] = useState<Game[]>([]);
+
+  const { productCodes, setProductCodes } = useProductCodeStore();
+  const { gameType } = useParams();
+  const { user } = useUserStore();
+  const {
+    games,
+    lastAddedCount,
+    loading,
+    error,
+    addGames,
+    setLoading,
+    setError,
+  } = useGameStore();
+  const { pages, getPage, setPages, setPage } = usePageStore();
 
   const loadGames = async () => {
     setLoading(true);
-    const pageNumbers = Array.from({ length: 10 }, (_, i) => page + i); // Fetch 10 pages at once
 
     try {
-      const responses = await Promise.all(
-        pageNumbers.map((p) =>
-          slotgatorAxiosInstance.get<{ items: Game[] }>("/games", {
-            params: { page: p },
-          })
+      const page = getPage(gameType, productCode);
+      const responses = await axiosInstance.post<APIResponse<GameData>>(
+        "/get_game_list",
+        {
+          token: user.token,
+          page: page ? page.currentPage : 1,
+          gameType,
+          productCode,
+        }
+      );
+      addGames(responses.data.data.data);
+      setPage({
+        ...page,
+        currentPage: page ? page.currentPage + 1 : 2,
+        lastPage: responses.data.data.last_page,
+      });
+    } catch (error) {
+      setError(error as Error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadProductCodes = async () => {
+    setLoading(true);
+    try {
+      const responses = await axiosInstance.post<APIResponse<string[]>>(
+        "/get_game_vendor",
+        { token: user.token }
+      );
+      setProductCodes(responses.data.data);
+      setPages(
+        Array.from(
+          new Map(
+            [
+              {
+                gameType,
+                productCode: "",
+                currentPage: 1,
+                lastPage: 2,
+              },
+              ...pages,
+              ...responses.data.data.map((productCode) => ({
+                gameType,
+                productCode,
+                currentPage: 1,
+                lastPage: 2,
+              })),
+            ].map((item) => [`${item.gameType}-${item.productCode}`, item])
+          ).values()
         )
       );
-
-      addGames(responses.flatMap((res) => res.data.items));
-      setPage(page + 10);
-      setLoading(false);
+      loadGames();
     } catch (error) {
-      throw error;
+      setError(error as Error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,98 +116,110 @@ export default function Category() {
     [loading]
   );
 
+  const categoryRef = useRef(null);
+  const [scrollPosition, setScrollPosition] = useState(0);
+
   useEffect(() => {
     (async () => {
-      if (games.length == 0) {
-        await loadGames();
+      if (productCodes.length == 0) {
+        await loadProductCodes();
       }
     })();
+
+    // scroll listener
+    const handleScroll = () => {
+      if (categoryRef.current) {
+        setScrollPosition(categoryRef.current.scrollTop);
+      }
+    };
+    const categoryElement = categoryRef.current;
+    if (categoryElement) {
+      categoryElement.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      if (categoryElement) {
+        categoryElement.removeEventListener("scroll", handleScroll);
+      }
+    };
   }, []);
 
   useEffect(() => {
-    (async () => {
-      if (games.length == 0 || !type || loading) return;
-      const typeFilteredGames = games.filter(
-        (game) => game.type == type && game.is_mobile == isMobile
-      );
-
-      const currentProviders = [];
-      typeFilteredGames.map((game) => {
-        if (!currentProviders.includes(game.provider)) {
-          currentProviders.push(game.provider);
-        }
-      });
-      setProviders(currentProviders);
-      if (!activeProvider) setActiveProvider(currentProviders[0]);
-
-      const filteredGames = typeFilteredGames.filter(
+    const page = getPage(gameType, productCode);
+    if (games.length > 0) {
+      const filteredGames = games.filter(
         (game) =>
-          game.provider == activeProvider ||
-          game.provider == currentProviders[0]
+          game.gameType === gameType &&
+          (!productCode || game.productCode === productCode)
+        // && game.is_mobile === (isMobile ? "1" : "0")
       );
 
-      if (filteredGames.length < 6) {
-        return await loadGames();
+      if (
+        page &&
+        page.currentPage <= page.lastPage &&
+        filteredGames.length <= 10
+      ) {
+        loadGames();
       }
-
-      setFilteredGames(
-        filteredGames.filter((game) => game.provider == activeProvider)
-      );
-    })();
-  }, [games]);
+      setFilteredGames(filteredGames);
+    }
+  }, [games, productCode]);
 
   useEffect(() => {
-    setFilteredGames(
-      games.filter(
-        (game) =>
-          game.provider == activeProvider &&
-          game.type == type &&
-          game.is_mobile == isMobile
-      )
-    );
-  }, [activeProvider]);
+    if (lastAddedCount < 15) loadGames();
+  }, [lastAddedCount]);
 
   if (error) return "An error has occurred: " + error.message;
 
   return (
-    <div className="h-screen overflow-y-scroll pb-20 pt-6 px-6">
-      <motion.div
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        className="flex items-center mb-8"
+    <div
+      ref={categoryRef}
+      className="h-screen overflow-y-scroll scrollbar-none"
+    >
+      <div
+        className={cn(
+          "flex flex-col sticky w-full top-0 left-0 z-50 backdrop-blur-lg mb-4 pt-4 transition-colors duration-100",
+          { "bg-casino-deep-blue/90": scrollPosition >= 16 }
+        )}
       >
-        <button
-          onClick={() => navigate("/")}
-          className="flex items-center gap-2 text-casino-silver hover:text-white transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5" />
-          <span>Back</span>
-        </button>
-      </motion.div>
-
-      <motion.h1
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-3xl font-bold text-center text-white mb-6 capitalize"
-      >
-        {type}
-      </motion.h1>
-
-      {/* Provider providers */}
-      <div className="mb-6 overflow-x-auto pb-2 flex xl:justify-center gap-2">
-        {providers.map((tab) => (
+        <div className="flex items-center mb-8 fixed top-10 left-10">
           <button
-            key={tab}
-            onClick={() => setActiveProvider(tab)}
-            className={`px-4 py-2 rounded-full whitespace-nowrap ${
-              activeProvider === tab
-                ? "bg-casino-gold text-casino-deep-blue font-medium"
-                : "bg-casino-deep-blue text-casino-silver"
-            }`}
+            onClick={() => navigate("/")}
+            className="flex items-center gap-2 text-casino-silver hover:text-white transition-colors"
           >
-            {tab}
+            <ArrowLeft className="w-5 h-5" />
+            <span>Back</span>
           </button>
-        ))}
+        </div>
+
+        <div className="text-3xl font-bold text-center text-white mb-6 capitalize">
+          {gameType}
+        </div>
+
+        {/* Provider productCodes */}
+        <div className="mb-3 xl:mb-6 py-2 flex xl:justify-center gap-2 sticky overflow-scroll ml-4 mr-20 scrollbar-none">
+          {productCodes.map((tab) => (
+            <button
+              key={tab}
+              onClick={() => {
+                setProductCode(tab == productCode ? "" : tab);
+              }}
+              className={`px-4 py-2 rounded-full whitespace-nowrap ${
+                scrollPosition >= 16
+                  ? productCode === tab
+                    ? "bg-casino-gold text-casino-deep-blue font-medium"
+                    : "bg-gradient-to-r from-sky-900/30 to-indigo-900/30 text-casino-silver"
+                  : productCode === tab
+                  ? "bg-casino-gold text-casino-deep-blue font-medium"
+                  : "bg-casino-deep-blue text-casino-silver"
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+          <div className="rotate-90 fixed right-8 top-[5.7rem]">
+            <LucideTriangle className="w-6 h-6 2xl:hidden animate-float" />
+          </div>
+        </div>
       </div>
 
       <motion.div
@@ -162,13 +229,12 @@ export default function Category() {
         className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
       >
         {filteredGames.map((game, index) => {
-          // Apply ref to last element for infinite scroll
-          const isLastElement = filteredGames.length === index + 1;
-
           return (
             <motion.div
-              key={game.uuid}
-              ref={isLastElement ? lastGameElementRef : null}
+              key={game.id}
+              ref={
+                filteredGames.length === index + 1 ? lastGameElementRef : null
+              }
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.05 * (index % 6) }}
@@ -176,11 +242,11 @@ export default function Category() {
             >
               <div className="relative">
                 <img
-                  src={game.image}
-                  alt={game.name}
+                  src={isMobile ? game.m_img : game.img}
+                  alt={game.gameName}
                   className="w-full h-48 object-cover"
                 />
-                {true && (
+                {game.on_line === "1" && (
                   <div className="absolute top-3 right-3">
                     <div className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
                       <span className="animate-pulse w-2 h-2 bg-white rounded-full"></span>
@@ -189,14 +255,16 @@ export default function Category() {
                   </div>
                 )}
                 <div className="absolute bottom-3 left-3 bg-black bg-opacity-60 px-2 py-1 rounded text-xs text-white">
-                  {Math.floor(Math.random() * 1000)} players
+                  100 players
                 </div>
               </div>
               <div className="p-4 bg-gradient-to-t from-casino-deep-blue to-transparent">
                 <h3 className="text-white text-xl font-semibold">
-                  {game.name}
+                  {game.gameName}
                 </h3>
-                <p className="text-casino-silver text-sm mt-1">Live Dealer</p>
+                <p className="text-casino-silver text-sm mt-1">
+                  {game.productCode}
+                </p>
                 <button className="mt-3 px-4 py-2 bg-casino-gold text-casino-deep-blue rounded-md font-medium hover:bg-opacity-90 transition-all">
                   Play Now
                 </button>
@@ -212,25 +280,13 @@ export default function Category() {
           <p className="text-casino-silver mt-2">Loading more games...</p>
         </div>
       )}
-      {filteredGames.length > 0 && !loading && (
-        <div className="text-center py-6 text-casino-silver">
-          No more games to load
-        </div>
-      )}
-
-      <div className="flex justify-center py-8">
-        <button
-          onClick={async () => await loadGames()}
-          className={cn(
-            "px-4 py-2 bg-casino-gold text-casino-deep-blue rounded-md font-medium hover:bg-opacity-90 transition-all",
-            {
-              hidden: loading,
-            }
-          )}
-        >
-          Forcely Load More Games
-        </button>
-      </div>
+      {getPage(gameType, productCode) &&
+        getPage(gameType, productCode).currentPage >=
+          getPage(gameType, productCode).lastPage && (
+          <div className="text-center py-6 text-casino-silver">
+            No more games to load
+          </div>
+        )}
     </div>
   );
 }

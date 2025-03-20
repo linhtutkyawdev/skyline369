@@ -48,6 +48,41 @@ const Index = () => {
   };
 
   const IMAGE_CLASS_NAME = "w-20 h-20 2xl:w-[6.5rem] 2xl:h-[6.5rem]";
+
+  // 0: "roulette"
+  // 1: "blackjack"
+  // 2: "baccarat"
+  // 3: "single poker"
+  // 4: "dragon tiger"
+  // 5: "sic bo"
+  // 6: "table"
+  // 7: "lottery"
+  // 8: "poker"
+  // 9: "slots"
+  // 10: "card"
+  // 11: "keno"
+  // 12: "live dealer"
+  // 13: "teen patti"
+  // 14: "fish/shooting"
+  // 15: "cluster"
+  // 16: "other"
+  // 17: "fruit game"
+  // 18: "andar bahar"
+  // 19: "arcade"
+  // 20: "dragontiger"
+  // 21: "fishing"
+  // 22: "crash"
+  // 23: "bingo"
+  // 24: "instant win"
+  // 25: "shooting"
+  // 26: "сrash"
+  // 27: "scratch card"
+  // 28: "live diler"
+  // 29: "casual"
+  // 30: "dice"
+  // 31: "plinko"
+  // 32: "game_shows"
+
   const items = [
     {
       title: "SLOTS",
@@ -76,13 +111,13 @@ const Index = () => {
     {
       title: "DRAGON TIGER",
       icon: <img src="/dragon_tiger.png" className={IMAGE_CLASS_NAME} />,
-      path: "/dragon-tiger",
+      path: "/dragon tiger",
       isLive: false,
     },
     {
       title: "SIC BO",
       icon: <img src="/sicbo.png" className={IMAGE_CLASS_NAME} />,
-      path: "/sic-bo",
+      path: "/sic bo",
       isLive: false,
     },
     {
@@ -118,7 +153,7 @@ const Index = () => {
     {
       title: "POKER",
       icon: <img src="/poker.png" className={IMAGE_CLASS_NAME} />,
-      path: "/poker-game",
+      path: "/poker",
       isLive: false,
     },
     {

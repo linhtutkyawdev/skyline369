@@ -1,34 +1,29 @@
 // import { AxiosError, AxiosResponse } from "axios";
 
 export type Game = {
-  uuid: string;
-  name: string;
-  image: string;
-  type: string;
-  provider: string;
-  api_sub_provider_id: number;
+  id: 2163;
+  gameType: string;
+  gameName: string;
+  tcgGameCode: string;
+  productCode: string;
+  productType: number;
+  sort: number;
+  on_line: string;
+  img: string;
+  m_img: string;
+  fs_ratio: number;
   technology: string;
-  has_lobby: boolean;
-  is_mobile: boolean;
-  has_freespins: boolean;
-  freespin_valid_until_full_day: number;
+  has_lobby: string; // "0"
+  is_mobile: string; // "0"
+  has_freespins: string; // "0"
+  created_at: Date;
+  updated_at: Date;
+  is_show: boolean;
+  is_rec: boolean;
+  is_zzh: boolean;
+  id_no_pay: number;
+  is_outopen: boolean;
+  is_ios_outopen: boolean;
+  view_count: number | null;
+  category: number;
 };
-
-// export type User = {
-//   name: string;
-// };
-
-// export type Notification = {
-//   message: string;
-//   type?: "info" | "success" | "warning" | "error";
-// };
-
-// export type NotiInfo = Notification & {
-//   id: number;
-//   hasScheduledForDelete: boolean;
-// };
-
-// export type Data = {
-//   res: AxiosResponse;
-//   error: AxiosError;
-// };
