@@ -20,7 +20,7 @@ export const useGameStore = create<Store>()(
     games: [],
     loading: false,
     error: null,
-    lastAddedCount: 0,
+    lastAddedCount: 15,
 
     setGames: (games: Game[]) => set((state) => ({ ...state, games })),
 
