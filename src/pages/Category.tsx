@@ -1,6 +1,6 @@
 import { Game } from "@/types/game";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, LoaderPinwheel, LucideTriangle } from "lucide-react";
+import { ArrowLeft, LoaderPinwheel, LucideTriangle, User } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { isMobile } from "react-device-detect";
@@ -12,30 +12,26 @@ import { GameData } from "@/types/game_data";
 import { usePageStore } from "@/store/page";
 import { useProductCodeStore } from "@/store/productCode";
 import { cn } from "@/lib/utils";
+import { useModalStore } from "@/store/modal";
+import { useTranslation } from "react-i18next";
 
 export default function Category() {
   const observer = useRef<IntersectionObserver | null>(null);
   const navigate = useNavigate();
 
-  const { productCodes, setProductCodes } = useProductCodeStore();
+  const [productCodes, setProductCodes] = useState<string[]>([]);
   const [productCode, setProductCode] = useState("");
   const { gameType } = useParams();
+  const { t } = useTranslation();
   const { user } = useUserStore();
-  const {
-    games,
-    lastAddedCount,
-    loading,
-    error,
-    addGames,
-    setLoading,
-    setError,
-  } = useGameStore();
+  const { games, loading, error, addGames, setLoading, setError } =
+    useGameStore();
   const [filteredGames, setFilteredGames] = useState<Game[]>([]);
   const { pages, getPage, setPages, setPage } = usePageStore();
+  const { setActiveModal } = useModalStore();
 
   const loadGames = async () => {
     setLoading(true);
-    console.log("loadg");
 
     try {
       const page = getPage(gameType, productCode);
@@ -69,7 +65,7 @@ export default function Category() {
     try {
       const responses = await axiosInstance.post<APIResponse<string[]>>(
         "/get_game_vendor",
-        { token: user.token }
+        { token: user.token, gameType }
       );
       setProductCodes(responses.data.data);
       setPages(
@@ -117,31 +113,12 @@ export default function Category() {
     [loading]
   );
 
-  const categoryRef = useRef(null);
-  const [scrollPosition, setScrollPosition] = useState(0);
-
   useEffect(() => {
     (async () => {
       if (productCodes.length === 0) {
         await loadProductCodes();
       }
     })();
-
-    // scroll listener
-    const handleScroll = () => {
-      if (categoryRef.current) {
-        setScrollPosition(categoryRef.current.scrollTop);
-      }
-    };
-    const categoryElement = categoryRef.current;
-    if (categoryElement) {
-      categoryElement.addEventListener("scroll", handleScroll);
-    }
-    return () => {
-      if (categoryElement) {
-        categoryElement.removeEventListener("scroll", handleScroll);
-      }
-    };
   }, []);
 
   useEffect(() => {
@@ -163,86 +140,84 @@ export default function Category() {
   if (error) return "An error has occurred: " + error.message;
 
   return (
-    <div
-      ref={categoryRef}
-      className="h-screen overflow-y-scroll scrollbar-none"
-    >
-      <div
-        className={cn(
-          "flex flex-col sticky w-full top-0 left-0 z-50 backdrop-blur-lg mb-4 pt-4 transition-colors duration-100",
-          { "bg-casino-deep-blue/90": scrollPosition >= 16 }
-        )}
-      >
-        <AnimatePresence>
-          {!isMobile && scrollPosition >= 16 && (
-            <motion.div
-              initial={{ y: 0 }}
-              animate={{ y: 40 }}
-              className="flex items-center justify-between mb-8 fixed z-50 top-10 inset-x-10"
+    <div className="h-screen overflow-y-scroll scrollbar-none">
+      <div className="fixed top-0 w-full flex justify-between items-end z-50 glass-effect animate-fade-in px-4 py-4">
+        <div className="flex flex-col justify-start">
+          <div className="flex items-center gap-2 xl:gap-4 ml-4">
+            <div
+              onClick={() => setActiveModal("profile")}
+              className="w-10 h-10 xl:w-12 xl:h-12 2xl:w-14 2xl:h-14 rounded-full overflow-hidden border-2 border-casino-gold flex items-center justify-center cursor-pointer transition-all hover:border-4 hover:scale-105"
             >
-              <button
-                onClick={() => navigate("/")}
-                className="flex items-center gap-2 text-casino-silver hover:text-white transition-colors"
-              >
-                <ArrowLeft className="w-5 h-5" />
-                <span className="hidden lg:block">Back</span>
-              </button>
-              <div className="flex items-center h-full gap-2 text-casino-gold text-xs transition-colors lg:hidden">
-                Scroll to the right
-                <div className="rotate-90 ml-1">
-                  <LucideTriangle className="w-3 h-3 animate-float" />
-                </div>
+              <div className="bg-casino-light-blue w-full h-full flex items-center justify-center">
+                <User className="w-6 h-6 2xl:w-10 2xl:h-10 text-casino-silver" />
               </div>
-            </motion.div>
-          )}
-          {(isMobile || scrollPosition < 16) && (
-            <>
-              <motion.div
-                initial={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 30 }}
-                className="text-3xl font-bold text-center text-white mb-6 capitalize"
-              >
-                {gameType}
-              </motion.div>
-              <motion.div className="flex items-center justify-between mb-8 fixed top-10 inset-x-10">
-                <button
-                  onClick={() => navigate("/")}
-                  className="flex items-center gap-2 text-casino-silver hover:text-white transition-colors"
-                >
-                  <ArrowLeft className="w-5 h-5" />
-                  <span>Back</span>
-                </button>
-                <div className="flex items-center h-full gap-2 text-casino-gold text-xs transition-colors lg:hidden">
-                  Scroll to the right
-                  <div className="rotate-90 ml-1">
-                    <LucideTriangle className="w-3 h-3 animate-float" />
-                  </div>
-                </div>
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
+            </div>
+            {/* Username and Balance  */}
+
+            <div className="flex flex-col items-start">
+              <span className="text-casino-silver font-semibold 2xl:text-lg">
+                {(user && user.name) || t("register_login")}
+              </span>
+              <span className="text-casino-gold text-sm">
+                {user && user.balance
+                  ? parseFloat(user.balance).toFixed(2)
+                  : ""}
+              </span>
+            </div>
+          </div>
+
+          <button
+            onClick={() => navigate("/")}
+            className="flex items-center gap-2 text-casino-silver hover:text-white transition-colors mx-4 mt-2"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span>Back</span>
+          </button>
+        </div>
         {/* Provider productCodes */}
-        <div className="mb-3 xl:mb-6 py-2 flex flex-nowrap justify-center gap-2 sticky overflow-auto lg:flex-wrap mx-10 scrollbar-none">
-          {productCodes.map((tab) => (
-            <button
-              key={tab}
-              onClick={() => {
-                setProductCode(tab == productCode ? "" : tab);
-              }}
-              className={`px-4 py-2 rounded-full whitespace-nowrap ${
-                scrollPosition >= 16
-                  ? productCode === tab
-                    ? "bg-casino-gold text-casino-deep-blue font-medium"
-                    : "bg-gradient-to-r from-sky-800/40 to-indigo-800/40 text-casino-silver"
-                  : productCode === tab
-                  ? "bg-casino-gold text-casino-deep-blue font-medium"
-                  : "bg-gradient-to-r from-sky-900/30 to-indigo-900/30 text-casino-silver"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
+        <div className="flex flex-col items-center">
+          <h1 className="text-2xl font-bold capitalize text-center pb-4 hidden xl:block ">
+            {gameType}
+          </h1>
+          <div className="flex items-center gap-2 overflow-scroll flex-wrap scrollbar-none justify-center px-4">
+            {productCodes.length > 0 &&
+              productCodes.map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => {
+                    setProductCode(tab == productCode ? "" : tab);
+                  }}
+                  className={`px-3 py-1 xl:px-4 xl:py-2 rounded-full whitespace-nowrap ${
+                    productCode === tab
+                      ? "bg-casino-gold text-casino-deep-blue font-medium"
+                      : "bg-gradient-to-r from-casino-light-blue/80 to-casino-deep-blue/80 text-casino-silver"
+                  }`}
+                >
+                  {tab}
+                </button>
+              ))}
+          </div>
+        </div>
+
+        {/* search box */}
+        <div className="flex flex-col items-center">
+          <h1 className="text-lg x:text-2xl font-bold capitalize text-center pb-2 xl:hidden">
+            {gameType}
+          </h1>
+          <input
+            onChange={(e) => {
+              setFilteredGames(
+                games.filter((game) =>
+                  game.gameName
+                    .toLowerCase()
+                    .includes(e.target.value.toLowerCase())
+                )
+              );
+            }}
+            type="text"
+            placeholder="Search"
+            className="w-full px-3 py-1 xl:px-4 xl:py-2 rounded-full bg-casino-deep-blue text-casino-silver placeholder:text-casino-silver"
+          />
         </div>
       </div>
 
@@ -250,7 +225,7 @@ export default function Category() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2 }}
-        className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 px-12"
+        className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 px-12 xl:pt-40 pt-32"
       >
         {filteredGames.map((game, index) => {
           return (
@@ -279,7 +254,7 @@ export default function Category() {
                   100 players
                 </div>
               </div>
-              <div className="p-4 bg-gradient-to-t from-casino-deep-blue to-transparent">
+              <div className="p-4 bg-gradient-to-t from-casino-deep-blue to-transparent min-h-40">
                 <h3 className="text-white text-xl font-semibold">
                   {game.gameName}
                 </h3>

@@ -33,7 +33,6 @@ type Step = "email" | "otp" | "details";
 
 const RegisterModal = () => {
   const [step, setStep] = useState<Step>("email");
-  const [fullname, setFullname] = useState("");
   const { activeModal, setActiveModal } = useModalStore();
   const { toast } = useToast();
   const { t } = useTranslation();

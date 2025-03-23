@@ -6,12 +6,16 @@ import { useModalStore } from "@/store/modal";
 import { useTranslation } from "react-i18next";
 import { useToast } from "@/hooks/use-toast";
 
+type Step = "amount" | "detail";
+
 const DepositModal = () => {
   const { activeModal, setActiveModal } = useModalStore();
   const { t } = useTranslation();
   const { toast } = useToast();
 
   const [amount, setAmount] = useState<number>(0);
+
+  const [step, setStep] = useState<Step>("amount");
 
   const presetAmounts = [50, 200, 500, 1000, 5000];
 
@@ -20,17 +24,20 @@ const DepositModal = () => {
   };
 
   const handleDeposit = () => {
-    if (!amount || amount < 50)
-      return toast({
-        variant: "destructive",
-        title: "Invalid amount",
-        description: "Minimun deposit amount is $50.",
-      });
-    toast({
-      variant: "default",
-      title: "Deposit Success",
-      description: `Deposit request for $${amount} was successful. The amount will shortly be transfered to your account.`,
-    });
+    if (step === "amount") {
+      if (!amount || amount < 50)
+        return toast({
+          variant: "destructive",
+          title: "Invalid amount",
+          description: "Minimun deposit amount is $50.",
+        });
+      // toast({
+      //   variant: "default",
+      //   title: "Deposit Success",
+      //   description: `Deposit request for $${amount} was successful. The amount will shortly be transfered to your account.`,
+      // });
+      setStep("detail");
+    }
   };
 
   useEffect(() => {
@@ -82,66 +89,112 @@ const DepositModal = () => {
                 <X className="h-5 w-5" />
               </Button>
             </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="grid grid-cols-2 gap-4 pb-6"
-            >
-              <div className="space-y-4">
-                <label className="text-casino-silver block">Amount</label>
-                <input
-                  type="number"
-                  value={amount}
-                  onChange={(e) => setAmount(parseFloat(e.target.value))}
-                  className="w-full bg-casino-deep-blue border border-casino-light-blue rounded-lg p-4 text-white focus:outline-none focus:ring-2 focus:ring-casino-gold"
-                  placeholder="Enter amount"
-                />
-
-                <div className="grid grid-cols-2 gap-2 mt-4">
-                  {presetAmounts.map((amt) => (
-                    <button
-                      key={amt}
-                      onClick={() => handlePresetAmount(amt)}
-                      className="bg-casino-light-blue text-white py-2 rounded-md hover:bg-opacity-80 transition-all"
-                    >
-                      ${amt}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <h3 className="text-white font-medium mb-2">
-                  Select Payment Method
-                </h3>
-
-                <button className="w-full flex items-center gap-4 bg-casino-deep-blue border border-casino-light-blue rounded-lg p-4 hover:bg-opacity-80 transition-all">
-                  <CreditCard className="text-casino-gold w-6 h-6" />
-                  <span className="text-white">KBZ Pay</span>
-                </button>
-
-                <button className="w-full flex items-center gap-4 bg-casino-deep-blue border border-casino-light-blue rounded-lg p-4 hover:bg-opacity-80 transition-all">
-                  <Building className="text-casino-gold w-6 h-6" />
-                  <span className="text-white">Wave Pay</span>
-                </button>
-
-                <div className="col-span-2 p-3 bg-blue-900 bg-opacity-30 rounded-lg flex items-start gap-3 mb-6">
-                  <AlertCircle className="text-blue-400 w-5 h-5 mt-0.5 flex-shrink-0" />
-                  <p className="text-blue-100 text-sm">
-                    Deposits will typically be process within 24-48 hours.
-                    Minimum deposit amount is $50.
-                  </p>
-                </div>
-              </div>
-
-              <button
-                onClick={handleDeposit}
-                className="w-full col-span-2 py-3 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
+            {step === "amount" && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="grid grid-cols-2 gap-4 pb-6"
               >
-                Proceed to Payment
-              </button>
-            </motion.div>
+                <div className="space-y-4">
+                  <label className="text-casino-silver block">Amount</label>
+                  <input
+                    type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(parseFloat(e.target.value))}
+                    className="w-full bg-casino-deep-blue border border-casino-light-blue rounded-lg p-4 text-white focus:outline-none focus:ring-2 focus:ring-casino-gold"
+                    placeholder="Enter amount"
+                  />
+
+                  <div className="grid grid-cols-2 gap-2 mt-4">
+                    {presetAmounts.map((amt) => (
+                      <button
+                        key={amt}
+                        onClick={() => handlePresetAmount(amt)}
+                        className="bg-casino-light-blue text-white py-2 rounded-md hover:bg-opacity-80 transition-all"
+                      >
+                        ${amt}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <h3 className="text-white font-medium mb-2">
+                    Select Payment Method
+                  </h3>
+
+                  <button className="w-full flex items-center gap-4 bg-casino-deep-blue border border-casino-light-blue rounded-lg p-4 hover:bg-opacity-80 transition-all">
+                    <CreditCard className="text-casino-gold w-6 h-6" />
+                    <span className="text-white">KBZ Pay</span>
+                  </button>
+
+                  <button className="w-full flex items-center gap-4 bg-casino-deep-blue border border-casino-light-blue rounded-lg p-4 hover:bg-opacity-80 transition-all">
+                    <Building className="text-casino-gold w-6 h-6" />
+                    <span className="text-white">Wave Pay</span>
+                  </button>
+
+                  <div className="col-span-2 p-3 bg-blue-900 bg-opacity-30 rounded-lg flex items-start gap-3 mb-6">
+                    <AlertCircle className="text-blue-400 w-5 h-5 mt-0.5 flex-shrink-0" />
+                    <p className="text-blue-100 text-sm">
+                      Deposits will typically be process within 24-48 hours.
+                      Minimum deposit amount is $50.
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleDeposit}
+                  className="w-full col-span-2 py-3 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
+                >
+                  Continue
+                </button>
+              </motion.div>
+            )}
+            {step === "detail" && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="grid grid-cols-2 gap-4 pb-6"
+              >
+                <div className="space-y-4">
+                  <label className="text-casino-silver block">Amount</label>
+                  <input
+                    type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(parseFloat(e.target.value))}
+                    className="w-full bg-casino-deep-blue border border-casino-light-blue rounded-lg p-4 text-white focus:outline-none focus:ring-2 focus:ring-casino-gold"
+                    placeholder="Enter amount"
+                  />
+                </div>
+                <div className="space-y-4">
+                  <label className="text-casino-silver block">
+                    Payment Method
+                  </label>
+                  <input
+                    type="text"
+                    // value={paymentMethod}
+                    // onChange={(e) => setPaymentMethod(e.target.value)}
+                    className="w-full bg-casino-deep-blue border border-casino-light-blue rounded-lg p-4 text-white focus:outline-none focus:ring-2 focus:ring-casino-gold"
+                    placeholder="Enter payment method"
+                  />
+                </div>
+
+                <button
+                  onClick={() => setStep("amount")}
+                  className="w-full py-3 bg-casino-blue text-silver-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleDeposit}
+                  className="w-full py-3 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
+                >
+                  Proceed to Payment
+                </button>
+              </motion.div>
+            )}
           </motion.div>
         </motion.div>
       )}

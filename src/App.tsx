@@ -3,7 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useFullscreen, useToggle } from "react-use";
 import { isMobile } from "react-device-detect";
 import { Fullscreen } from "lucide-react";
@@ -21,6 +21,8 @@ import Share from "./pages/Share";
 import Messages from "./pages/Messages";
 import Category from "./pages/Category";
 import ModalContainer from "./components/ModalContainer";
+import { useUserStore } from "./store/user";
+import { useModalStore } from "./store/modal";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +33,13 @@ const App = () => {
   const fullscreen = useFullscreen(ref, show, {
     onClose: () => toggle(false),
   });
+  const { setActiveModal } = useModalStore();
+
+  const { user } = useUserStore();
+  useEffect(() => {
+    if (!user?.token) return setActiveModal("login");
+    console.log(user);
+  }, [user]);
 
   return (
     <div className="bg-main" ref={ref}>

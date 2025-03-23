@@ -15,7 +15,7 @@ const NavBar = () => {
         <div className="flex items-center gap-2 xl:gap-4 ml-4">
           <div
             onClick={() => setActiveModal(user ? "profile" : "login")}
-            className="w-10 h-10 xl:w-12 xl:h-12 2xl:w-16 2xl:h-16 rounded-full overflow-hidden border-2 border-casino-gold flex items-center justify-center cursor-pointer transition-all hover:border-4 hover:scale-105"
+            className="w-10 h-10 xl:w-12 xl:h-12 2xl:w-14 2xl:h-14 rounded-full overflow-hidden border-2 border-casino-gold flex items-center justify-center cursor-pointer transition-all hover:border-4 hover:scale-105"
           >
             <div className="bg-casino-light-blue w-full h-full flex items-center justify-center">
               <User className="w-6 h-6 2xl:w-10 2xl:h-10 text-casino-silver" />
