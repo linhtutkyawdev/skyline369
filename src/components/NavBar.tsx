@@ -1,13 +1,14 @@
 import { Share, MessageSquare, User, Settings } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { useModalStore } from "@/store/modal";
+
+import { useStateStore } from "@/store/state";
 import { useUserStore } from "@/store/user";
 
 const NavBar = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { setActiveModal } = useModalStore();
+  const { setActiveModal } = useStateStore();
   const { user } = useUserStore();
   return (
     <>

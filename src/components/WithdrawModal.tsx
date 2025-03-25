@@ -2,12 +2,12 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, CreditCard, Building, Smartphone, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useModalStore } from "@/store/modal";
 import { useTranslation } from "react-i18next";
 import { useToast } from "@/hooks/use-toast";
+import { useStateStore } from "@/store/state";
 
 const WithdrawModal = () => {
-  const { activeModal, setActiveModal } = useModalStore();
+  const { activeModal, setActiveModal } = useStateStore();
   const { t } = useTranslation();
   const { toast } = useToast();
 

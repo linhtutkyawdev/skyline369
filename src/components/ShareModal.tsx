@@ -3,10 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { useModalStore } from "@/store/modal";
+import { useStateStore } from "@/store/state";
 
 const ShareModal = () => {
-  const { activeModal, setActiveModal } = useModalStore();
+  const { activeModal, setActiveModal } = useStateStore();
   const { toast } = useToast();
 
   const link = "https://skyline369.me";

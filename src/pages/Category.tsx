@@ -1,6 +1,6 @@
 import { Game } from "@/types/game";
-import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft, LoaderPinwheel, LucideTriangle, User } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowLeft, LoaderPinwheel, User } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { isMobile } from "react-device-detect";
@@ -10,29 +10,28 @@ import { useUserStore } from "@/store/user";
 import { APIResponse } from "@/types/api_response";
 import { GameData } from "@/types/game_data";
 import { usePageStore } from "@/store/page";
-import { useProductCodeStore } from "@/store/productCode";
-import { cn } from "@/lib/utils";
-import { useModalStore } from "@/store/modal";
 import { useTranslation } from "react-i18next";
+import { useStateStore } from "@/store/state";
 
 export default function Category() {
   const observer = useRef<IntersectionObserver | null>(null);
   const navigate = useNavigate();
+  const { t } = useTranslation();
+  const { gameType } = useParams();
 
   const [productCodes, setProductCodes] = useState<string[]>([]);
   const [productCode, setProductCode] = useState("");
-  const { gameType } = useParams();
-  const { t } = useTranslation();
-  const { user } = useUserStore();
-  const { games, loading, error, addGames, setLoading, setError } =
-    useGameStore();
   const [filteredGames, setFilteredGames] = useState<Game[]>([]);
+  const [isIntersecting, setIsIntersecting] = useState(false);
+
+  const { user } = useUserStore();
+  const { games, addGames } = useGameStore();
   const { pages, getPage, setPages, setPage } = usePageStore();
-  const { setActiveModal } = useModalStore();
+  const { setActiveModal, loading, setLoading, error, setError } =
+    useStateStore();
 
   const loadGames = async () => {
     setLoading(true);
-
     try {
       const page = getPage(gameType, productCode);
       if (!page || page.currentPage < page.lastPage) {
@@ -45,10 +44,12 @@ export default function Category() {
             productCode,
           }
         );
+
         addGames(responses.data.data.data);
         setPage({
-          ...page,
-          currentPage: page ? page.currentPage + 1 : 2,
+          gameType,
+          productCode,
+          currentPage: responses.data.data.current_page + 1,
           lastPage: responses.data.data.last_page,
         });
       } else {
@@ -56,11 +57,12 @@ export default function Category() {
       }
     } catch (error) {
       setError(error as Error);
-    } finally {
-      setLoading(false);
     }
+    // finally {
+    //   setLoading(false);
+    // }
   };
-  const loadProductCodes = async () => {
+  const loadProductCodesAndPages = async () => {
     setLoading(true);
     try {
       const responses = await axiosInstance.post<APIResponse<string[]>>(
@@ -97,29 +99,27 @@ export default function Category() {
   };
 
   // Setup intersection observer for infinite scroll
-  const lastGameElementRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      if (loading) return;
-      if (observer.current) observer.current.disconnect();
+  const lastGameElementRef = useCallback((node: HTMLDivElement | null) => {
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver((entries) => {
+      setIsIntersecting(entries[0].isIntersecting);
+    });
 
-      observer.current = new IntersectionObserver(async (entries) => {
-        if (entries[0].isIntersecting) {
-          await loadGames();
-        }
-      });
-
-      if (node) observer.current.observe(node);
-    },
-    [loading]
-  );
+    if (node) observer.current.observe(node);
+  }, []);
 
   useEffect(() => {
-    (async () => {
-      if (productCodes.length === 0) {
-        await loadProductCodes();
-      }
-    })();
+    if (productCodes.length === 0) {
+      (async () => {
+        await loadProductCodesAndPages();
+      })();
+    }
   }, []);
+
+  useEffect(() => {
+    if (isIntersecting && !loading) (async () => loadGames())();
+    else setLoading(false);
+  }, [isIntersecting, pages]);
 
   useEffect(() => {
     if (games.length > 0) {
@@ -134,7 +134,7 @@ export default function Category() {
   }, [games]);
 
   useEffect(() => {
-    loadGames();
+    (async () => await loadGames())();
   }, [productCode]);
 
   if (error) return "An error has occurred: " + error.message;

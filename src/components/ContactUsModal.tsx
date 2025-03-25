@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Mail, Phone, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useModalStore } from "@/store/modal";
+import { useStateStore } from "@/store/state";
 
 const ContactUsModal = () => {
-  const { activeModal, setActiveModal } = useModalStore();
+  const { activeModal, setActiveModal } = useStateStore();
 
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {

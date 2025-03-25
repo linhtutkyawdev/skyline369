@@ -13,7 +13,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { useModalStore } from "@/store/modal";
 import { SubmitHandler, useForm } from "react-hook-form";
 import {
   EmailAndOtpInput,
@@ -28,12 +27,13 @@ import { useTranslation } from "react-i18next";
 import axiosInstance from "@/lib/axiosInstance";
 import { useUserStore } from "@/store/user";
 import { User } from "@/types/user";
+import { useStateStore } from "@/store/state";
 
 type Step = "email" | "otp" | "details";
 
 const RegisterModal = () => {
   const [step, setStep] = useState<Step>("email");
-  const { activeModal, setActiveModal } = useModalStore();
+  const { activeModal, setActiveModal } = useStateStore();
   const { toast } = useToast();
   const { t } = useTranslation();
   const { setUser } = useUserStore();

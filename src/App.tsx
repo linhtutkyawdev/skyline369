@@ -3,7 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useFullscreen, useToggle } from "react-use";
 import { isMobile } from "react-device-detect";
 import { Fullscreen } from "lucide-react";
@@ -22,7 +22,10 @@ import Messages from "./pages/Messages";
 import Category from "./pages/Category";
 import ModalContainer from "./components/ModalContainer";
 import { useUserStore } from "./store/user";
-import { useModalStore } from "./store/modal";
+import { DepositChannel } from "./types/deposit_channel";
+import { APIResponse } from "./types/api_response";
+import axiosInstance from "./lib/axiosInstance";
+import { useStateStore } from "./store/state";
 
 const queryClient = new QueryClient();
 
@@ -33,13 +36,42 @@ const App = () => {
   const fullscreen = useFullscreen(ref, show, {
     onClose: () => toggle(false),
   });
-  const { setActiveModal } = useModalStore();
 
   const { user } = useUserStore();
+  const {
+    setActiveModal,
+    depositChannels,
+    setDepositChannels,
+    setLoading,
+    setError,
+  } = useStateStore();
+
+  const loadDepositChannels = async () => {
+    setLoading(true);
+
+    try {
+      if (depositChannels.length == 0) {
+        const responses = await axiosInstance.post<
+          APIResponse<DepositChannel[]>
+        >("/deposit_channel_list", {
+          token: user.token,
+        });
+        setDepositChannels(responses.data.data);
+      }
+    } catch (error) {
+      setError(error as Error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    if (!user?.token) return setActiveModal("login");
-    console.log(user);
+    if (!user?.token) setActiveModal("login");
   }, [user]);
+
+  useEffect(() => {
+    (async () => await loadDepositChannels())();
+  }, []);
 
   return (
     <div className="bg-main" ref={ref}>

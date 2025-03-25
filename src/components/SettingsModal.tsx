@@ -2,14 +2,14 @@ import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Moon, Sun, Volume2, VolumeX, Bell, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useModalStore } from "@/store/modal";
 import { useTranslation } from "react-i18next";
 import { Switch } from "./ui/switch";
 import { SupportedLanguages } from "@/i18n";
 import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
+import { useStateStore } from "@/store/state";
 
 const SettingsModal = () => {
-  const { activeModal, setActiveModal } = useModalStore();
+  const { activeModal, setActiveModal } = useStateStore();
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const { t, i18n } = useTranslation();

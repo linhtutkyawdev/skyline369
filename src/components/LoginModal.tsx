@@ -4,8 +4,7 @@ import { LogIn, X, Mail, Lock, ArrowLeft, Watch, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { useModalStore } from "@/store/modal";
-import { useForm, SubmitHandler, FieldErrors } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   EmailInput,
@@ -17,11 +16,12 @@ import axiosInstance from "@/lib/axiosInstance";
 import { useTranslation } from "react-i18next";
 import { User } from "@/types/user";
 import { useUserStore } from "@/store/user";
+import { useStateStore } from "@/store/state";
 
 const LoginModal = () => {
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [resetSent, setResetSent] = useState(false);
-  const { activeModal, setActiveModal } = useModalStore();
+  const { activeModal, setActiveModal } = useStateStore();
   const { toast } = useToast();
   const { t } = useTranslation();
   const { setUser } = useUserStore();

@@ -2,11 +2,11 @@ import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, History, Wallet, Sparkles, LogOut, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useModalStore } from "@/store/modal";
 import { useUserStore } from "@/store/user";
+import { useStateStore } from "@/store/state";
 
 const ProfileModal = () => {
-  const { activeModal, setActiveModal } = useModalStore();
+  const { activeModal, setActiveModal } = useStateStore();
   const { user, setUser } = useUserStore();
 
   useEffect(() => {

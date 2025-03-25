@@ -1,12 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { useModalStore } from "@/store/modal";
+import { useStateStore } from "@/store/state";
 
 const FooterNav = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { activeModal, setActiveModal } = useModalStore();
+  const { setActiveModal } = useStateStore();
 
   return (
     <motion.footer
