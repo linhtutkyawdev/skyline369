@@ -12,6 +12,7 @@ import { GameData } from "@/types/game_data";
 import { usePageStore } from "@/store/page";
 import { useTranslation } from "react-i18next";
 import { useStateStore } from "@/store/state";
+import { useProductStore } from "@/store/product";
 
 export default function Category() {
   const observer = useRef<IntersectionObserver | null>(null);
@@ -19,14 +20,15 @@ export default function Category() {
   const { t } = useTranslation();
   const { gameType } = useParams();
 
-  const [productCodes, setProductCodes] = useState<string[]>([]);
   const [productCode, setProductCode] = useState("");
+  const [searchText, setSearchText] = useState("");
   const [filteredGames, setFilteredGames] = useState<Game[]>([]);
   const [isIntersecting, setIsIntersecting] = useState(false);
 
   const { user } = useUserStore();
-  const { games, addGames } = useGameStore();
+  const { games, addGames, lastAddedGames } = useGameStore();
   const { pages, getPage, setPages, setPage } = usePageStore();
+  const { products, setProducts, getProduct } = useProductStore();
   const { setActiveModal, loading, setLoading, error, setError } =
     useStateStore();
 
@@ -49,7 +51,8 @@ export default function Category() {
         setPage({
           gameType,
           productCode,
-          currentPage: responses.data.data.current_page + 1,
+          currentPage:
+            (page ? page.currentPage : responses.data.data.current_page) + 1,
           lastPage: responses.data.data.last_page,
         });
       } else {
@@ -69,7 +72,15 @@ export default function Category() {
         "/get_game_vendor",
         { token: user.token, gameType }
       );
-      setProductCodes(responses.data.data);
+
+      setProducts([
+        ...products,
+        {
+          gameType,
+          productCodes: responses.data.data,
+        },
+      ]);
+
       setPages(
         Array.from(
           new Map(
@@ -80,13 +91,13 @@ export default function Category() {
                 currentPage: 1,
                 lastPage: 2,
               },
-              ...pages,
               ...responses.data.data.map((productCode) => ({
                 gameType,
                 productCode,
                 currentPage: 1,
                 lastPage: 2,
               })),
+              ...pages,
             ].map((item) => [`${item.gameType}-${item.productCode}`, item])
           ).values()
         )
@@ -97,6 +108,63 @@ export default function Category() {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!getProduct(gameType)) {
+      (async () => {
+        await loadProductCodesAndPages();
+      })();
+    }
+  }, []);
+
+  useEffect(() => {
+    if (games.length > 0) {
+      const filteredGames = games.filter(
+        (game) =>
+          game.gameType === gameType &&
+          (!productCode || game.productCode === productCode) &&
+          game.gameName
+            .replace(" ", "")
+            .toLowerCase()
+            .includes(searchText.replace(" ", "").toLowerCase())
+        // && game.is_mobile === (isMobile ? "1" : "0")
+      );
+      if (
+        isIntersecting &&
+        lastAddedGames.filter(
+          (game) =>
+            game.gameType === gameType &&
+            (!productCode || game.productCode === productCode) &&
+            game.gameName
+              .replace(" ", "")
+              .toLowerCase()
+              .includes(searchText.replace(" ", "").toLowerCase())
+          // && game.is_mobile === (isMobile ? "1" : "0")
+        ).length < 15
+      )
+        setTimeout(async () => await loadGames(), 100);
+      setFilteredGames(filteredGames);
+    }
+  }, [games]);
+
+  useEffect(() => {
+    if (getProduct(gameType)) (async () => await loadGames())();
+  }, [productCode]);
+
+  useEffect(() => {
+    setFilteredGames(
+      games.filter(
+        (game) =>
+          game.gameType === gameType &&
+          (!productCode || game.productCode === productCode) &&
+          game.gameName
+            .replace(" ", "")
+            .toLowerCase()
+            .includes(searchText.replace(" ", "").toLowerCase())
+        // && game.is_mobile === (isMobile ? "1" : "0") &&
+      )
+    );
+  }, [searchText]);
 
   // Setup intersection observer for infinite scroll
   const lastGameElementRef = useCallback((node: HTMLDivElement | null) => {
@@ -109,41 +177,30 @@ export default function Category() {
   }, []);
 
   useEffect(() => {
-    if (productCodes.length === 0) {
-      (async () => {
-        await loadProductCodesAndPages();
-      })();
-    }
-  }, []);
-
-  useEffect(() => {
     if (isIntersecting && !loading) (async () => loadGames())();
     else setLoading(false);
   }, [isIntersecting, pages]);
 
-  useEffect(() => {
-    if (games.length > 0) {
-      const filteredGames = games.filter(
-        (game) =>
-          game.gameType === gameType &&
-          (!productCode || game.productCode === productCode)
-        // && game.is_mobile === (isMobile ? "1" : "0")
-      );
-      setFilteredGames(filteredGames);
-    }
-  }, [games]);
-
-  useEffect(() => {
-    (async () => await loadGames())();
-  }, [productCode]);
-
   if (error) return "An error has occurred: " + error.message;
+
+  if (!getProduct(gameType)) {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="text-casino-gold text-2xl font-bold">Loading</div>
+          <div className="text-casino-silver text-lg font-semibold">
+            Please wait a moment.
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen overflow-y-scroll scrollbar-none">
-      <div className="fixed top-0 w-full flex justify-between items-end z-50 glass-effect animate-fade-in px-4 py-4">
-        <div className="flex flex-col justify-start">
-          <div className="flex items-center gap-2 xl:gap-4 ml-4">
+      <div className="fixed top-0 w-full flex justify-between items-end z-50 glass-effect animate-fade-in px-6 py-4">
+        <div className="flex flex-col justify-center">
+          <div className="flex items-center gap-2 xl:gap-4">
             <div
               onClick={() => setActiveModal("profile")}
               className="w-10 h-10 xl:w-12 xl:h-12 2xl:w-14 2xl:h-14 rounded-full overflow-hidden border-2 border-casino-gold flex items-center justify-center cursor-pointer transition-all hover:border-4 hover:scale-105"
@@ -168,9 +225,9 @@ export default function Category() {
 
           <button
             onClick={() => navigate("/")}
-            className="flex items-center gap-2 text-casino-silver hover:text-white transition-colors mx-4 mt-2"
+            className="flex items-center gap-2 text-casino-silver hover:text-white transition-colors mt-2 text-sm"
           >
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-4 h-4" />
             <span>Back</span>
           </button>
         </div>
@@ -180,8 +237,8 @@ export default function Category() {
             {gameType}
           </h1>
           <div className="flex items-center gap-2 overflow-scroll flex-wrap scrollbar-none justify-center px-4">
-            {productCodes.length > 0 &&
-              productCodes.map((tab) => (
+            {getProduct(gameType).productCodes.length > 0 &&
+              getProduct(gameType).productCodes.map((tab) => (
                 <button
                   key={tab}
                   onClick={() => {
@@ -205,15 +262,8 @@ export default function Category() {
             {gameType}
           </h1>
           <input
-            onChange={(e) => {
-              setFilteredGames(
-                games.filter((game) =>
-                  game.gameName
-                    .toLowerCase()
-                    .includes(e.target.value.toLowerCase())
-                )
-              );
-            }}
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
             type="text"
             placeholder="Search"
             className="w-full px-3 py-1 xl:px-4 xl:py-2 rounded-full bg-casino-deep-blue text-casino-silver placeholder:text-casino-silver"
@@ -238,6 +288,7 @@ export default function Category() {
             >
               <div className="relative">
                 <img
+                  // src=""
                   src={isMobile ? game.m_img : game.img}
                   alt={game.gameName}
                   className="w-full h-32 max-h-32 lg:h-40 lg:max-h-40 2xl:h-56 2xl:max-h-56 object-cover"
@@ -270,12 +321,15 @@ export default function Category() {
         })}
       </motion.div>
 
-      {filteredGames.length < 15 && loading && (
-        <div className="text-center py-6">
-          <div className="inline-block w-8 h-8 border-4 border-casino-light-blue border-t-casino-gold rounded-full animate-spin"></div>
-          <p className="text-casino-silver mt-2">Loading more games...</p>
-        </div>
-      )}
+      {getPage(gameType, productCode) &&
+        getPage(gameType, productCode).currentPage <
+          getPage(gameType, productCode).lastPage &&
+        filteredGames.length < 15 && (
+          <div ref={lastGameElementRef} className="text-center py-6">
+            <div className="inline-block w-8 h-8 border-4 border-casino-light-blue border-t-casino-gold rounded-full animate-spin"></div>
+            <p className="text-casino-silver mt-2">Loading more games...</p>
+          </div>
+        )}
 
       {getPage(gameType, productCode) &&
       getPage(gameType, productCode).currentPage >=

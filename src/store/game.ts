@@ -4,7 +4,7 @@ import { create } from "zustand";
 
 type Store = {
   games: Game[];
-  lastAddedCount: number;
+  lastAddedGames: Game[];
 
   setGames: (games: Game[]) => void;
   addGames: (newGames: Game[]) => void;
@@ -14,28 +14,24 @@ export const useGameStore = create<Store>()(
   // persist(
   (set) => ({
     games: [],
-    lastAddedCount: 15,
+    lastAddedGames: [],
 
     setGames: (games: Game[]) => set((state) => ({ ...state, games })),
 
-    addGames: (newGames: Game[]) =>
+    addGames: (games: Game[]) =>
       set((state) => {
-        const existingGames = new Map(
-          state.games.map((item) => [item.id, item])
-        );
-        const initialSize = existingGames.size;
+        const gamesMap = new Map(state.games.map((item) => [item.id, item]));
 
-        newGames.forEach((game) => existingGames.set(game.id, game));
+        const newGames = games.filter((item) => !gamesMap.has(item.id));
 
-        const addedCount = existingGames.size - initialSize;
+        newGames.map((item) => {
+          gamesMap.set(item.id, item);
+        });
 
         return {
           ...state,
-          games: Array.from(existingGames.values()),
-          lastAddedCount:
-            state.lastAddedCount < 15
-              ? state.lastAddedCount + addedCount
-              : addedCount,
+          games: Array.from(gamesMap.values()),
+          lastAddedGames: newGames,
         };
       }),
   })
