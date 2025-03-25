@@ -45,6 +45,7 @@ export default function Category() {
             page: (page && page.currentPage) || 1,
             gameType,
             productCode,
+            isMobile: isMobile ? "1" : "0",
           }
         );
 
@@ -224,7 +225,7 @@ export default function Category() {
   }
 
   return (
-    <div className="h-screen overflow-y-scroll scrollbar-none">
+    <div className="h-[calc(100vh-6.6rem)] xl:h-[calc(100vh-7.6rem)] mt-[6.6rem] xl:mt-[7.6rem] overflow-y-scroll scrollbar-none">
       <div className="fixed top-0 w-full flex justify-between items-end z-50 glass-effect animate-fade-in px-6 py-4">
         <div className="flex flex-col justify-center">
           <div className="flex items-center gap-2 xl:gap-4">
@@ -302,7 +303,7 @@ export default function Category() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2 }}
-        className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 px-12 xl:pt-40 pt-32"
+        className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 px-12 pt-4 xl:pt-8"
       >
         {filteredGames.map((game, index) => {
           return (
@@ -318,9 +319,9 @@ export default function Category() {
                   // src=""
                   src={isMobile ? game.m_img : game.img}
                   alt={game.gameName}
-                  className="w-full h-32 max-h-32 lg:h-40 lg:max-h-40 2xl:h-56 2xl:max-h-56 object-cover"
+                  className="w-full h-32 lg:h-44 object-cover"
                 />
-                {game.on_line === "1" && (
+                {parseInt(game.on_line) > 0 && (
                   <div className="absolute top-3 right-3">
                     <div className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
                       <span className="animate-pulse w-2 h-2 bg-white rounded-full"></span>
@@ -328,20 +329,20 @@ export default function Category() {
                     </div>
                   </div>
                 )}
-                <div className="absolute bottom-3 left-3 bg-black bg-opacity-60 px-2 py-1 rounded text-xs text-white">
-                  100 players
+                <div className="absolute bottom-3 left-3 bg-black bg-opacity-60 px-2 py-1 rounded text-xs 2xl:text-sm text-white">
+                  {game.on_line} players
                 </div>
               </div>
-              <div className="p-4 bg-gradient-to-t from-casino-deep-blue to-transparent min-h-40">
-                <h3 className="text-white text-xl font-semibold">
+              <div className="p-4 2xl:pt-6 bg-gradient-to-t from-casino-deep-blue to-transparent flex flex-col justify-center">
+                <h3 className="text-white text-xl 2xl:text-2xl font-semibold">
                   {game.gameName}
                 </h3>
-                <p className="text-casino-silver text-sm mt-1">
+                <p className="text-casino-silver text-sm 2xl:text-lg mt-1">
                   {game.productCode}
                 </p>
                 <button
                   onClick={() => navigate(`/game/${game.id}`)}
-                  className="mt-3 px-4 py-2 bg-casino-gold text-casino-deep-blue rounded-md font-medium hover:bg-opacity-90 transition-all"
+                  className="mt-3 2xl:mt-6 px-4 py-2 bg-casino-gold text-casino-deep-blue rounded-md font-medium hover:bg-opacity-90 transition-all 2xl:text-xl"
                 >
                   Play Now
                 </button>
