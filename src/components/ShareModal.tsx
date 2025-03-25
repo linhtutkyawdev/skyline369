@@ -130,7 +130,7 @@ const ShareModal = () => {
 
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setActiveModal();
+      if (e.key === "Escape") setActiveModal(null);
       if (e.ctrlKey && (e.key === "c" || e.key === "C")) handleCopy();
     };
 
@@ -171,7 +171,7 @@ const ShareModal = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setActiveModal()}
+                onClick={() => setActiveModal(null)}
                 className="text-casino-silver"
               >
                 <X className="h-5 w-5" />

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { LogIn, X, Mail, Lock, ArrowLeft, Watch, Loader2 } from "lucide-react";
+import { LogIn, X, Mail, Lock, ArrowLeft, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
@@ -66,7 +66,7 @@ const LoginModal = () => {
       const response = await res.data.data;
       setUser(response);
       resetLoginForm();
-      setActiveModal();
+      setActiveModal(null);
     }
   };
   const onForgotPasswordSubmit: SubmitHandler<EmailInput> = (data) => {
@@ -82,7 +82,7 @@ const LoginModal = () => {
 
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setActiveModal();
+      if (e.key === "Escape") setActiveModal(null);
     };
 
     if (activeModal === "login") {
@@ -284,7 +284,7 @@ const LoginModal = () => {
                 onClick={() =>
                   resetLoginForm() ??
                   setIsForgotPassword(false) ??
-                  setActiveModal()
+                  setActiveModal(null)
                 }
                 className="text-casino-silver"
               >

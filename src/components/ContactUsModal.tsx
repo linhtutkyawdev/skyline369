@@ -9,7 +9,7 @@ const ContactUsModal = () => {
 
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setActiveModal();
+      if (e.key === "Escape") setActiveModal(null);
     };
 
     if (activeModal === "contact_us") {
@@ -49,7 +49,7 @@ const ContactUsModal = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setActiveModal()}
+                onClick={() => setActiveModal(null)}
                 className="text-casino-silver"
               >
                 <X className="h-5 w-5" />

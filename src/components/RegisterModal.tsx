@@ -153,13 +153,13 @@ const RegisterModal = () => {
       resetEmailForm();
       resetEmailAndOtpForm();
       resetFinalForm();
-      setActiveModal();
+      setActiveModal(null);
     }
   };
 
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setActiveModal();
+      if (e.key === "Escape") setActiveModal(null);
     };
 
     if (activeModal === "register") {
@@ -211,7 +211,7 @@ const RegisterModal = () => {
                   resetEmailAndOtpForm() ??
                   resetFinalForm() ??
                   setStep("email") ??
-                  setActiveModal()
+                  setActiveModal(null)
                 }
                 className="text-casino-silver"
               >

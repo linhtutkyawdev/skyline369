@@ -7,12 +7,13 @@ import { isMobile } from "react-device-detect";
 import { useGameStore } from "@/store/game";
 import axiosInstance from "@/lib/axiosInstance";
 import { useUserStore } from "@/store/user";
-import { APIResponse } from "@/types/api_response";
+import { ApiResponse } from "@/types/api_response";
 import { GameData } from "@/types/game_data";
 import { usePageStore } from "@/store/page";
 import { useTranslation } from "react-i18next";
 import { useStateStore } from "@/store/state";
 import { useProductStore } from "@/store/product";
+import { ApiError } from "@/types/api_error";
 
 export default function Category() {
   const observer = useRef<IntersectionObserver | null>(null);
@@ -25,7 +26,7 @@ export default function Category() {
   const [filteredGames, setFilteredGames] = useState<Game[]>([]);
   const [isIntersecting, setIsIntersecting] = useState(false);
 
-  const { user } = useUserStore();
+  const { user, setUser } = useUserStore();
   const { games, addGames, lastAddedGames } = useGameStore();
   const { pages, getPage, setPages, setPage } = usePageStore();
   const { products, setProducts, getProduct } = useProductStore();
@@ -37,7 +38,7 @@ export default function Category() {
     try {
       const page = getPage(gameType, productCode);
       if (!page || page.currentPage < page.lastPage) {
-        const responses = await axiosInstance.post<APIResponse<GameData>>(
+        const responses = await axiosInstance.post<ApiResponse<GameData>>(
           "/get_game_list",
           {
             token: user.token,
@@ -46,6 +47,16 @@ export default function Category() {
             productCode,
           }
         );
+
+        if (
+          responses.data.status.errorCode != 0 &&
+          responses.data.status.errorCode != 200
+        )
+          throw new ApiError(
+            "An error has occured!",
+            responses.data.status.errorCode,
+            responses.data.status.mess
+          );
 
         addGames(responses.data.data.data);
         setPage({
@@ -59,7 +70,10 @@ export default function Category() {
         addGames([]);
       }
     } catch (error) {
-      setError(error as Error);
+      if (error.response.status === 401) {
+        setUser(null);
+      }
+      setError(error as ApiError);
     }
     // finally {
     //   setLoading(false);
@@ -68,10 +82,20 @@ export default function Category() {
   const loadProductCodesAndPages = async () => {
     setLoading(true);
     try {
-      const responses = await axiosInstance.post<APIResponse<string[]>>(
+      const responses = await axiosInstance.post<ApiResponse<string[]>>(
         "/get_game_vendor",
         { token: user.token, gameType }
       );
+
+      if (
+        responses.data.status.errorCode != 0 &&
+        responses.data.status.errorCode != 200
+      )
+        throw new ApiError(
+          "An error has occured!",
+          responses.data.status.errorCode,
+          responses.data.status.mess
+        );
 
       setProducts([
         ...products,
@@ -103,7 +127,10 @@ export default function Category() {
         )
       );
     } catch (error) {
-      setError(error as Error);
+      if ((error as ApiError).statusCode === 401) {
+        setUser(null);
+      }
+      setError(error as ApiError);
     } finally {
       setLoading(false);
     }
@@ -181,7 +208,7 @@ export default function Category() {
     else setLoading(false);
   }, [isIntersecting, pages]);
 
-  if (error) return "An error has occurred: " + error.message;
+  if (!user || !user.token) setActiveModal("login");
 
   if (!getProduct(gameType)) {
     return (
@@ -312,7 +339,10 @@ export default function Category() {
                 <p className="text-casino-silver text-sm mt-1">
                   {game.productCode}
                 </p>
-                <button className="mt-3 px-4 py-2 bg-casino-gold text-casino-deep-blue rounded-md font-medium hover:bg-opacity-90 transition-all">
+                <button
+                  onClick={() => navigate(`/game/${game.id}`)}
+                  className="mt-3 px-4 py-2 bg-casino-gold text-casino-deep-blue rounded-md font-medium hover:bg-opacity-90 transition-all"
+                >
                   Play Now
                 </button>
               </div>

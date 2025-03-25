@@ -4,14 +4,16 @@ import { X, History, Wallet, Sparkles, LogOut, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useUserStore } from "@/store/user";
 import { useStateStore } from "@/store/state";
+import { useToast } from "@/hooks/use-toast";
 
 const ProfileModal = () => {
   const { activeModal, setActiveModal } = useStateStore();
   const { user, setUser } = useUserStore();
+  const { toast } = useToast();
 
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setActiveModal();
+      if (e.key === "Escape") setActiveModal(null);
     };
 
     if (activeModal === "profile") {
@@ -51,7 +53,7 @@ const ProfileModal = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setActiveModal()}
+                onClick={() => setActiveModal(null)}
                 className="text-casino-silver"
               >
                 <X className="h-5 w-5" />
@@ -83,8 +85,12 @@ const ProfileModal = () => {
                 </button>
                 <button
                   onClick={() => {
-                    setActiveModal();
-                    setUser();
+                    setActiveModal(null);
+                    setUser(null);
+                    toast({
+                      title: "Logout Success",
+                      description: "Successfully logged out of your account.",
+                    });
                   }}
                   className="p-3 rounded-lg bg-red-600/70 w-full flex items-center justify-center gap-3 transition-all hover:bg-red-600/60"
                 >

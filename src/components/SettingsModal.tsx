@@ -16,7 +16,7 @@ const SettingsModal = () => {
 
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setActiveModal();
+      if (e.key === "Escape") setActiveModal(null);
     };
 
     if (activeModal === "settings") {
@@ -56,7 +56,7 @@ const SettingsModal = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setActiveModal()}
+                onClick={() => setActiveModal(null)}
                 className="text-casino-silver"
               >
                 <X className="h-5 w-5" />

@@ -42,7 +42,7 @@ const DepositModal = () => {
 
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setActiveModal();
+      if (e.key === "Escape") setActiveModal(null);
       if (e.key === "Enter") handleDeposit();
     };
 
@@ -83,7 +83,7 @@ const DepositModal = () => {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setActiveModal()}
+                onClick={() => setActiveModal(null)}
                 className="text-casino-silver"
               >
                 <X className="h-5 w-5" />

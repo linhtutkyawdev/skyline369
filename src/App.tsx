@@ -6,7 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { useFullscreen, useToggle } from "react-use";
 import { isMobile } from "react-device-detect";
-import { Fullscreen } from "lucide-react";
+import { Fullscreen, TriangleAlert } from "lucide-react";
 
 import useScreenOrientation from "./hooks/use-screen-orientation";
 import Index from "./pages/Index";
@@ -23,9 +23,12 @@ import Category from "./pages/Category";
 import ModalContainer from "./components/ModalContainer";
 import { useUserStore } from "./store/user";
 import { DepositChannel } from "./types/deposit_channel";
-import { APIResponse } from "./types/api_response";
+import { ApiResponse } from "./types/api_response";
 import axiosInstance from "./lib/axiosInstance";
 import { useStateStore } from "./store/state";
+import Game from "./pages/Game";
+import { useToast } from "./hooks/use-toast";
+import { ApiError } from "./types/api_error";
 
 const queryClient = new QueryClient();
 
@@ -39,12 +42,16 @@ const App = () => {
 
   const { user } = useUserStore();
   const {
+    activeModal,
     setActiveModal,
     depositChannels,
     setDepositChannels,
     setLoading,
     setError,
+    error,
   } = useStateStore();
+
+  const { toast } = useToast();
 
   const loadDepositChannels = async () => {
     setLoading(true);
@@ -52,26 +59,47 @@ const App = () => {
     try {
       if (depositChannels.length == 0) {
         const responses = await axiosInstance.post<
-          APIResponse<DepositChannel[]>
+          ApiResponse<DepositChannel[]>
         >("/deposit_channel_list", {
           token: user.token,
         });
+
+        if (
+          responses.data.status.errorCode != 0 &&
+          responses.data.status.errorCode != 200
+        )
+          throw new ApiError(
+            "An error has occured!",
+            responses.data.status.errorCode,
+            responses.data.status.mess
+          );
+
         setDepositChannels(responses.data.data);
       }
     } catch (error) {
-      setError(error as Error);
+      setError(error as ApiError);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    if (!user?.token) setActiveModal("login");
-  }, [user]);
+    if (activeModal === "login" || activeModal === "register") return;
+    if (!user) setActiveModal("login");
+  }, [user, activeModal]);
 
   useEffect(() => {
-    (async () => await loadDepositChannels())();
-  }, []);
+    if (error)
+      toast({
+        title: error.name,
+        description: error.message,
+        variant: "destructive",
+      });
+  }, [error]);
+
+  useEffect(() => {
+    if (user) (async () => await loadDepositChannels())();
+  }, [user]);
 
   return (
     <div className="bg-main" ref={ref}>
@@ -113,20 +141,23 @@ const App = () => {
           <Toaster />
           <Sonner />
           <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/type/:gameType" element={<Category />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="/deposit" element={<Deposit />} />
-              <Route path="/withdraw" element={<Withdraw />} />
-              <Route path="/history" element={<History />} />
-              <Route path="/share" element={<Share />} />
-              <Route path="/messages" element={<Messages />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            {user && user.token && (
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/type/:gameType" element={<Category />} />
+                <Route path="/game/:id" element={<Game />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/deposit" element={<Deposit />} />
+                <Route path="/withdraw" element={<Withdraw />} />
+                <Route path="/history" element={<History />} />
+                <Route path="/share" element={<Share />} />
+                <Route path="/messages" element={<Messages />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            )}
             <ModalContainer />
           </BrowserRouter>
         </TooltipProvider>
