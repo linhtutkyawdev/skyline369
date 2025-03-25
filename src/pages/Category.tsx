@@ -1,6 +1,6 @@
 import { Game } from "@/types/game";
 import { motion } from "framer-motion";
-import { ArrowLeft, LoaderPinwheel, User } from "lucide-react";
+import { ArrowLeft, Loader2, LoaderPinwheel, User } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { isMobile } from "react-device-detect";
@@ -215,7 +215,10 @@ export default function Category() {
     return (
       <div className="h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <div className="text-casino-gold text-2xl font-bold">Loading</div>
+          <div className="text-casino-gold text-2xl font-bold flex gap-2 items-center">
+            <Loader2 className="w-8 h-8 animate-spin" />
+            Loading
+          </div>
           <div className="text-casino-silver text-lg font-semibold">
             Please wait a moment.
           </div>
@@ -225,7 +228,7 @@ export default function Category() {
   }
 
   return (
-    <div className="h-[calc(100vh-6.6rem)] xl:h-[calc(100vh-7.6rem)] mt-[6.6rem] xl:mt-[7.6rem] overflow-y-scroll scrollbar-none">
+    <div className="h-[calc(100vh-6.4rem)] xl:h-[calc(100vh-7.6rem)] mt-[6.4rem] xl:mt-[7.6rem] overflow-y-scroll xl:scrollbar-none">
       <div className="fixed top-0 w-full flex justify-between items-end z-50 glass-effect animate-fade-in px-6 py-4">
         <div className="flex flex-col justify-center">
           <div className="flex items-center gap-2 xl:gap-4">
@@ -240,10 +243,10 @@ export default function Category() {
             {/* Username and Balance  */}
 
             <div className="flex flex-col items-start">
-              <span className="text-casino-silver font-semibold 2xl:text-lg">
+              <span className="text-casino-silver font-semibold text-sm 2xl:text-lg">
                 {(user && user.name) || t("register_login")}
               </span>
-              <span className="text-casino-gold text-sm">
+              <span className="text-casino-gold text-xs">
                 {user && user.balance
                   ? parseFloat(user.balance).toFixed(2)
                   : ""}
@@ -253,15 +256,15 @@ export default function Category() {
 
           <button
             onClick={() => navigate("/")}
-            className="flex items-center gap-2 text-casino-silver hover:text-white transition-colors mt-2 text-sm"
+            className="flex items-center gap-2 text-casino-silver hover:text-white transition-colors mt-2 text-sm xl:text-base"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4 h-4 xl:w-5 xl:h-5" />
             <span>Back</span>
           </button>
         </div>
         {/* Provider productCodes */}
         <div className="flex flex-col items-center">
-          <h1 className="text-2xl font-bold capitalize text-center pb-4 hidden xl:block ">
+          <h1 className="2xl:text-2xl text-lg text-white font-semibold 2xl:font-bold capitalize text-center pb-4 hidden xl:block ">
             {gameType}
           </h1>
           <div className="flex items-center gap-2 overflow-scroll flex-wrap scrollbar-none justify-center px-4">
@@ -272,10 +275,10 @@ export default function Category() {
                   onClick={() => {
                     setProductCode(tab == productCode ? "" : tab);
                   }}
-                  className={`px-3 py-1 xl:px-4 xl:py-2 rounded-full whitespace-nowrap ${
+                  className={`px-3 py-1 xl:px-4 xl:py-2 rounded-full whitespace-nowrap text-sm 2xl:text-base font-semibold ${
                     productCode === tab
                       ? "bg-casino-gold text-casino-deep-blue font-medium"
-                      : "bg-gradient-to-r from-casino-light-blue/80 to-casino-deep-blue/80 text-casino-silver"
+                      : "bg-gradient-to-r from-[#001] to-casino-deep-blue text-casino-silver"
                   }`}
                 >
                   {tab}
@@ -286,7 +289,7 @@ export default function Category() {
 
         {/* search box */}
         <div className="flex flex-col items-center">
-          <h1 className="text-lg x:text-2xl font-bold capitalize text-center pb-2 xl:hidden">
+          <h1 className="2xl:text-2xl text-lg text-white font-semibold 2xl:font-bold capitalize text-center pb-4 hidden xl:block ">
             {gameType}
           </h1>
           <input

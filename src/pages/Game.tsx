@@ -3,6 +3,7 @@ import { useStateStore } from "@/store/state";
 import { useUserStore } from "@/store/user";
 import { ApiError } from "@/types/api_error";
 import { ApiResponse } from "@/types/api_response";
+import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -42,8 +43,21 @@ const Game = () => {
   useEffect(() => {
     if (!url && id) (async () => gameInit())();
   }, []);
-  if (loading) return "loading";
   if (error) return "error";
+  if (loading || !url)
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="text-casino-gold text-2xl font-bold flex gap-2 items-center">
+            <Loader2 className="w-8 h-8 animate-spin" />
+            Loading
+          </div>
+          <div className="text-casino-silver text-lg font-semibold">
+            Please wait a moment.
+          </div>
+        </div>
+      </div>
+    );
   if (url)
     return (
       <div className="w-screen h-screen">

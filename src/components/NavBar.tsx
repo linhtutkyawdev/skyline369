@@ -25,10 +25,10 @@ const NavBar = () => {
           {/* Username and Balance  */}
 
           <div className="flex flex-col items-start">
-            <span className="text-casino-silver font-semibold 2xl:text-lg">
+            <span className="text-casino-silver font-semibold text-sm 2xl:text-lg">
               {(user && user.name) || t("register_login")}
             </span>
-            <span className="text-casino-gold text-sm">
+            <span className="text-casino-gold text-xs 2xl:text-sm">
               {user && user.balance ? parseFloat(user.balance).toFixed(2) : ""}
             </span>
           </div>
