@@ -21,14 +21,14 @@ import Share from "./pages/Share";
 import Messages from "./pages/Messages";
 import Category from "./pages/Category";
 import ModalContainer from "./components/ModalContainer";
+import Game from "./pages/Game";
 import { useUserStore } from "./store/user";
 import { DepositChannel } from "./types/deposit_channel";
 import { ApiResponse } from "./types/api_response";
-import axiosInstance from "./lib/axiosInstance";
 import { useStateStore } from "./store/state";
-import Game from "./pages/Game";
 import { useToast } from "./hooks/use-toast";
 import { ApiError } from "./types/api_error";
+import axiosInstance from "./lib/axiosInstance";
 
 const queryClient = new QueryClient();
 

@@ -320,9 +320,11 @@ export default function Category() {
               <div className="relative">
                 <img
                   // src=""
-                  src={isMobile ? game.m_img : game.img}
+                  src={
+                    (isMobile ? game.m_img : game.img) || "/login_modal_bg.png"
+                  }
                   alt={game.gameName}
-                  className="w-full h-32 lg:h-44 object-cover"
+                  className="object-cover w-full h-44 2xl:h-60 bg-casino-deep-blue"
                 />
                 {parseInt(game.on_line) > 0 && (
                   <div className="absolute top-3 right-3">
@@ -336,7 +338,7 @@ export default function Category() {
                   {game.on_line} players
                 </div>
               </div>
-              <div className="p-4 2xl:pt-6 bg-gradient-to-t from-casino-deep-blue to-transparent flex flex-col justify-center">
+              <div className="p-4 2xl:pt-6 bg-gradient-to-t h-40 2xl:h-48 from-casino-deep-blue to-transparent flex flex-col justify-center">
                 <h3 className="text-white text-xl 2xl:text-2xl font-semibold">
                   {game.gameName}
                 </h3>
