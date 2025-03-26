@@ -71,10 +71,10 @@ export default function Category() {
         addGames([]);
       }
     } catch (error) {
-      if (error.response.status === 401) {
+      if (error instanceof ApiError && error.statusCode === 401) {
         setUser(null);
+        setError(error);
       }
-      setError(error as ApiError);
     }
     // finally {
     //   setLoading(false);
@@ -128,10 +128,10 @@ export default function Category() {
         )
       );
     } catch (error) {
-      if ((error as ApiError).statusCode === 401) {
+      if (error instanceof ApiError && error.statusCode === 401) {
         setUser(null);
+        setError(error);
       }
-      setError(error as ApiError);
     } finally {
       setLoading(false);
     }

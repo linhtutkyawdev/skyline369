@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button";
 import { useUserStore } from "@/store/user";
 import { useStateStore } from "@/store/state";
 import { useToast } from "@/hooks/use-toast";
+import axiosInstance from "@/lib/axiosInstance";
+import { ApiResponse } from "@/types/api_response";
+import { ApiError } from "@/types/api_error";
 
 const ProfileModal = () => {
   const { activeModal, setActiveModal } = useStateStore();
@@ -24,6 +27,38 @@ const ProfileModal = () => {
       window.removeEventListener("keydown", handleEscKey);
     };
   }, [activeModal]);
+
+  async function logout() {
+    try {
+      const res = await axiosInstance.post<ApiResponse<{ token: string }>>(
+        "/logout",
+        {
+          token: user?.token,
+        }
+      );
+
+      if (res.data.status.errorCode != 0 && res.data.status.errorCode != 200)
+        throw new ApiError(
+          "An error has occured!",
+          res.data.status.errorCode,
+          res.data.status.mess
+        );
+      setActiveModal(null);
+      setUser(null);
+      toast({
+        title: "Logout Success",
+        description: "Successfully logged out of your account.",
+      });
+    } catch (error) {
+      if (error instanceof ApiError) {
+        toast({
+          title: "Logout Failed",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
+    }
+  }
 
   return (
     <AnimatePresence>
@@ -84,13 +119,8 @@ const ProfileModal = () => {
                   <span className="text-white">Edit Profile</span>
                 </button>
                 <button
-                  onClick={() => {
-                    setActiveModal(null);
-                    setUser(null);
-                    toast({
-                      title: "Logout Success",
-                      description: "Successfully logged out of your account.",
-                    });
+                  onClick={async () => {
+                    await logout();
                   }}
                   className="p-3 rounded-lg bg-red-600/70 w-full flex items-center justify-center gap-3 transition-all hover:bg-red-600/60"
                 >

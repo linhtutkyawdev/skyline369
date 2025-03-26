@@ -40,7 +40,7 @@ const App = () => {
     onClose: () => toggle(false),
   });
 
-  const { user } = useUserStore();
+  const { user, setUser } = useUserStore();
   const {
     activeModal,
     setActiveModal,
@@ -77,7 +77,10 @@ const App = () => {
         setDepositChannels(responses.data.data);
       }
     } catch (error) {
-      setError(error as ApiError);
+      if (error instanceof ApiError && error.statusCode === 401) {
+        setUser(null);
+        setError(error);
+      }
     } finally {
       setLoading(false);
     }

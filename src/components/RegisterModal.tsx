@@ -175,7 +175,8 @@ const RegisterModal = () => {
     <AnimatePresence>
       {activeModal === "register" && (
         <motion.div
-          className="fixed inset-0 bg-zinc-950/30 backdrop-blur-md z-50 flex items-center justify-center px-4"
+          className="fixed inset-0 bg-main z-50 flex items-center justify-center px-4"
+          // className="fixed inset-0 bg-zinc-950/30 backdrop-blur-md z-50 flex items-center justify-center px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
