@@ -8,4 +8,4 @@ export type DepositChannel = {
   single_max: number;
   disable_starttime: string;
   disable_endtime: string;
-}[];
+};

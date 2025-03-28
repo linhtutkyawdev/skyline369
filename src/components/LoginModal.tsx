@@ -43,30 +43,49 @@ const LoginModal = () => {
     resolver: zodResolver(emailSchema),
   });
   const onLoginSubmit: SubmitHandler<LoginInputs> = async (data) => {
-    const res = await axiosInstance.post<{
-      status: {
-        errorCode: number;
-        msg: string;
-        mess: string;
-      };
-      data: Promise<User>;
-    }>("/login", {
-      name: data.email,
-      password: data.password,
-    });
-
-    if (res.data.status.mess)
-      toast({
-        title: res.data.status.mess,
-        description: t("" + res.data.status.mess),
-        variant: res.data.status.errorCode === 1 ? "destructive" : "default",
+    try {
+      const res = await axiosInstance.post<{
+        status: {
+          errorCode: number;
+          msg: string;
+          mess: string;
+        };
+        data: Promise<User>;
+      }>("/login", {
+        name: data.email,
+        password: data.password,
       });
 
-    if (res.data.data) {
-      const response = await res.data.data;
-      setUser(response);
-      resetLoginForm();
-      setActiveModal(null);
+      // if (
+      //   responses.data.status.errorCode != 0 &&
+      //   responses.data.status.errorCode != 200
+      // )
+      //   throw new ApiError(
+      //     "An error has occured!",
+      //     responses.data.status.errorCode,
+      //     responses.data.status.mess
+      //   );
+
+      if (res.data.status.mess)
+        toast({
+          title: res.data.status.mess,
+          description: t(res.data.status.mess),
+          variant: res.data.status.errorCode === 1 ? "destructive" : "default",
+        });
+
+      if (res.data.data) {
+        const response = await res.data.data;
+        setUser(response);
+        resetLoginForm();
+        setActiveModal(null);
+      }
+    } catch (error) {
+      if (error)
+        toast({
+          title: "Something went wrong!",
+          description: "Cannot login to the system.",
+          variant: "destructive",
+        });
     }
   };
   const onForgotPasswordSubmit: SubmitHandler<EmailInput> = (data) => {
