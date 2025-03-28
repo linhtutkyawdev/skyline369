@@ -22,6 +22,7 @@ import { ApiResponse } from "@/types/api_response";
 import { ApiError } from "@/types/api_error";
 import { Order } from "@/types/order";
 import { isMobile } from "react-device-detect";
+import { useNavigate } from "react-router-dom";
 
 type Step = "amount" | "detail" | "confirm" | "success" | "failed";
 
@@ -42,9 +43,10 @@ const DepositModal = () => {
   const [step, setStep] = useState<Step>("amount");
 
   const { depositChannels } = useStateStore();
-  const { user } = useUserStore();
+  const { user, setUser } = useUserStore();
 
   const [{ value }, copy] = useCopyToClipboard();
+  const navigate = useNavigate();
 
   const handlePresetAmount = (value: number) => {
     setAmount(value);
@@ -111,6 +113,7 @@ const DepositModal = () => {
       return true;
     } catch (error) {
       if (error instanceof ApiError && error.statusCode === 401) {
+        setUser(null);
         // setError(error);
         return false;
       }
@@ -721,7 +724,7 @@ const DepositModal = () => {
                     setReceiptImage(null);
                     setPreviewUrl(null);
                     setStep("amount");
-                    setActiveModal("profile");
+                    navigate("/deposit");
                   }}
                   className="w-full py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
                 >

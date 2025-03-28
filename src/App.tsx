@@ -16,7 +16,6 @@ import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import Deposit from "./pages/Deposit";
 import Withdraw from "./pages/Withdraw";
-import History from "./pages/History";
 import Share from "./pages/Share";
 import Messages from "./pages/Messages";
 import Category from "./pages/Category";
@@ -29,6 +28,8 @@ import { useStateStore } from "./store/state";
 import { useToast } from "./hooks/use-toast";
 import { ApiError } from "./types/api_error";
 import axiosInstance from "./lib/axiosInstance";
+import GameHistory from "./pages/GameHistory";
+import TransationHistory from "./pages/TransactionHistory";
 
 const queryClient = new QueryClient();
 
@@ -154,7 +155,11 @@ const App = () => {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/deposit" element={<Deposit />} />
                 <Route path="/withdraw" element={<Withdraw />} />
-                <Route path="/history" element={<History />} />
+                <Route path="/history/game" element={<GameHistory />} />
+                <Route
+                  path="/history/transaction"
+                  element={<TransationHistory />}
+                />
                 <Route path="/share" element={<Share />} />
                 <Route path="/messages" element={<Messages />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

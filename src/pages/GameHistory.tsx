@@ -28,7 +28,7 @@ const historyData = [
   },
 ];
 
-const History = () => {
+const GameHistory = () => {
   const navigate = useNavigate();
   const [selectedFilter, setSelectedFilter] = useState<"all" | "win" | "loss">(
     "all"
@@ -143,4 +143,4 @@ const History = () => {
   );
 };
 
-export default History;
+export default GameHistory;
