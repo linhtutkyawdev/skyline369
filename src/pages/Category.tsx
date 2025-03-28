@@ -137,35 +137,6 @@ export default function Category() {
     }
   };
 
-  const handlePlayNow = async (game: Game) => {
-    if (parseInt(user.balance) < 1) return;
-    setLoading(true);
-    try {
-      const responses = await axiosInstance.post<
-        ApiResponse<{ balance: string; game_balance: string }>
-      >("/transfer_to_game", { token: user.token, amount: user.balance });
-
-      if (
-        responses.data.status.errorCode != 0 &&
-        responses.data.status.errorCode != 200
-      )
-        throw new ApiError(
-          "An error has occured!",
-          responses.data.status.errorCode,
-          responses.data.status.mess
-        );
-
-      navigate("/game/" + game.id);
-    } catch (error) {
-      if (error instanceof ApiError && error.statusCode === 401) {
-        setUser(null);
-        setError(error);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
     if (!getProduct(gameType)) {
       (async () => {
@@ -276,7 +247,7 @@ export default function Category() {
                 {(user && user.name) || t("register_login")}
               </span>
               <span className="text-casino-gold text-xs">
-                {user && user.balance ? "$ " + user.balance : ""}
+                {user && user.userInfo && "$ " + user.userInfo.game_balance}
               </span>
             </div>
           </div>
@@ -373,7 +344,7 @@ export default function Category() {
                   {game.productCode}
                 </p>
                 <button
-                  onClick={() => handlePlayNow(game)}
+                  onClick={() => navigate("/game/" + game.id)}
                   className="mt-3 2xl:mt-6 px-4 py-2 bg-casino-gold text-casino-deep-blue rounded-md font-medium hover:bg-opacity-90 transition-all 2xl:text-xl"
                 >
                   Play Now

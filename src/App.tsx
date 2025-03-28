@@ -30,6 +30,9 @@ import { ApiError } from "./types/api_error";
 import axiosInstance from "./lib/axiosInstance";
 import GameHistory from "./pages/GameHistory";
 import TransationHistory from "./pages/TransactionHistory";
+import { userInfo } from "os";
+import { UserInfo } from "./types/user";
+import { use } from "i18next";
 
 const queryClient = new QueryClient();
 
@@ -87,6 +90,66 @@ const App = () => {
     }
   };
 
+  const loadUserInfo = async () => {
+    setLoading(true);
+    try {
+      const responses = await axiosInstance.post<ApiResponse<UserInfo>>(
+        "/player_info",
+        {
+          token: user.token,
+        }
+      );
+
+      if (
+        responses.data.status.errorCode != 0 &&
+        responses.data.status.errorCode != 200
+      )
+        throw new ApiError(
+          "An error has occured!",
+          responses.data.status.errorCode,
+          responses.data.status.mess
+        );
+
+      setUser({ ...user, userInfo: responses.data.data });
+    } catch (error) {
+      if (error instanceof ApiError && error.statusCode === 401) {
+        setUser(null);
+        setError(error);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const transferBalance = async () => {
+    setLoading(true);
+    try {
+      const responses = await axiosInstance.post<
+        ApiResponse<{ balance: string; game_balance: string }>
+      >("/transfer_to_game", {
+        token: user.token,
+        amount: user.userInfo.balance,
+      });
+
+      if (
+        responses.data.status.errorCode != 0 &&
+        responses.data.status.errorCode != 200
+      )
+        throw new ApiError(
+          "An error has occured!",
+          responses.data.status.errorCode,
+          responses.data.status.mess
+        );
+    } catch (error) {
+      if (error instanceof ApiError && error.statusCode === 401) {
+        setUser(null);
+        setError(error);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (activeModal === "login" || activeModal === "register") return;
     if (!user) setActiveModal("login");
@@ -102,8 +165,23 @@ const App = () => {
   }, [error]);
 
   useEffect(() => {
-    if (user) (async () => await loadDepositChannels())();
+    if (depositChannels.length === 0 && user && user.token)
+      (async () => {
+        await loadDepositChannels();
+      })();
+
+    if (user && user.userInfo && user.userInfo.balance > 0)
+      (async () => {
+        await transferBalance();
+        setTimeout(async () => await loadUserInfo(), 100);
+      })();
   }, [user]);
+
+  useEffect(() => {
+    if (user.token) {
+      loadUserInfo();
+    }
+  }, [user.token]);
 
   return (
     <div className="bg-main" ref={ref}>

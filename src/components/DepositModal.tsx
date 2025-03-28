@@ -724,7 +724,8 @@ const DepositModal = () => {
                     setReceiptImage(null);
                     setPreviewUrl(null);
                     setStep("amount");
-                    navigate("/deposit");
+                    setActiveModal(null);
+                    navigate("/history/transaction");
                   }}
                   className="w-full py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
                 >

@@ -1,6 +1,6 @@
 export type User = {
-  balance: string;
-  bank_balance: string;
+  balance: number;
+  bank_balance: number;
   email: string;
   gender: number;
   headimage: string;
@@ -11,4 +11,16 @@ export type User = {
   phone: string;
   register_at: string;
   token: string;
+  userInfo: UserInfo | null;
+};
+
+export type UserInfo = {
+  name: string;
+  email: string;
+  balance: number;
+  game_balance: number;
+  bank_name: string;
+  bank_card: string;
+  bank_username: string;
+  bank_branch_name: string;
 };
