@@ -41,7 +41,7 @@ const FooterNav = () => {
 
       <div
         className="flex flex-col items-center nav-icon group cursor-pointer"
-        onClick={() => navigate("/history")}
+        onClick={() => navigate("/history/transaction")}
       >
         <div className="w-10 h-10 2xl:w-12 2xl:h-12 rounded-full gold-badge flex items-center justify-center 2xl:mb-1 group-hover:animate-pulse-glow">
           <span className="text-casino-deep-blue font-bold">H</span>

@@ -29,7 +29,7 @@ const NavBar = () => {
               {(user && user.name) || t("register_login")}
             </span>
             <span className="text-casino-gold text-xs 2xl:text-sm">
-              {user && user.balance ? parseFloat(user.balance).toFixed(2) : ""}
+              {user && user.balance ? "$ " + user.balance : ""}
             </span>
           </div>
         </div>

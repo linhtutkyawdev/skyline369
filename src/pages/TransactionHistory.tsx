@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useStateStore } from "@/store/state";
-import { DepositInfo, DepositRecord } from "@/types/deposit_list";
+import { DepositInfo, DepositRecord } from "@/types/deposit_info";
 import axiosInstance from "@/lib/axiosInstance";
 import { ApiResponse } from "@/types/api_response";
 import { useUserStore } from "@/store/user";
@@ -55,6 +55,40 @@ const TransationHistory = () => {
       setLoading(false);
     }
   };
+
+  //   const loadWithdrawalListing = async () => {
+  //     setLoading(true);
+  //     try {
+  //       if (!depositInfo) {
+  //         const responses = await axiosInstance.post<ApiResponse<DepositInfo>>(
+  //           "/player_deposit_listing",
+  //           {
+  //             token: user.token,
+  //           }
+  //         );
+
+  //         if (
+  //           responses.data.status.errorCode != 0 &&
+  //           responses.data.status.errorCode != 200
+  //         )
+  //           throw new ApiError(
+  //             "An error has occured!",
+  //             responses.data.status.errorCode,
+  //             responses.data.status.mess
+  //           );
+
+  //         console.log(responses.data.data);
+  //         setDepositInfo(responses.data.data);
+  //       }
+  //     } catch (error) {
+  //       if (error instanceof ApiError && error.statusCode === 401) {
+  //         setUser(null);
+  //         setError(error);
+  //       }
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
 
   useEffect(() => {
     (async () => loadDepositListing())();
@@ -146,8 +180,10 @@ const TransationHistory = () => {
                 className="glass-effect rounded-lg p-4 flex justify-between items-center"
               >
                 <div>
-                  <h3 className="text-white font-medium">{d.money}</h3>
-                  <p className="text-casino-silver text-sm">{d.created_at}</p>
+                  <h3 className="text-white font-medium">
+                    Deposit - ${d.money * 1}
+                  </h3>
+                  <p className="text-casino-silver text-sm">{d.name}</p>
                 </div>
 
                 <div
@@ -155,8 +191,10 @@ const TransationHistory = () => {
                     d.confirm_at ? "text-green-400" : "text-yellow-400"
                   }`}
                 >
-                  {d.status == 1 ? "Requested" : "Transfered"}
-                  {d.confirm_at && " - " + d.confirm_at.toLocaleString()}
+                  {d.status == 1 ? "Requested - " : "Transfered - "}
+                  {d.status == 1
+                    ? d.created_at
+                    : d.confirm_at && d.confirm_at.toLocaleString()}
                 </div>
               </div>
             ))}

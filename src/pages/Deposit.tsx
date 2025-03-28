@@ -1,27 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import axiosInstance from "@/lib/axiosInstance";
+import { useUserStore } from "@/store/user";
 
-function App() {
-  const [url, setUrl] = useState("https://example.com");
+const Deposit = () => {
+  const { user } = useUserStore();
+  if (!user) return "nouser";
+
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    // Mark component as mounted
+    isMounted.current = true;
+
+    const poll = async () => {
+      try {
+        const response = await axiosInstance.post("/player_deposit_listing", {
+          token: user.token,
+        });
+        if (isMounted.current) {
+          setData(response.data);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error("Error fetching deposit listing:", error);
+        // Optionally, handle the error (set error state, etc.)
+      } finally {
+        // Wait for a delay before polling again (adjust delay as needed)
+        if (isMounted.current) {
+          setTimeout(poll, 5000); // 1 second delay between requests
+        }
+      }
+    };
+
+    poll();
+
+    // Cleanup on unmount
+    return () => {
+      isMounted.current = false;
+    };
+  }, [user]);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-      <h1 className="text-2xl font-bold mb-4">React Vite iFrame Example</h1>
-      <input
-        type="text"
-        value={url}
-        onChange={(e) => setUrl(e.target.value)}
-        placeholder="Enter a URL"
-        className="border p-2 rounded w-96 mb-4"
-      />
-      <div className="border rounded-lg overflow-hidden w-full max-w-3xl h-96">
-        <iframe
-          src={url}
-          title="Embedded Website"
-          className="w-full h-full border-none"
-        ></iframe>
-      </div>
+    <div>
+      {loading ? <p>Loading...</p> : <pre>{JSON.stringify(data, null, 2)}</pre>}
     </div>
   );
-}
+};
 
-export default App;
+export default Deposit;
