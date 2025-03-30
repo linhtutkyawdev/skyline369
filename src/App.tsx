@@ -30,9 +30,7 @@ import { ApiError } from "./types/api_error";
 import axiosInstance from "./lib/axiosInstance";
 import GameHistory from "./pages/GameHistory";
 import TransationHistory from "./pages/TransactionHistory";
-import { userInfo } from "os";
 import { UserInfo } from "./types/user";
-import { use } from "i18next";
 
 const queryClient = new QueryClient();
 
@@ -58,28 +56,27 @@ const App = () => {
   const { toast } = useToast();
 
   const loadDepositChannels = async () => {
+    if (!user) return;
     setLoading(true);
-
     try {
-      if (depositChannels.length == 0) {
-        const responses = await axiosInstance.post<
-          ApiResponse<DepositChannel[]>
-        >("/deposit_channel_list", {
+      const responses = await axiosInstance.post<ApiResponse<DepositChannel[]>>(
+        "/deposit_channel_list",
+        {
           token: user.token,
-        });
+        }
+      );
 
-        if (
-          responses.data.status.errorCode != 0 &&
-          responses.data.status.errorCode != 200
-        )
-          throw new ApiError(
-            "An error has occured!",
-            responses.data.status.errorCode,
-            responses.data.status.mess
-          );
+      if (
+        responses.data.status.errorCode != 0 &&
+        responses.data.status.errorCode != 200
+      )
+        throw new ApiError(
+          "An error has occured!",
+          responses.data.status.errorCode,
+          responses.data.status.mess
+        );
 
-        setDepositChannels(responses.data.data);
-      }
+      setDepositChannels(responses.data.data);
     } catch (error) {
       if (error instanceof ApiError && error.statusCode === 401) {
         setUser(null);
@@ -91,6 +88,7 @@ const App = () => {
   };
 
   const loadUserInfo = async () => {
+    if (!user) return;
     setLoading(true);
     try {
       const responses = await axiosInstance.post<ApiResponse<UserInfo>>(
@@ -122,6 +120,7 @@ const App = () => {
   };
 
   const transferBalance = async () => {
+    if (!user) return;
     setLoading(true);
     try {
       const responses = await axiosInstance.post<
@@ -165,23 +164,24 @@ const App = () => {
   }, [error]);
 
   useEffect(() => {
-    if (depositChannels.length === 0 && user && user.token)
-      (async () => {
+    (async () => {
+      if (!user || !user.token) return;
+      if (!user.userInfo || depositChannels.length === 0)
         await loadDepositChannels();
-      })();
-
-    if (user && user.userInfo && user.userInfo.balance > 0)
-      (async () => {
-        await transferBalance();
+      if (user.userInfo && user.userInfo.balance > 0) await transferBalance();
+      if (!user.userInfo || user.userInfo.balance > 0)
         setTimeout(async () => await loadUserInfo(), 100);
-      })();
+    })();
   }, [user]);
 
   useEffect(() => {
-    if (user.token) {
-      loadUserInfo();
-    }
-  }, [user.token]);
+    window.addEventListener("load", async () => {
+      if (!user || !user.token) return;
+      await loadDepositChannels();
+      if (user.userInfo && user.userInfo.balance > 0) await transferBalance();
+      await loadUserInfo();
+    });
+  }, []);
 
   return (
     <div className="bg-main" ref={ref}>

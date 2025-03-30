@@ -516,6 +516,7 @@ const DepositModal = () => {
 
                   <input
                     type="text"
+                    name="transactionId"
                     value={transactionId}
                     onChange={(e) => setTransactionId(e.target.value)}
                     className="w-full bg-casino-deep-blue border border-casino-light-blue rounded-lg p-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-casino-gold"
@@ -523,6 +524,7 @@ const DepositModal = () => {
                   />
                   <input
                     type="text"
+                    name="name"
                     value={senderName}
                     onChange={(e) => setSenderName(e.target.value)}
                     className="w-full bg-casino-deep-blue border border-casino-light-blue rounded-lg p-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-casino-gold"
