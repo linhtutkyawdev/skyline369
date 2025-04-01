@@ -3,7 +3,7 @@ import { useStateStore } from "@/store/state";
 import { useUserStore } from "@/store/user";
 import { ApiError } from "@/types/api_error";
 import { ApiResponse } from "@/types/api_response";
-import { Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -61,6 +61,13 @@ const Game = () => {
   if (url)
     return (
       <div className="w-screen h-screen">
+        <button
+          onClick={() => history.go(-1)}
+          className="flex absolute m-4 top-0 left-0 items-center gap-2 text-casino-silver hover:text-white transition-colors"
+        >
+          <ArrowLeft className="w-5 h-5" />
+          <span>Back</span>
+        </button>
         <iframe
           src={url}
           title="Embedded Website"

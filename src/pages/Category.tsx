@@ -286,6 +286,7 @@ export default function Category() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.05 * (index % 6) }}
               className="game-card overflow-hidden"
+              onClick={() => navigate("/game/" + game.id)}
             >
               <div className="relative">
                 <img
@@ -315,10 +316,7 @@ export default function Category() {
                 <p className="text-casino-silver text-sm 2xl:text-lg mt-1">
                   {game.productCode}
                 </p>
-                <button
-                  onClick={() => navigate("/game/" + game.id)}
-                  className="mt-3 2xl:mt-6 px-4 py-2 bg-casino-gold text-casino-deep-blue rounded-md font-medium hover:bg-opacity-90 transition-all 2xl:text-xl"
-                >
+                <button className="mt-3 2xl:mt-6 px-4 py-2 bg-casino-gold text-casino-deep-blue rounded-md font-medium hover:bg-opacity-90 transition-all 2xl:text-xl">
                   Play Now
                 </button>
               </div>
