@@ -6,6 +6,7 @@ export type DepositChannel = {
   card_bank_name: string;
   single_min: number;
   single_max: number;
+  img: string;
   disable_starttime: string;
   disable_endtime: string;
 };

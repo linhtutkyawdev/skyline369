@@ -9,6 +9,7 @@ import {
   Copy,
   Image,
   Upload,
+  QrCode,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
@@ -24,7 +25,7 @@ import { Order } from "@/types/order";
 import { isMobile } from "react-device-detect";
 import { useNavigate } from "react-router-dom";
 
-type Step = "amount" | "detail" | "confirm" | "success" | "failed";
+type Step = "amount" | "detail" | "confirm" | "success" | "failed" | "QR";
 
 const DepositModal = () => {
   const { activeModal, setActiveModal } = useStateStore();
@@ -333,25 +334,35 @@ const DepositModal = () => {
                       {selectedDepositChannel &&
                         selectedDepositChannel.card_bank_name ===
                           c.card_bank_name && (
-                          <button
-                            className="w-full flex items-center justify-center mt-2 bg-casino-light-blue text-white py-2 rounded-md hover:bg-opacity-80 transition-all"
-                            onClick={() => {
-                              copy(c.card_number);
-                              setTimeout(() => copy(""), 2000);
-                            }}
-                          >
-                            {value == c.card_number ? (
-                              <>
-                                Coppied : {c.card_number}
-                                <CheckIcon className="w-4 h-4 mx-2" />
-                              </>
-                            ) : (
-                              <>
-                                Copy Card Number to Clipboard{" "}
-                                <Copy className="w-4 h-4 mx-2" />
-                              </>
-                            )}
-                          </button>
+                          <div className="flex gap-2">
+                            <button
+                              className="flex flex-grow items-center justify-center mt-2 bg-casino-light-blue text-white py-2 rounded-md hover:bg-opacity-80 transition-all"
+                              onClick={() => {
+                                copy(c.card_number);
+                                setTimeout(() => copy(""), 2000);
+                              }}
+                            >
+                              {value == c.card_number ? (
+                                <>
+                                  Coppied
+                                  <CheckIcon className="w-4 h-4 mx-2" />
+                                </>
+                              ) : (
+                                <>
+                                  Copy Card Number{" "}
+                                  <Copy className="w-4 h-4 mx-2" />
+                                </>
+                              )}
+                            </button>
+                            <button
+                              className="flex px-4 items-center justify-center mt-2 bg-casino-light-blue text-white py-2 rounded-md hover:bg-opacity-80 transition-all"
+                              onClick={() => {
+                                setStep("QR");
+                              }}
+                            >
+                              Show QR <QrCode className="w-4 h-4 mx-2" />
+                            </button>
+                          </div>
                         )}
                     </div>
                   ))}
@@ -477,6 +488,50 @@ const DepositModal = () => {
                     </button>
                   </>
                 )}
+              </motion.div>
+            )}
+            {step === "QR" && selectedDepositChannel && (
+              <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="grid grid-cols-2 gap-4 pb-6"
+              >
+                <label className="text-casino-silver block">
+                  Scan or Save the QR Code
+                </label>
+
+                <img
+                  src={selectedDepositChannel.img}
+                  alt="qr_code"
+                  className="h-52 mx-auto w-auto col-span-2"
+                />
+
+                <button
+                  onClick={() => {
+                    setStep("amount");
+                  }}
+                  className="w-full py-2 bg-casino-accent text-silver-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
+                >
+                  Go Back
+                </button>
+                <button
+                  onClick={() => {
+                    // Create anchor link
+                    const element = document.createElement("a");
+                    element.href = selectedDepositChannel.img;
+                    element.download = selectedDepositChannel.img.slice(
+                      selectedDepositChannel.img.lastIndexOf("/") + 1
+                    );
+
+                    document.body.appendChild(element); // Required for Firefox
+                    element.click();
+                    document.body.removeChild(element); // Clean up
+                  }}
+                  className="w-full py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
+                >
+                  Download QR
+                </button>
               </motion.div>
             )}
             {step === "detail" && (
