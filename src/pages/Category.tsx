@@ -86,7 +86,7 @@ export default function Category() {
     try {
       const responses = await axiosInstance.post<ApiResponse<string[]>>(
         "/get_game_vendor",
-        { token: user.token, gameType }
+        { token: user.token, gameType, isMobile: isMobile ? "1" : "0" }
       );
 
       if (
@@ -229,19 +229,25 @@ export default function Category() {
   }
 
   return (
-    <div className="h-[calc(100vh-9rem)] xl:h-[calc(100vh-10.5rem)] 2xl:h-[calc(100vh-11.5rem)] mt-[9rem] xl:mt-[10.5rem] 2xl:mt-[11.5rem] overflow-y-scroll scrollbar-none">
+    <div
+      className={`h-[calc(100vh-10rem)] mt-[10rem] overflow-y-scroll scrollbar-none ${
+        getProduct(gameType).productCodes.length > 7
+          ? "2xl:h-[calc(100vh-15rem)] 2xl:mt-[15rem] xl:h-[calc(100vh-12.5rem)] xl:mt-[12.5rem]"
+          : "2xl:h-[calc(100vh-12.5rem)] 2xl:mt-[12.5rem]"
+      }`}
+    >
       <NavBar />
-      <div className="fixed 2xl:top-32 xl:top-28 top-[4.5rem] w-full z-50 flex justify-between items-center px-12">
+      <div className="fixed 2xl:top-32 xl:top-24 top-[4.5rem] w-full z-50 flex justify-between items-center px-12 py-2">
         <button
           onClick={() => navigate("/")}
-          className="flex max-w-[6rem] items-center gap-2 text-casino-silver hover:text-white transition-colors mt-2 text-sm xl:text-base px-4"
+          className="flex w-[10rem] items-center gap-2 text-casino-silver hover:text-white transition-colors mt-2 text-sm xl:text-base px-4"
         >
           <ArrowLeft className="w-4 h-4 xl:w-5 xl:h-5" />
           <span>Back</span>
         </button>
 
         {/* Provider productCodes */}
-        <div className="flex flex-col items-center max-w-[35rem] lg:max-w-[50rem]">
+        <div className="flex flex-col items-center max-w-[35rem] lg:max-w-[55rem]">
           <div className="flex items-center gap-2 overflow-scroll flex-wrap scrollbar-none justify-center px-4">
             {getProduct(gameType).productCodes.length > 0 &&
               getProduct(gameType).productCodes.map((tab) => (
@@ -268,7 +274,7 @@ export default function Category() {
           onChange={(e) => setSearchText(e.target.value)}
           type="text"
           placeholder="Search"
-          className="max-w-[12rem] xl:max-w-[15rem] h-8 xl:h-10 px-3 py-1 xl:px-4 xl:py-2 rounded-full glass-effect text-casino-silver placeholder:text-casino-silver mr-4"
+          className="w-[10rem] h-8 xl:h-10 px-3 py-1 xl:px-4 xl:py-2 rounded-full glass-effect text-casino-silver placeholder:text-casino-silver mr-4"
         />
       </div>
 
