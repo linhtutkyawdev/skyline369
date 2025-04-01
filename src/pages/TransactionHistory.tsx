@@ -195,7 +195,8 @@ const TransationHistory = () => {
 
                 <div
                   className={`font-bold ${
-                    d.status.includes("Pending")
+                    d.status.includes("Pending") ||
+                    d.status.includes("Unconfirmed")
                       ? "text-yellow-400"
                       : d.status.includes("Success")
                       ? "text-green-400"

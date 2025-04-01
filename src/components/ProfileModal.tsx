@@ -114,10 +114,10 @@ const ProfileModal = () => {
                     {user.balance}
                   </span>
                 </div>
-                <button className="p-3 rounded-lg bg-casino-light-blue w-full flex items-center justify-center gap-3 transition-all hover:bg-opacity-80">
+                {/* <button className="p-3 rounded-lg bg-casino-light-blue w-full flex items-center justify-center gap-3 transition-all hover:bg-opacity-80">
                   <Edit className="w-5 h-5 text-casino-gold" />
                   <span className="text-white">Edit Profile</span>
-                </button>
+                </button> */}
                 <button
                   onClick={async () => {
                     await logout();

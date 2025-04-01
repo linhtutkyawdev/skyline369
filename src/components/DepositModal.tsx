@@ -10,6 +10,7 @@ import {
   Image,
   Upload,
   QrCode,
+  Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
@@ -43,7 +44,7 @@ const DepositModal = () => {
 
   const [step, setStep] = useState<Step>("amount");
 
-  const { depositChannels } = useStateStore();
+  const { depositChannels, loading, setLoading } = useStateStore();
   const { user, setUser } = useUserStore();
 
   const [{ value }, copy] = useCopyToClipboard();
@@ -81,6 +82,9 @@ const DepositModal = () => {
   };
 
   const makeDepositRequest = async (): Promise<boolean> => {
+    console.log("called");
+
+    setLoading(true);
     try {
       const responses = await axiosInstance.post<ApiResponse<Order>>(
         "/player_deposit",
@@ -111,15 +115,16 @@ const DepositModal = () => {
           responses.data.status.mess
         );
       setOrder(responses.data.data);
+      setLoading(false);
       return true;
     } catch (error) {
       if (error instanceof ApiError && error.statusCode === 401) {
         setUser(null);
+        setLoading(false);
         // setError(error);
         return false;
       }
     }
-    return false;
   };
 
   const handleDeposit = async () => {
@@ -722,9 +727,11 @@ const DepositModal = () => {
                 </div>
                 <button
                   onClick={handleDeposit}
-                  className="w-full py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
+                  disabled={loading}
+                  className="w-full flex items-center justify-center py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
                 >
-                  Confirm Deposit
+                  Confirm Deposit{" "}
+                  {loading && <Loader2 className="ml-2 animate-spin w-6 h-6" />}
                 </button>
               </motion.div>
             )}
