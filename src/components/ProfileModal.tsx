@@ -101,7 +101,11 @@ const ProfileModal = () => {
               className="flex flex-col items-center pb-8"
             >
               <div className="w-24 h-24 -mt-8 rounded-full overflow-hidden border-2 border-casino-gold flex items-center justify-center">
-                <div className="bg-casino-light-blue w-full h-full"></div>
+                <img
+                  src="/login_modal_bg.png"
+                  alt="profile"
+                  className="w-full h-full object-cover"
+                />
               </div>
               <h2 className="mt-4 text-xl font-semibold text-white">
                 {user.name}
@@ -111,7 +115,7 @@ const ProfileModal = () => {
                 <div className="bg-casino-deep-blue rounded-xl p-4 w-full flex justify-between items-center mt-4">
                   <span className="text-casino-silver">Balance</span>
                   <span className="text-casino-gold font-bold text-xl">
-                    {user.balance}
+                    {user && user.userInfo && "$ " + user.userInfo.game_balance}
                   </span>
                 </div>
                 {/* <button className="p-3 rounded-lg bg-casino-light-blue w-full flex items-center justify-center gap-3 transition-all hover:bg-opacity-80">
