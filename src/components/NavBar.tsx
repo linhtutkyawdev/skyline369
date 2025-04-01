@@ -12,8 +12,8 @@ const NavBar = () => {
   const { user } = useUserStore();
   return (
     <>
-      <header className="fixed top-0 w-full p-4 z-50 flex justify-between items-center xl:glass-effect animate-fade-in">
-        <div className="flex items-center gap-2 xl:gap-4 ml-4">
+      <header className="fixed top-0 w-full py-4 px-8 z-50 flex justify-between items-center xl:glass-effect animate-fade-in">
+        <div className="flex items-center gap-2 xl:gap-4">
           <div
             onClick={() => setActiveModal(user ? "profile" : "login")}
             className="w-10 h-10 xl:w-12 xl:h-12 2xl:w-14 2xl:h-14 rounded-full overflow-hidden border-2 border-casino-gold flex items-center justify-center cursor-pointer transition-all hover:border-4 hover:scale-105"

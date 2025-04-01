@@ -14,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import { useStateStore } from "@/store/state";
 import { useProductStore } from "@/store/product";
 import { ApiError } from "@/types/api_error";
+import NavBar from "@/components/NavBar";
 
 export default function Category() {
   const observer = useRef<IntersectionObserver | null>(null);
@@ -228,43 +229,19 @@ export default function Category() {
   }
 
   return (
-    <div className="h-[calc(100vh-6.4rem)] xl:h-[calc(100vh-7.6rem)] mt-[6.4rem] xl:mt-[7.6rem] overflow-y-scroll xl:scrollbar-none">
-      <div className="fixed top-0 w-full flex justify-between items-end z-50 glass-effect animate-fade-in px-6 py-4">
-        <div className="flex flex-col justify-center">
-          <div className="flex items-center gap-2 xl:gap-4">
-            <div
-              onClick={() => setActiveModal("profile")}
-              className="w-10 h-10 xl:w-12 xl:h-12 2xl:w-14 2xl:h-14 rounded-full overflow-hidden border-2 border-casino-gold flex items-center justify-center cursor-pointer transition-all hover:border-4 hover:scale-105"
-            >
-              <div className="bg-casino-light-blue w-full h-full flex items-center justify-center">
-                <User className="w-6 h-6 2xl:w-10 2xl:h-10 text-casino-silver" />
-              </div>
-            </div>
-            {/* Username and Balance  */}
+    <div className="h-[calc(100vh-9rem)] xl:h-[calc(100vh-10.5rem)] 2xl:h-[calc(100vh-11.5rem)] mt-[9rem] xl:mt-[10.5rem] 2xl:mt-[11.5rem] overflow-y-scroll scrollbar-none">
+      <NavBar />
+      <div className="fixed 2xl:top-32 xl:top-28 top-[4.5rem] w-full z-50 flex justify-between items-center px-12">
+        <button
+          onClick={() => navigate("/")}
+          className="flex max-w-[6rem] items-center gap-2 text-casino-silver hover:text-white transition-colors mt-2 text-sm xl:text-base px-4"
+        >
+          <ArrowLeft className="w-4 h-4 xl:w-5 xl:h-5" />
+          <span>Back</span>
+        </button>
 
-            <div className="flex flex-col items-start">
-              <span className="text-casino-silver font-semibold text-sm 2xl:text-lg">
-                {(user && user.name) || t("register_login")}
-              </span>
-              <span className="text-casino-gold text-xs">
-                {user && user.userInfo && "$ " + user.userInfo.game_balance}
-              </span>
-            </div>
-          </div>
-
-          <button
-            onClick={() => navigate("/")}
-            className="flex items-center gap-2 text-casino-silver hover:text-white transition-colors mt-2 text-sm xl:text-base"
-          >
-            <ArrowLeft className="w-4 h-4 xl:w-5 xl:h-5" />
-            <span>Back</span>
-          </button>
-        </div>
         {/* Provider productCodes */}
-        <div className="flex flex-col items-center">
-          <h1 className="2xl:text-2xl text-lg text-white font-semibold 2xl:font-bold capitalize text-center pb-4 hidden xl:block ">
-            {gameType}
-          </h1>
+        <div className="flex flex-col items-center max-w-[35rem] lg:max-w-[50rem]">
           <div className="flex items-center gap-2 overflow-scroll flex-wrap scrollbar-none justify-center px-4">
             {getProduct(gameType).productCodes.length > 0 &&
               getProduct(gameType).productCodes.map((tab) => (
@@ -286,25 +263,20 @@ export default function Category() {
         </div>
 
         {/* search box */}
-        <div className="flex flex-col items-center">
-          <h1 className="2xl:text-2xl text-lg text-white font-semibold 2xl:font-bold capitalize text-center pb-4 hidden xl:block ">
-            {gameType}
-          </h1>
-          <input
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            type="text"
-            placeholder="Search"
-            className="w-full px-3 py-1 xl:px-4 xl:py-2 rounded-full bg-casino-deep-blue text-casino-silver placeholder:text-casino-silver"
-          />
-        </div>
+        <input
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          type="text"
+          placeholder="Search"
+          className="max-w-[12rem] xl:max-w-[15rem] h-8 xl:h-10 px-3 py-1 xl:px-4 xl:py-2 rounded-full glass-effect text-casino-silver placeholder:text-casino-silver mr-4"
+        />
       </div>
 
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2 }}
-        className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 px-12 pt-4 xl:pt-8"
+        className="grid grid-cols-3 lg:grid-cols-4 gap-6 px-12"
       >
         {filteredGames.map((game, index) => {
           return (
@@ -322,7 +294,7 @@ export default function Category() {
                     (isMobile ? game.m_img : game.img) || "/login_modal_bg.png"
                   }
                   alt={game.gameName}
-                  className="object-cover w-full h-44 2xl:h-60 bg-casino-deep-blue"
+                  className="object-cover w-full h-36 2xl:h-60 bg-casino-deep-blue"
                 />
                 {parseInt(game.on_line) > 0 && (
                   <div className="absolute top-3 right-3">
@@ -336,8 +308,8 @@ export default function Category() {
                   {game.on_line} players
                 </div>
               </div>
-              <div className="p-4 2xl:pt-6 bg-gradient-to-t h-40 2xl:h-48 from-casino-deep-blue to-transparent flex flex-col justify-center">
-                <h3 className="text-white text-xl 2xl:text-2xl font-semibold">
+              <div className="px-4 py-1 2xl:pt-6 bg-gradient-to-t h-40 2xl:h-48 from-casino-deep-blue to-transparent flex flex-col justify-center">
+                <h3 className="text-white text-lg 2xl:text-2xl font-semibold">
                   {game.gameName}
                 </h3>
                 <p className="text-casino-silver text-sm 2xl:text-lg mt-1">

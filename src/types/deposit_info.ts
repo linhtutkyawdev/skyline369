@@ -27,9 +27,34 @@ export type DepositRecord = {
   updated_at: string;
 };
 
+export type TrabsactionRecord = {
+  id: number;
+  type: string;
+  transaction_id: string;
+  money: number;
+  status: string;
+  bank_account: string;
+  describe: string;
+  reason: string;
+  created_at: string;
+};
+
 export type DepositInfo = {
   current_page: number;
   data: DepositRecord[];
+  from: number;
+  last_page: number;
+  next_page_url: string;
+  path: string;
+  per_page: number;
+  prev_page_url: string;
+  to: number;
+  total: number;
+};
+
+export type TransactionInfo = {
+  current_page: number;
+  data: TrabsactionRecord[];
   from: number;
   last_page: number;
   next_page_url: string;

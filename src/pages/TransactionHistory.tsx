@@ -3,7 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useStateStore } from "@/store/state";
-import { DepositInfo, DepositRecord } from "@/types/deposit_info";
+import {
+  DepositInfo,
+  DepositRecord,
+  TransactionInfo,
+} from "@/types/deposit_info";
 import axiosInstance from "@/lib/axiosInstance";
 import { ApiResponse } from "@/types/api_response";
 import { useUserStore } from "@/store/user";
@@ -13,25 +17,29 @@ const TransationHistory = () => {
   const { loading, setLoading, error, setError } = useStateStore();
   const { user, setUser } = useUserStore();
   const navigate = useNavigate();
-  const [depositInfo, setDepositInfo] = useState<DepositInfo | null>(null);
+  const [transactionInfo, setTransactionInfo] =
+    useState<TransactionInfo | null>(null);
   const [selectedFilter, setSelectedFilter] = useState<
-    "all" | "deposit" | "withdraw"
-  >("all");
-  const filteredHistory = depositInfo?.data;
-  // selectedFilter === "all"
-  //   ? depositInfo?.data
-  //   : depositInfo?.data.filter((depositRecord) => depositRecord === selectedFilter);
+    "All" | "Deposit" | "Withdraw"
+  >("All");
+  const filteredHistory =
+    selectedFilter === "All"
+      ? transactionInfo?.data
+      : transactionInfo?.data.filter(
+          (depositRecord) => depositRecord.type === selectedFilter
+        );
 
   const loadDepositListing = async () => {
     setLoading(true);
     try {
-      if (!depositInfo) {
-        const responses = await axiosInstance.post<ApiResponse<DepositInfo>>(
-          "/player_deposit_listing",
-          {
-            token: user.token,
-          }
-        );
+      if (!transactionInfo) {
+        const responses = await axiosInstance.post<
+          ApiResponse<TransactionInfo>
+        >("/transaction_listing", {
+          token: user.token,
+          start_at: "2025-01-01 00:00:00",
+          end_at: "2025-04-30 23:59:59",
+        });
 
         if (
           responses.data.status.errorCode != 0 &&
@@ -44,7 +52,7 @@ const TransationHistory = () => {
           );
 
         console.log(responses.data.data);
-        setDepositInfo(responses.data.data);
+        setTransactionInfo(responses.data.data);
       }
     } catch (error) {
       if (error instanceof ApiError && error.statusCode === 401) {
@@ -126,9 +134,9 @@ const TransationHistory = () => {
         >
           <div className="flex gap-2">
             <button
-              onClick={() => setSelectedFilter("all")}
+              onClick={() => setSelectedFilter("All")}
               className={`px-4 py-2 rounded-full text-sm ${
-                selectedFilter === "all"
+                selectedFilter === "All"
                   ? "bg-casino-gold text-casino-deep-blue"
                   : "bg-casino-deep-blue text-casino-silver"
               }`}
@@ -136,9 +144,9 @@ const TransationHistory = () => {
               All
             </button>
             <button
-              onClick={() => setSelectedFilter("deposit")}
+              onClick={() => setSelectedFilter("Deposit")}
               className={`px-4 py-2 rounded-full text-sm ${
-                selectedFilter === "deposit"
+                selectedFilter === "Deposit"
                   ? "bg-casino-gold text-casino-deep-blue"
                   : "bg-casino-deep-blue text-casino-silver"
               }`}
@@ -146,9 +154,9 @@ const TransationHistory = () => {
               Deposits
             </button>
             <button
-              onClick={() => setSelectedFilter("withdraw")}
+              onClick={() => setSelectedFilter("Withdraw")}
               className={`px-4 py-2 rounded-full text-sm ${
-                selectedFilter === "withdraw"
+                selectedFilter === "Withdraw"
                   ? "bg-casino-gold text-casino-deep-blue"
                   : "bg-casino-deep-blue text-casino-silver"
               }`}
@@ -173,28 +181,30 @@ const TransationHistory = () => {
           transition={{ delay: 0.2 }}
           className="space-y-4 overflow-y-scroll scrollbar-none max-h-[calc(100vh-10rem)] lg:max-h-[calc(100vh-13.5rem)]"
         >
-          {depositInfo &&
-            depositInfo.data.map((d, i) => (
+          {filteredHistory &&
+            filteredHistory.length > 0 &&
+            filteredHistory.map((d, i) => (
               <div
-                key={d.user_id + i}
+                key={d.transaction_id + i}
                 className="glass-effect rounded-lg p-4 flex justify-between items-center"
               >
                 <div>
-                  <h3 className="text-white font-medium">
-                    Deposit - ${d.money * 1}
-                  </h3>
-                  <p className="text-casino-silver text-sm">{d.name}</p>
+                  <h3 className="text-white font-medium">${d.money}</h3>
+                  <p className="text-casino-silver text-sm">{d.type}</p>
                 </div>
 
                 <div
                   className={`font-bold ${
-                    d.confirm_at ? "text-green-400" : "text-yellow-400"
+                    d.status.includes("Pending")
+                      ? "text-yellow-400"
+                      : d.status.includes("Success")
+                      ? "text-green-400"
+                      : "text-red-400"
                   }`}
                 >
-                  {d.status == 1 ? "Requested - " : "Transfered - "}
-                  {d.status == 1
-                    ? d.created_at
-                    : d.confirm_at && d.confirm_at.toLocaleString()}
+                  {d.status}
+                  <br />
+                  {d.created_at}
                 </div>
               </div>
             ))}
