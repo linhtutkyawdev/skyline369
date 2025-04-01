@@ -206,7 +206,7 @@ const App = () => {
       )}
 
       {/* check fullscreen  */}
-      {!fullscreen && isMobile && (
+      {/* {!fullscreen && isMobile && (
         <div
           onClick={() => toggle()}
           className="fixed top-0 z-[100] w-screen h-screen cursor-pointer bg-zinc-950/60 glass-effect"
@@ -216,7 +216,7 @@ const App = () => {
             Please click anywhere on the screen to enter fullscreen mode
           </div>
         </div>
-      )}
+      )} */}
 
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
