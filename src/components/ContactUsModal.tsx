@@ -25,13 +25,13 @@ const ContactUsModal = () => {
     <AnimatePresence>
       {activeModal === "contact_us" && (
         <motion.div
-          className="fixed inset-0 bg-main z-50 flex items-center justify-center px-4"
+          className="fixed inset-0 bg-transparent backdrop-blur-xl z-50 flex items-center justify-center px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="bg-casino-deep-blue/50 w-full max-w-3xl max-h-[90vh] rounded-lg border border-casino-light-blue p-6 modal-container"
+            className="bg-casino-deep-blue/80 w-full max-w-3xl max-h-[90vh] rounded-lg border border-casino-light-blue p-6 modal-container"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
