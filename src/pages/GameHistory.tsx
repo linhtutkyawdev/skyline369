@@ -3,7 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useStateStore } from "@/store/state";
-import { GameHistoryRecord, GameHistoryInfo } from "@/types/game_history"; // Import new types
+import {
+  GameHistoryRecord,
+  GameHistoryInfo,
+  ProcessedGameHistoryRecord,
+} from "@/types/game_history"; // Import new types
 import axiosInstance from "@/lib/axiosInstance";
 import { ApiResponse } from "@/types/api_response";
 import { useUserStore } from "@/store/user";
@@ -27,7 +31,9 @@ const GameHistory = () => {
   const navigate = useNavigate();
 
   // Component state
-  const [gameHistory, setGameHistory] = useState<GameHistoryRecord[]>([]); // Renamed state
+  const [gameHistory, setGameHistory] = useState<ProcessedGameHistoryRecord[]>(
+    []
+  ); // Use processed type
   const [date, setDate] = useState<DateRange | undefined>({
     from: subDays(new Date(), 30),
     to: new Date(),
@@ -96,10 +102,76 @@ const GameHistory = () => {
           ? responses.data.data.data
           : [];
 
-        setGameHistory((prev) =>
-          page === 1 ? newGameHistory : [...prev, ...newGameHistory]
+        // --- Revised Logic: Combine adjacent bet/win records ---
+        const processedHistory: ProcessedGameHistoryRecord[] = [];
+        // Sort raw data by time (ascending) to increase chance of adjacency for pairing
+        // Note: This assumes bet_time is reliable for ordering.
+        const sortedRawData = [...newGameHistory].sort(
+          (a, b) =>
+            new Date(a.bet_time).getTime() - new Date(b.bet_time).getTime()
         );
-        // Check if the number of results is less than page size to determine hasMore
+
+        for (let i = 0; i < sortedRawData.length; i++) {
+          const record1 = sortedRawData[i];
+          const record2 = sortedRawData[i + 1]; // Look ahead
+          console.log(record1, record2);
+
+          // Check if record1 is 'bet' and record2 is 'win' and they seem related
+          if (
+            record2 &&
+            record1.bet_type.toLowerCase() === "bet" &&
+            record2.bet_type.toLowerCase() === "win" &&
+            record1.game_name == record2.game_name && // Sanity check: same game
+            record1.game_provider == record2.game_provider // Sanity check: same provider
+            // Optional: Add a time difference check if needed:
+            // Math.abs(new Date(record2.bet_time).getTime() - new Date(record1.bet_time).getTime()) < 5000 // e.g., within 5 seconds
+          ) {
+            const betAmount = record1.amount;
+            const winAmount = record2.amount; // Payout amount
+            const netAmount = winAmount - betAmount;
+            let finalStatus: "win" | "loss" | "push";
+            if (netAmount > 0) {
+              finalStatus = "win";
+            } else if (netAmount < 0) {
+              finalStatus = "loss";
+            } else {
+              finalStatus = "push";
+            }
+
+            processedHistory.push({
+              game_name: record1.game_name,
+              game_provider: record1.game_provider,
+              // Use bet_id from the 'bet' record. Displaying both might be confusing.
+              bet_id: record1.bet_id,
+              bet_time: record1.bet_time, // Use bet time as the primary time
+              currency: record1.currency,
+              bet_amount: betAmount,
+              win_amount: winAmount,
+              net_amount: netAmount,
+              final_status: finalStatus,
+              bet_type: record1.bet_type, // Preserve original bet_type from 'bet' record
+              freespin_id: record1.freespin_id, // Preserve freespin_id from 'bet' record
+            });
+
+            i++; // IMPORTANT: Increment i again because we processed two records (record1 and record2)
+          } else {
+            // Handle potential unpaired records or different ordering (e.g., win then bet)
+            // Current logic: Skip records that don't fit the bet -> win pattern.
+            // console.warn("Skipping potentially unpaired record or unexpected order:", record1);
+          }
+        }
+        // --- End of revised combining logic ---
+
+        // Sort the final processed history by time (descending) for display
+        processedHistory.sort(
+          (a, b) =>
+            new Date(b.bet_time).getTime() - new Date(a.bet_time).getTime()
+        );
+
+        setGameHistory((prev) =>
+          page === 1 ? processedHistory : [...prev, ...processedHistory]
+        );
+        // Base 'hasMore' on the *raw* data count, as processing halves the count roughly.
         setHasMore(newGameHistory.length === pageSize);
         if (isLoadMore) {
           setCurrentPage(page);
@@ -133,13 +205,17 @@ const GameHistory = () => {
   // Apply local search filter AFTER data fetching
   const filteredHistory =
     gameHistory.length > 0
-      ? gameHistory.filter((record: GameHistoryRecord) => {
+      ? gameHistory.filter((record: ProcessedGameHistoryRecord) => {
+          // Use processed type
           const searchTermLower = searchTerm.toLowerCase();
+          // Adjust filter fields based on the ProcessedGameHistoryRecord structure
           return (
             record.game_name.toLowerCase().includes(searchTermLower) ||
             record.game_provider.toLowerCase().includes(searchTermLower) ||
             record.bet_id.toLowerCase().includes(searchTermLower) ||
-            record.amount.toString().includes(searchTermLower)
+            record.bet_amount.toString().includes(searchTermLower) || // Search bet amount
+            record.win_amount.toString().includes(searchTermLower) || // Search win amount
+            record.net_amount.toString().includes(searchTermLower) // Search net amount
           );
         })
       : [];
@@ -299,45 +375,66 @@ const GameHistory = () => {
           {!loading &&
             !error &&
             filteredHistory.length > 0 &&
-            filteredHistory.map((record: GameHistoryRecord, i: number) => (
-              <div
-                key={record.bet_id + i} // Use bet_id as key
-                className="glass-effect rounded-lg p-4 flex justify-between items-center"
-              >
-                <div>
-                  <h3 className="text-casino-gold font-medium">
-                    {record.game_name}
-                  </h3>
-                  <p className="text-casino-silver text-sm">
-                    {record.game_provider} - {record.game_type}
-                  </p>
-                  <p className="text-casino-silver text-xs mt-1">
-                    Bet ID: {record.bet_id}
-                  </p>
-                  <p className="text-casino-silver text-xs mt-1">
-                    Bet Type: {record.bet_type}{" "}
-                    {record.freespin_id ? `(FS: ${record.freespin_id})` : ""}
-                  </p>
+            filteredHistory.map(
+              (
+                record: ProcessedGameHistoryRecord,
+                i: number // Use processed type
+              ) => (
+                <div
+                  key={record.bet_id + i} // Use bet_id as key, index fallback if needed
+                  className="glass-effect rounded-lg p-4 flex justify-between items-center"
+                >
+                  {/* Left Side: Game Info */}
+                  <div>
+                    <h3 className="text-casino-gold font-medium">
+                      {record.game_name}
+                    </h3>
+                    <p className="text-casino-silver text-sm">
+                      {record.game_provider}
+                    </p>
+                    <p className="text-casino-silver text-xs mt-1">
+                      Bet: {record.bet_amount.toFixed(2)} {record.currency}
+                    </p>
+                    <p className="text-casino-silver text-xs mt-1">
+                      Win: {record.win_amount.toFixed(2)} {record.currency}
+                    </p>
+                  </div>
+
+                  {/* Right Side: Result and Time */}
+                  <div className="text-right">
+                    <p
+                      className={`font-bold text-lg ${
+                        // Increased font size
+                        record.final_status === "win"
+                          ? "text-green-400"
+                          : record.final_status === "loss"
+                          ? "text-red-400"
+                          : "text-amber-500" // Color for 'push' or 'draw'
+                      }`}
+                    >
+                      {/* Display Net Amount */}
+                      {record.net_amount >= 0 ? "+" : ""}
+                      {record.net_amount.toFixed(2)} {record.currency}
+                    </p>
+                    <p
+                      className={`text-sm font-medium ${
+                        // Status text
+                        record.final_status === "win"
+                          ? "text-green-400"
+                          : record.final_status === "loss"
+                          ? "text-red-400"
+                          : "text-amber-500"
+                      }`}
+                    >
+                      {record.final_status.toUpperCase()}
+                    </p>
+                    <p className="text-casino-silver text-xs mt-1">
+                      {record.bet_time}
+                    </p>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <p
-                    className={`font-bold text-sm ${
-                      record.win_loss_status.toLowerCase() === "win"
-                        ? "text-green-400"
-                        : record.win_loss_status.toLowerCase() === "loss"
-                        ? "text-red-400"
-                        : "text-amber-500" // Default/pending color
-                    }`}
-                  >
-                    {record.win_loss_status.toUpperCase()} ({record.amount}{" "}
-                    {record.currency})
-                  </p>
-                  <p className="text-casino-silver text-xs mt-1">
-                    {record.bet_time}
-                  </p>
-                </div>
-              </div>
-            ))}
+              )
+            )}
 
           {/* Loading More Indicator */}
           {isLoadingMore && (
