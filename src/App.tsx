@@ -9,8 +9,8 @@ import {
   useParams,
   useLocation,
 } from "react-router-dom";
-import { useEffect, useRef } from "react";
-import { useFullscreen, useToggle } from "react-use";
+import { useEffect, useRef, useState } from "react"; // Add useState
+import { useFullscreen } from "react-use"; // Removed useToggle
 import { isMobile } from "react-device-detect";
 import { Fullscreen, TriangleAlert } from "lucide-react";
 
@@ -43,10 +43,52 @@ const queryClient = new QueryClient();
 const App = () => {
   const orientation = useScreenOrientation();
   const ref = useRef<HTMLDivElement>(null);
-  const [show, toggle] = useToggle(false);
-  const fullscreen = useFullscreen(ref, show, {
-    onClose: () => toggle(false),
+  // Removed useToggle state. Use state and toggle directly from useFullscreen.
+  // State variable to pass to useFullscreen to satisfy its signature
+  const [requestFullscreen, setRequestFullscreen] = useState(false);
+
+  // Call useFullscreen with required arguments. It returns the *actual* state.
+  const isActuallyFullscreen = useFullscreen(ref, requestFullscreen, {
+    // Update state when fullscreen closes (e.g., via ESC key or programmatically)
+    onClose: () => setRequestFullscreen(false),
   });
+
+  // Manual toggle function remains essential for iOS compatibility
+  const handleFullscreenToggle = () => {
+    if (!ref.current) return;
+
+    // Check the *actual* state before toggling
+    if (!isActuallyFullscreen) {
+      const element = ref.current as any;
+      if (element.requestFullscreen) {
+        element
+          .requestFullscreen()
+          .catch((err: Error) => console.error(`FS Error: ${err.message}`));
+      } else if (element.webkitRequestFullscreen) {
+        /* Safari */
+        element.webkitRequestFullscreen();
+      } else if (element.msRequestFullscreen) {
+        /* IE11 */
+        element.msRequestFullscreen();
+      }
+      // Note: We don't setRequestFullscreen(true) here; rely on the hook's listeners
+    } else {
+      const doc = document as any;
+      if (doc.exitFullscreen) {
+        doc
+          .exitFullscreen()
+          .catch((err: Error) => console.error(`FS Error: ${err.message}`));
+        // Ensure state is updated when manually exiting via our button
+        setRequestFullscreen(false);
+      } else if (doc.webkitExitFullscreen) {
+        /* Safari */
+        doc.webkitExitFullscreen();
+      } else if (doc.msExitFullscreen) {
+        /* IE11 */
+        doc.msExitFullscreen();
+      }
+    }
+  };
 
   const { user, setUser } = useUserStore();
   const {
@@ -220,19 +262,15 @@ const App = () => {
       )}
 
       {/* check fullscreen  */}
-      {!fullscreen && isMobile && (
-        <div className="fixed top-0 z-[100] w-screen h-screen bg-zinc-950/60 glass-effect">
+      {/* Use the state and toggle function from useFullscreen */}
+      {!isFullscreen && isMobile && (
+        <div
+          onClick={handleFullscreenToggle} // Use the manual toggle handler
+          className="fixed top-0 z-[100] w-screen h-screen cursor-pointer bg-zinc-950/60 glass-effect"
+        >
           <div className="flex flex-col w-full h-full items-center justify-center">
             <Fullscreen className="w-8 h-8 m-4 text-casino-silver" />
-            <p className="text-center text-casino-silver mb-4">
-              For the best experience, please enter fullscreen mode.
-            </p>
-            <button
-              onClick={() => toggle()}
-              className="px-4 py-2 bg-blue-500 text-white rounded"
-            >
-              Enter Fullscreen
-            </button>
+            Please click anywhere on the screen to enter fullscreen mode
           </div>
         </div>
       )}
