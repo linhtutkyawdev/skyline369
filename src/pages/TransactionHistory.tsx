@@ -1,105 +1,203 @@
-import { ArrowLeft, Calendar, Search } from "lucide-react";
+import { ArrowLeft, Calendar as CalendarIcon, Search } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { useStateStore } from "@/store/state";
-import { TransactionInfo } from "@/types/deposit_info";
+import { TransactionInfo, TrabsactionRecord } from "@/types/deposit_info";
 import axiosInstance from "@/lib/axiosInstance";
 import { ApiResponse } from "@/types/api_response";
 import { useUserStore } from "@/store/user";
 import { ApiError } from "@/types/api_error";
+import { format, subDays } from "date-fns";
+import { DateRange } from "react-day-picker";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
 
 const TransationHistory = () => {
+  // Global state and navigation
   const { loading, setLoading, error, setError } = useStateStore();
   const { user, setUser } = useUserStore();
   const navigate = useNavigate();
-  const [transactionInfo, setTransactionInfo] =
-    useState<TransactionInfo | null>(null);
+
+  // Component state
+  const [transactions, setTransactions] = useState<TrabsactionRecord[]>([]);
   const [selectedFilter, setSelectedFilter] = useState<
     "All" | "Deposit" | "Withdrawal"
   >("All");
-  const filteredHistory =
-    selectedFilter === "All"
-      ? transactionInfo?.data
-      : transactionInfo?.data.filter(
-          (depositRecord) => depositRecord.type === selectedFilter
-        );
+  const [date, setDate] = useState<DateRange | undefined>({
+    from: subDays(new Date(), 30),
+    to: new Date(),
+  });
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
-  const loadDepositListing = async () => {
-    setLoading(true);
-    try {
-      if (!transactionInfo) {
+  // Ref for scroll container
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Memoized function to load transactions
+  const loadTransactionListing = useCallback(
+    async (
+      page: number,
+      startDate?: Date,
+      endDate?: Date,
+      isLoadMore = false
+    ) => {
+      // Set loading state based on whether it's an initial load or loading more
+      if (!isLoadMore) {
+        setLoading(true);
+        setError(null);
+      } else {
+        // Avoid setting main loading state if already loading more
+        if (loading || isLoadingMore) return;
+        setIsLoadingMore(true);
+      }
+
+      const start_at = format(
+        startDate ?? date?.from ?? new Date(),
+        "yyyy-MM-dd 00:00:00"
+      );
+      const end_at = format(
+        endDate ?? date?.to ?? new Date(),
+        "yyyy-MM-dd 23:59:59"
+      );
+
+      try {
         const responses = await axiosInstance.post<
           ApiResponse<TransactionInfo>
         >("/transaction_listing", {
           token: user.token,
-          start_at: "2025-01-01 00:00:00",
-          end_at: "2025-04-30 23:59:59",
+          start_at: start_at,
+          end_at: end_at,
+          page: page,
         });
 
         if (
           responses.data.status.errorCode != 0 &&
           responses.data.status.errorCode != 200
-        )
+        ) {
           throw new ApiError(
-            "An error has occured!",
+            "API Error", // Use a generic name or specific one if available
             responses.data.status.errorCode,
             responses.data.status.mess
           );
+        }
 
-        console.log(responses.data.data);
-        setTransactionInfo(responses.data.data);
+        const newTransactions = responses.data.data?.data ?? [];
+
+        setTransactions((prev) =>
+          page === 1 ? newTransactions : [...prev, ...newTransactions]
+        );
+        // Determine if there are more pages based on whether the API returned results
+        // A more robust check might involve comparing results length to a page size limit
+        setHasMore(newTransactions.length > 0);
+        if (isLoadMore) {
+          setCurrentPage(page); // Update current page only when loading more succeeds
+        }
+      } catch (err) {
+        console.error("Error loading transaction history:", err);
+        const apiError =
+          err instanceof ApiError
+            ? err
+            : new ApiError("Network Error", 500, "Failed to fetch data.");
+
+        if (apiError.statusCode === 401) {
+          setUser(null); // Logout on auth error
+        }
+        // Set error only on initial load failure or if it's a new error
+        if (!isLoadMore) {
+          setError(apiError);
+          setTransactions([]); // Clear data on initial load error
+        }
+        setHasMore(false); // Stop pagination on any error
+      } finally {
+        // Reset loading states
+        if (!isLoadMore) {
+          setLoading(false);
+        } else {
+          setIsLoadingMore(false);
+        }
       }
-    } catch (error) {
-      if (error instanceof ApiError && error.statusCode === 401) {
-        setUser(null);
-        setError(error);
-      }
-    } finally {
-      setLoading(false);
+      // IMPORTANT: Include all state setters used inside useCallback in the dependency array
+      // if their identity could change, although state setters from useState are stable.
+      // Include external dependencies like `user.token`, `date`.
+    },
+    [user.token, date, setLoading, setError, setUser, loading, isLoadingMore]
+  ); // Added loading states to prevent concurrent loads
+
+  // Apply local filters (type and search) AFTER data fetching
+  const typeFilteredHistory =
+    selectedFilter === "All"
+      ? transactions
+      : transactions.filter((record) => record.type === selectedFilter);
+
+  const filteredHistory = (typeFilteredHistory ?? []).filter(
+    (record: TrabsactionRecord) => {
+      const searchTermLower = searchTerm.toLowerCase();
+      return (
+        record.transaction_id.toLowerCase().includes(searchTermLower) ||
+        record.status.toLowerCase().includes(searchTermLower) ||
+        record.money.toString().includes(searchTermLower)
+      );
     }
-  };
+  );
 
-  //   const loadWithdrawalListing = async () => {
-  //     setLoading(true);
-  //     try {
-  //       if (!depositInfo) {
-  //         const responses = await axiosInstance.post<ApiResponse<DepositInfo>>(
-  //           "/player_deposit_listing",
-  //           {
-  //             token: user.token,
-  //           }
-  //         );
-
-  //         if (
-  //           responses.data.status.errorCode != 0 &&
-  //           responses.data.status.errorCode != 200
-  //         )
-  //           throw new ApiError(
-  //             "An error has occured!",
-  //             responses.data.status.errorCode,
-  //             responses.data.status.mess
-  //           );
-
-  //         console.log(responses.data.data);
-  //         setDepositInfo(responses.data.data);
-  //       }
-  //     } catch (error) {
-  //       if (error instanceof ApiError && error.statusCode === 401) {
-  //         setUser(null);
-  //         setError(error);
-  //       }
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
+  // Effect for initial load (only runs once on mount)
   useEffect(() => {
-    (async () => loadDepositListing())();
-  }, []);
+    setTransactions([]);
+    setCurrentPage(1);
+    setHasMore(true);
+    loadTransactionListing(1, date?.from, date?.to);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Intentionally empty dependency array for mount-only execution
+
+  // Effect for filter changes (date or type) -> Reset and load page 1
+  useEffect(() => {
+    // Reset pagination and load page 1 whenever date or selectedFilter changes.
+    // This now runs *every* time these dependencies change, including after initial mount.
+    setTransactions([]);
+    setCurrentPage(1);
+    setHasMore(true); // Crucially reset hasMore to true
+    loadTransactionListing(1, date?.from, date?.to);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [date, selectedFilter]); // Rerun when date or selectedFilter changes
+
+  // Effect for infinite scroll listener
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const scrollBottom =
+        container.scrollHeight - container.scrollTop - container.clientHeight;
+      // Trigger load more if near bottom, has more data, and not currently loading
+      if (scrollBottom < 150 && hasMore && !loading && !isLoadingMore) {
+        loadTransactionListing(currentPage + 1, date?.from, date?.to, true);
+      }
+    };
+
+    container.addEventListener("scroll", handleScroll);
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, [
+    loading,
+    isLoadingMore,
+    hasMore,
+    currentPage,
+    date,
+    loadTransactionListing,
+  ]); // Dependencies
 
   return (
     <div className="h-screen pb-8 pt-12 lg:pt-16 px-6">
+      {/* Back Button */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
@@ -114,6 +212,7 @@ const TransationHistory = () => {
         </button>
       </motion.div>
 
+      {/* Title */}
       <motion.h1
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -122,89 +221,174 @@ const TransationHistory = () => {
         Transaction History
       </motion.h1>
 
+      {/* Filters and Content Area */}
       <div className="max-w-3xl mx-auto space-y-4 lg:space-y-4">
+        {/* Filter Controls */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between"
+          className="flex flex-wrap items-center justify-between gap-4" // Added flex-wrap and gap
         >
+          {/* Type Filters */}
           <div className="flex gap-2">
-            <button
-              onClick={() => setSelectedFilter("All")}
-              className={`px-4 py-2 rounded-full text-sm ${
-                selectedFilter === "All"
-                  ? "bg-casino-gold text-casino-deep-blue"
-                  : "bg-casino-deep-blue text-casino-silver"
-              }`}
-            >
-              All
-            </button>
-            <button
-              onClick={() => setSelectedFilter("Deposit")}
-              className={`px-4 py-2 rounded-full text-sm ${
-                selectedFilter === "Deposit"
-                  ? "bg-casino-gold text-casino-deep-blue"
-                  : "bg-casino-deep-blue text-casino-silver"
-              }`}
-            >
-              Deposits
-            </button>
-            <button
-              onClick={() => setSelectedFilter("Withdrawal")}
-              className={`px-4 py-2 rounded-full text-sm ${
-                selectedFilter === "Withdrawal"
-                  ? "bg-casino-gold text-casino-deep-blue"
-                  : "bg-casino-deep-blue text-casino-silver"
-              }`}
-            >
-              Withdrawals
-            </button>
+            {(["All", "Deposit", "Withdrawal"] as const).map((filterType) => (
+              <button
+                key={filterType}
+                onClick={() => setSelectedFilter(filterType)}
+                className={`px-4 py-2 rounded-full text-sm ${
+                  selectedFilter === filterType
+                    ? "bg-casino-gold text-casino-deep-blue"
+                    : "bg-casino-deep-blue text-casino-silver"
+                }`}
+              >
+                {filterType === "Withdrawal" ? "Withdrawals" : filterType}
+              </button>
+            ))}
           </div>
 
+          {/* Date and Search Filters */}
           <div className="flex items-center gap-2">
-            <button className="w-10 h-10 rounded-full bg-casino-deep-blue flex items-center justify-center text-casino-silver">
-              <Calendar className="w-5 h-5" />
-            </button>
-            <button className="w-10 h-10 rounded-full bg-casino-deep-blue flex items-center justify-center text-casino-silver">
-              <Search className="w-5 h-5" />
-            </button>
+            {/* Date Range Picker */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  id="date"
+                  variant={"outline"}
+                  className={cn(
+                    "justify-start text-left font-normal h-10 rounded-full bg-casino-deep-blue text-casino-silver hover:bg-casino-deep-blue/80 hover:text-white pr-8 w-auto min-w-[150px]", // Adjusted width
+                    !date && "text-muted-foreground"
+                  )}
+                >
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {date?.from ? (
+                    date.to ? (
+                      <>
+                        {format(date.from, "MM/dd/yy")} -{" "}
+                        {format(date.to, "MM/dd/yy")}
+                      </>
+                    ) : (
+                      format(date.from, "LLL dd, y")
+                    )
+                  ) : (
+                    <span>Pick date range</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent
+                className="w-auto p-0 bg-casino-deep-blue border-casino-black"
+                align="end"
+              >
+                <Calendar
+                  initialFocus
+                  mode="range"
+                  defaultMonth={date?.from}
+                  selected={date}
+                  onSelect={setDate}
+                  numberOfMonths={1}
+                  className="text-white [&>div>table>tbody>tr>td>button]:text-white [&>div>table>tbody>tr>td>button:hover]:bg-casino-gold [&>div>table>tbody>tr>td>button:hover]:text-casino-deep-blue [&>div>div>button]:text-white [&>div>div>button:hover]:bg-casino-gold [&>div>div>button:hover]:text-casino-deep-blue [&>div>table>tbody>tr>td>button[aria-selected=true]]:bg-casino-gold [&>div>table>tbody>tr>td>button[aria-selected=true]]:text-casino-deep-blue"
+                />
+              </PopoverContent>
+            </Popover>
+
+            {/* Search Input */}
+            <div className="relative">
+              <Input
+                type="text"
+                placeholder="Search..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="h-10 max-w-[12rem] rounded-full bg-casino-deep-blue text-casino-silver pl-10 pr-4 focus:ring-casino-gold focus:border-casino-gold"
+              />
+              <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-casino-silver" />
+            </div>
           </div>
         </motion.div>
 
+        {/* Transaction List */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="space-y-4 overflow-y-scroll scrollbar-none max-h-[calc(100vh-10rem)] lg:max-h-[calc(100vh-13.5rem)]"
+          ref={scrollContainerRef}
+          className="space-y-4 overflow-y-scroll scrollbar-none max-h-[calc(100vh-12rem)] lg:max-h-[calc(100vh-15.5rem)]" // Adjusted height calculation
         >
-          {filteredHistory &&
+          {/* Initial Loading Indicator */}
+          {loading && currentPage === 1 && (
+            <p className="text-center text-casino-silver py-4">Loading...</p>
+          )}
+
+          {/* Error Message */}
+          {error &&
+            !loading && ( // Show error only if not loading
+              <p className="text-center text-red-500 py-4">
+                {error.name}: {error.message}
+              </p>
+            )}
+
+          {/* Transaction Items */}
+          {!loading &&
+            !error &&
             filteredHistory.length > 0 &&
-            filteredHistory.map((d, i) => (
+            filteredHistory.map((d: TrabsactionRecord, i: number) => (
               <div
                 key={d.transaction_id + i}
                 className="glass-effect rounded-lg p-4 flex justify-between items-center"
               >
                 <div>
-                  <h3 className="text-white font-medium">${d.money}</h3>
+                  <h3 className="text-casino-gold font-medium">
+                    {d.type === "Deposit" ? "+" : "-"} ${d.money}
+                  </h3>
                   <p className="text-casino-silver text-sm">{d.type}</p>
+                  <p className="text-casino-silver text-xs mt-1">
+                    ID: {d.transaction_id}
+                  </p>
                 </div>
-
-                <div
-                  className={`font-bold ${
-                    d.status.includes("Pending") ||
-                    d.status.includes("Unconfirmed")
-                      ? "text-yellow-400"
-                      : d.status.includes("Success")
-                      ? "text-green-400"
-                      : "text-red-400"
-                  }`}
-                >
-                  {d.status}
-                  <br />
-                  {d.created_at}
+                <div className="text-right">
+                  <p
+                    className={`font-bold text-sm ${
+                      d.status.toLowerCase().includes("pending") ||
+                      d.status.toLowerCase().includes("unconfirmed")
+                        ? "text-amber-500"
+                        : d.status.toLowerCase().includes("success") ||
+                          d.status.toLowerCase().includes("approved")
+                        ? "text-green-400"
+                        : "text-red-400"
+                    }`}
+                  >
+                    {d.status}
+                  </p>
+                  <p className="text-casino-silver text-xs mt-1">
+                    {d.created_at}
+                  </p>
                 </div>
               </div>
             ))}
+
+          {/* Loading More Indicator */}
+          {isLoadingMore && (
+            <p className="text-center text-casino-silver py-4">
+              Loading more...
+            </p>
+          )}
+
+          {/* No Results Message */}
+          {!loading &&
+            !isLoadingMore &&
+            !error &&
+            transactions.length > 0 &&
+            filteredHistory.length === 0 && (
+              <p className="text-center text-casino-silver py-4">
+                No transactions match your search term.
+              </p>
+            )}
+          {!loading &&
+            !isLoadingMore &&
+            !error &&
+            transactions.length === 0 && (
+              <p className="text-center text-casino-silver py-4">
+                No transactions found for the selected criteria.
+              </p>
+            )}
         </motion.div>
       </div>
     </div>
