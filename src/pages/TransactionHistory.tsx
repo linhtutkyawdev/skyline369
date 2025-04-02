@@ -150,15 +150,6 @@ const TransationHistory = () => {
     }
   );
 
-  // Effect for initial load (only runs once on mount)
-  useEffect(() => {
-    setTransactions([]);
-    setCurrentPage(1);
-    setHasMore(true);
-    loadTransactionListing(1, date?.from, date?.to);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Intentionally empty dependency array for mount-only execution
-
   // Effect for filter changes (date or type) -> Reset and load page 1
   useEffect(() => {
     // Reset pagination and load page 1 whenever date or selectedFilter changes.

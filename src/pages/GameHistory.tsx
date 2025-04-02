@@ -47,11 +47,11 @@ const GameHistory = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false); // Flag for initial load
   const pageSize = 20; // Define page size for the API
 
   // Ref for scroll container
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const isInitialMountRef = useRef(true); // Ref to track initial mount
 
   // Memoized function to load game history
   const loadGameHistory = useCallback(
@@ -65,6 +65,7 @@ const GameHistory = () => {
       if (!isLoadMore) {
         setLoading(true);
         setError(null);
+        // Note: initialLoadComplete is reset in the filter change effect now
       } else {
         if (loading || isLoadingMore) return;
         setIsLoadingMore(true);
@@ -79,6 +80,7 @@ const GameHistory = () => {
         "yyyy-MM-dd 23:59:59"
       );
 
+      let success = false; // Track if the fetch was successful
       try {
         const responses = await axiosInstance.post<
           ApiResponse<GameHistoryInfo> // Updated response type structure
@@ -180,6 +182,7 @@ const GameHistory = () => {
         if (isLoadMore) {
           setCurrentPage(page);
         }
+        success = true; // Mark as successful
       } catch (err) {
         console.error("Error loading game history:", err);
         const apiError =
@@ -198,6 +201,10 @@ const GameHistory = () => {
       } finally {
         if (!isLoadMore) {
           setLoading(false);
+          // Set initial load complete flag only after the first page load attempt
+          if (page === 1) {
+            setInitialLoadComplete(true);
+          }
         } else {
           setIsLoadingMore(false);
         }
@@ -235,28 +242,16 @@ const GameHistory = () => {
         })
       : [];
 
-  // Effect for initial load
+  // Effect for filter changes (date or status) -> Reset and load page 1
   useEffect(() => {
+    // Reset pagination and load page 1 whenever date or statusFilter changes.
+    setInitialLoadComplete(false); // <-- Reset flag here
     setGameHistory([]);
     setCurrentPage(1);
-    setHasMore(true);
-    loadGameHistory(1, date?.from, date?.to).finally(() => {
-      isInitialMountRef.current = false; // Mark initial mount as complete
-    });
+    setHasMore(true); // Crucially reset hasMore to true
+    loadGameHistory(1, date?.from, date?.to);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Mount-only
-
-  // Effect for date filter changes -> Reset and load page 1
-  useEffect(() => {
-    // Only run on date changes *after* the initial mount
-    if (!isInitialMountRef.current) {
-      setGameHistory([]);
-      setCurrentPage(1);
-      setHasMore(true);
-      loadGameHistory(1, date?.from, date?.to); // No need for finally here
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [date]); // Rerun only when date changes
+  }, [date, statusFilter]); // Rerun when date or statusFilter changes
 
   // Effect for infinite scroll listener
   useEffect(() => {
@@ -280,7 +275,9 @@ const GameHistory = () => {
   useEffect(() => {
     const container = scrollContainerRef.current;
     // Check if loading is complete, more data exists, and the container isn't scrollable
+    // AND ensure the relevant page 1 load is complete before triggering auto-fetch
     if (
+      initialLoadComplete && // <-- Check flag
       container &&
       !loading &&
       !isLoadingMore &&
@@ -302,6 +299,7 @@ const GameHistory = () => {
     // Dependencies: Trigger when loading finishes, filters change (affecting filteredHistory height),
     // or more data is fetched (potentially making it scrollable or not)
   }, [
+    initialLoadComplete, // <-- Added dependency
     loading,
     isLoadingMore,
     hasMore,
@@ -500,6 +498,9 @@ const GameHistory = () => {
                     <p className="text-casino-silver text-xs mt-1">
                       {record.bet_time}
                     </p>
+                    <p className="text-casino-silver text-xs mt-1">
+                      ID: {record.bet_id}
+                    </p>
                   </div>
                 </div>
               )
@@ -511,7 +512,6 @@ const GameHistory = () => {
               Loading more...
             </p>
           )}
-
           {/* No Results Message (when search/filter yields nothing from existing data) */}
           {!loading &&
             !isLoadingMore &&
