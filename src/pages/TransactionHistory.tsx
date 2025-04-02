@@ -201,7 +201,7 @@ const TransationHistory = () => {
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
-        className="flex items-center mb-4 absolute top-6 left-6"
+        className="flex items-center justify-between w-full absolute top-0 left-0 px-6 xl:px-16 xl:pt-6 pt-4"
       >
         <button
           onClick={() => navigate("/")}
@@ -210,19 +210,20 @@ const TransationHistory = () => {
           <ArrowLeft className="w-5 h-5" />
           <span>Back</span>
         </button>
+
+        {/* Title */}
+        <motion.h1
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-3xl font-bold text-center text-white lg:mb-8"
+        >
+          Transaction History
+        </motion.h1>
+        <div className="w-20" />
       </motion.div>
 
-      {/* Title */}
-      <motion.h1
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-3xl font-bold text-center text-white lg:mb-8"
-      >
-        Transaction History
-      </motion.h1>
-
       {/* Filters and Content Area */}
-      <div className="max-w-3xl mx-auto space-y-4 lg:space-y-4">
+      <div className="xl:max-w-5xl 2xl:max-w-7xl max-w-3xl mx-auto space-y-4 lg:space-y-4 mt-6">
         {/* Filter Controls */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -310,7 +311,7 @@ const TransationHistory = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
           ref={scrollContainerRef}
-          className="space-y-4 overflow-y-scroll scrollbar-none max-h-[calc(100vh-12rem)] lg:max-h-[calc(100vh-15.5rem)]" // Adjusted height calculation
+          className="space-y-4 overflow-y-scroll scrollbar-none max-h-[calc(100vh-9.5rem)]" // Adjusted height calculation
         >
           {/* Initial Loading Indicator */}
           {loading && currentPage === 1 && (
