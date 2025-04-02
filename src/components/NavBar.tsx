@@ -1,4 +1,4 @@
-import { Share, MessageSquare, User, Settings } from "lucide-react";
+import { Share, MessageSquare, User, Settings, RefreshCcw } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
@@ -10,6 +10,7 @@ const NavBar = () => {
   const { t } = useTranslation();
   const { setActiveModal } = useStateStore();
   const { user } = useUserStore();
+
   return (
     <>
       <header className="fixed top-0 w-full py-4 px-8 z-50 flex justify-between items-center xl:glass-effect animate-fade-in">
@@ -34,6 +35,9 @@ const NavBar = () => {
               {user && user.userInfo && "$ " + user.userInfo.game_balance}
             </span>
           </div>
+          <button className="" onClick={() => window.location.reload()}>
+            <RefreshCcw className="w-4 h-4 text-casino-silver cursor-pointer hover:-rotate-45 hover:scale-110 transition-all" />
+          </button>
         </div>
 
         <div className="flex items-center gap-3 mr-2 xl:gap-4 xl-mr-2 2xl:gap-8 2xl:mr-4">

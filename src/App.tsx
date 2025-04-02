@@ -2,8 +2,14 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useParams,
+  useLocation,
+} from "react-router-dom";
+import { useEffect, useRef } from "react";
 import { useFullscreen, useToggle } from "react-use";
 import { isMobile } from "react-device-detect";
 import { Fullscreen, TriangleAlert } from "lucide-react";
@@ -173,6 +179,14 @@ const App = () => {
         setTimeout(async () => await loadUserInfo(), 100);
     })();
   }, [user]);
+
+  useEffect(() => {
+    (async () => {
+      if (user && user.userInfo && user.userInfo.balance > 0)
+        await transferBalance();
+      await loadUserInfo();
+    })();
+  }, [activeModal]);
 
   useEffect(() => {
     window.addEventListener("load", async () => {

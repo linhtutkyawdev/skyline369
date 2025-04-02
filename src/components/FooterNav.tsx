@@ -47,7 +47,19 @@ const FooterNav = () => {
           <span className="text-casino-deep-blue font-bold">H</span>
         </div>
         <span className="text-casino-silver text-xs 2xl:text-base mt-1">
-          {t("history")}
+          T/{t("history")}
+        </span>
+      </div>
+
+      <div
+        className="flex flex-col items-center nav-icon group cursor-pointer"
+        onClick={() => navigate("/history/game")}
+      >
+        <div className="w-10 h-10 2xl:w-12 2xl:h-12 rounded-full gold-badge flex items-center justify-center 2xl:mb-1 group-hover:animate-pulse-glow">
+          <span className="text-casino-deep-blue font-bold">H</span>
+        </div>
+        <span className="text-casino-silver text-xs 2xl:text-base mt-1">
+          G/{t("history")}
         </span>
       </div>
     </motion.footer>

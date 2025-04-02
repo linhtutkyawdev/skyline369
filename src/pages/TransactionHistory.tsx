@@ -3,11 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useStateStore } from "@/store/state";
-import {
-  DepositInfo,
-  DepositRecord,
-  TransactionInfo,
-} from "@/types/deposit_info";
+import { TransactionInfo } from "@/types/deposit_info";
 import axiosInstance from "@/lib/axiosInstance";
 import { ApiResponse } from "@/types/api_response";
 import { useUserStore } from "@/store/user";
@@ -20,7 +16,7 @@ const TransationHistory = () => {
   const [transactionInfo, setTransactionInfo] =
     useState<TransactionInfo | null>(null);
   const [selectedFilter, setSelectedFilter] = useState<
-    "All" | "Deposit" | "Withdraw"
+    "All" | "Deposit" | "Withdrawal"
   >("All");
   const filteredHistory =
     selectedFilter === "All"
@@ -154,9 +150,9 @@ const TransationHistory = () => {
               Deposits
             </button>
             <button
-              onClick={() => setSelectedFilter("Withdraw")}
+              onClick={() => setSelectedFilter("Withdrawal")}
               className={`px-4 py-2 rounded-full text-sm ${
-                selectedFilter === "Withdraw"
+                selectedFilter === "Withdrawal"
                   ? "bg-casino-gold text-casino-deep-blue"
                   : "bg-casino-deep-blue text-casino-silver"
               }`}
