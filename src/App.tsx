@@ -263,7 +263,7 @@ const App = () => {
 
       {/* check fullscreen  */}
       {/* Use the state and toggle function from useFullscreen */}
-      {!isFullscreen && isMobile && (
+      {!isActuallyFullscreen && isMobile && (
         <div
           onClick={handleFullscreenToggle} // Use the manual toggle handler
           className="fixed top-0 z-[100] w-screen h-screen cursor-pointer bg-zinc-950/60 glass-effect"
