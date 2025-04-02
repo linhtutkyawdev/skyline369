@@ -47,7 +47,6 @@ const GameHistory = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [initialLoadComplete, setInitialLoadComplete] = useState(false); // Flag for initial load
   const pageSize = 20; // Define page size for the API
 
   // Ref for scroll container
@@ -65,7 +64,6 @@ const GameHistory = () => {
       if (!isLoadMore) {
         setLoading(true);
         setError(null);
-        // Note: initialLoadComplete is reset in the filter change effect now
       } else {
         if (loading || isLoadingMore) return;
         setIsLoadingMore(true);
@@ -201,10 +199,6 @@ const GameHistory = () => {
       } finally {
         if (!isLoadMore) {
           setLoading(false);
-          // Set initial load complete flag only after the first page load attempt
-          if (page === 1) {
-            setInitialLoadComplete(true);
-          }
         } else {
           setIsLoadingMore(false);
         }
@@ -245,7 +239,6 @@ const GameHistory = () => {
   // Effect for filter changes (date or status) -> Reset and load page 1
   useEffect(() => {
     // Reset pagination and load page 1 whenever date or statusFilter changes.
-    setInitialLoadComplete(false); // <-- Reset flag here
     setGameHistory([]);
     setCurrentPage(1);
     setHasMore(true); // Crucially reset hasMore to true
@@ -275,11 +268,9 @@ const GameHistory = () => {
   useEffect(() => {
     const container = scrollContainerRef.current;
     // Check if loading is complete, more data exists, and the container isn't scrollable
-    // AND ensure the relevant page 1 load is complete before triggering auto-fetch
     if (
-      initialLoadComplete && // <-- Check flag
       container &&
-      !loading &&
+      !loading && // Check main loading state
       !isLoadingMore &&
       hasMore &&
       container.scrollHeight <= container.clientHeight // Key condition: content doesn't fill the view
@@ -299,7 +290,6 @@ const GameHistory = () => {
     // Dependencies: Trigger when loading finishes, filters change (affecting filteredHistory height),
     // or more data is fetched (potentially making it scrollable or not)
   }, [
-    initialLoadComplete, // <-- Added dependency
     loading,
     isLoadingMore,
     hasMore,
@@ -507,7 +497,8 @@ const GameHistory = () => {
             )}
 
           {/* Loading More Indicator */}
-          {isLoadingMore && (
+          {/* Show only if isLoadingMore is true AND the main loading is false */}
+          {isLoadingMore && !loading && (
             <p className="text-center text-casino-silver py-4">
               Loading more...
             </p>
