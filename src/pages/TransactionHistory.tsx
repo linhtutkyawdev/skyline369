@@ -371,23 +371,34 @@ const TransationHistory = () => {
               Loading more...
             </p>
           )}
-
-          {/* No Results Message */}
+          {/* No Results Message (when search/filter yields nothing from existing data) */}
           {!loading &&
             !isLoadingMore &&
             !error &&
-            transactions.length > 0 &&
-            filteredHistory.length === 0 && (
+            transactions.length > 0 && // We have *some* data loaded
+            filteredHistory.length === 0 && ( // But the current filter shows none
               <p className="text-center text-casino-silver py-4">
-                No transactions match your search term.
+                No transactions match your current filters.
               </p>
             )}
+
+          {/* No Results Message (when fetch returned nothing initially) */}
           {!loading &&
             !isLoadingMore &&
             !error &&
             transactions.length === 0 && (
               <p className="text-center text-casino-silver py-4">
                 No transactions found for the selected criteria.
+              </p>
+            )}
+
+          {/* End of List Indicator */}
+          {!loading &&
+            !isLoadingMore &&
+            !hasMore &&
+            transactions.length > 0 && (
+              <p className="text-center text-casino-silver/70 text-sm py-4">
+                End of history.
               </p>
             )}
         </motion.div>

@@ -5,10 +5,12 @@ import { ApiError } from "@/types/api_error";
 import { ApiResponse } from "@/types/api_response";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 const Game = () => {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [url, setUrl] = useState("");
   const { loading, setLoading, error, setError } = useStateStore();
   const { user, setUser } = useUserStore();
@@ -62,8 +64,8 @@ const Game = () => {
     return (
       <div className="w-screen h-screen">
         <button
-          onClick={() => history.go(-1)}
-          className="flex absolute m-4 top-0 left-0 items-center gap-2 text-casino-silver hover:text-white transition-colors"
+          onClick={() => navigate(searchParams.get("back"))}
+          className="flex bg-gradient-to-r from-transparent via-slate-950/50 to-black p-2 ps-4 pe-12 absolute top-0 right-0 items-center gap-2 text-casino-silver hover:text-white transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
           <span>Back</span>

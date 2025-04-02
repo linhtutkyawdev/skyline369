@@ -82,8 +82,6 @@ const DepositModal = () => {
   };
 
   const makeDepositRequest = async (): Promise<boolean> => {
-    console.log("called");
-
     setLoading(true);
     try {
       const responses = await axiosInstance.post<ApiResponse<Order>>(

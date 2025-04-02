@@ -87,7 +87,6 @@ const RegisterModal = () => {
 
     if (res.data.data) {
       const response = await res.data.data;
-      console.log(response.email);
       setStep("otp");
     }
   };
@@ -115,7 +114,6 @@ const RegisterModal = () => {
 
     if (res.data.data) {
       const response = await res.data.data;
-      console.log(response.otp);
       setStep("details");
     }
   };

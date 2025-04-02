@@ -292,7 +292,9 @@ export default function Category() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.05 * (index % 6) }}
               className="game-card overflow-hidden"
-              onClick={() => navigate("/game/" + game.id)}
+              onClick={() =>
+                navigate("/game/" + game.id + "?back=" + location.pathname)
+              }
             >
               <div className="relative">
                 <img

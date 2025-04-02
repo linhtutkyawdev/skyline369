@@ -23,6 +23,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
+// Potentially add ToggleGroup if using that component
+// import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 const GameHistory = () => {
   // Global state and navigation
@@ -39,6 +41,9 @@ const GameHistory = () => {
     to: new Date(),
   });
   const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "win" | "loss">(
+    "all"
+  ); // State for win/loss filter
   const [currentPage, setCurrentPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -114,7 +119,6 @@ const GameHistory = () => {
         for (let i = 0; i < sortedRawData.length; i++) {
           const record1 = sortedRawData[i];
           const record2 = sortedRawData[i + 1]; // Look ahead
-          console.log(record1, record2);
 
           // Check if record1 is 'bet' and record2 is 'win' and they seem related
           if (
@@ -208,15 +212,26 @@ const GameHistory = () => {
       ? gameHistory.filter((record: ProcessedGameHistoryRecord) => {
           // Use processed type
           const searchTermLower = searchTerm.toLowerCase();
-          // Adjust filter fields based on the ProcessedGameHistoryRecord structure
-          return (
+
+          // Apply status filter first
+          const statusMatch =
+            statusFilter === "all" || record.final_status === statusFilter;
+
+          if (!statusMatch) {
+            return false; // Skip if status doesn't match
+          }
+
+          // Apply search term filter if status matches
+          const searchMatch =
+            !searchTermLower || // Show all if search is empty
             record.game_name.toLowerCase().includes(searchTermLower) ||
             record.game_provider.toLowerCase().includes(searchTermLower) ||
             record.bet_id.toLowerCase().includes(searchTermLower) ||
             record.bet_amount.toString().includes(searchTermLower) || // Search bet amount
             record.win_amount.toString().includes(searchTermLower) || // Search win amount
-            record.net_amount.toString().includes(searchTermLower) // Search net amount
-          );
+            record.net_amount.toString().includes(searchTermLower); // Search net amount
+
+          return searchMatch;
         })
       : [];
 
@@ -260,6 +275,42 @@ const GameHistory = () => {
     return () => container.removeEventListener("scroll", handleScroll);
   }, [loading, isLoadingMore, hasMore, currentPage, date, loadGameHistory]);
 
+  // Effect to automatically fetch more if the filter clears the current view OR
+  // if the filtered view is too short to scroll, but more data might exist
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    // Check if loading is complete, more data exists, and the container isn't scrollable
+    if (
+      container &&
+      !loading &&
+      !isLoadingMore &&
+      hasMore &&
+      container.scrollHeight <= container.clientHeight // Key condition: content doesn't fill the view
+    ) {
+      // Avoid fetching if we just loaded and the raw data count was less than page size,
+      // indicating no more data exists, even though hasMore might briefly be true.
+      // We rely on loadGameHistory setting hasMore correctly based on the fetch.
+      // This check prevents potential rapid firing if the API is slow to update hasMore state.
+      // However, the primary check is !isLoadingMore && hasMore.
+
+      console.log(
+        "Auto-fetching next page due to short/empty filter results..."
+      );
+      // Debounce or add a small delay? Maybe not necessary if isLoadingMore check is robust.
+      loadGameHistory(currentPage + 1, date?.from, date?.to, true);
+    }
+    // Dependencies: Trigger when loading finishes, filters change (affecting filteredHistory height),
+    // or more data is fetched (potentially making it scrollable or not)
+  }, [
+    loading,
+    isLoadingMore,
+    hasMore,
+    filteredHistory,
+    currentPage,
+    date,
+    loadGameHistory,
+  ]); // gameHistory removed as filteredHistory reflects display
+
   return (
     <div className="h-screen pb-8 pt-12 lg:pt-16 px-6">
       {/* Back Button & Title */}
@@ -291,8 +342,26 @@ const GameHistory = () => {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-wrap items-center justify-end gap-4" // Justify end as type filters are removed
+          className="flex flex-col md:flex-row items-center justify-between gap-4" // Adjust layout for filters
         >
+          {/* Status Filter Buttons (Styled like TransactionHistory) */}
+          <div className="flex gap-2">
+            {(["all", "win", "loss"] as const).map((filterType) => (
+              <button
+                key={filterType}
+                onClick={() => setStatusFilter(filterType)}
+                className={`px-4 py-2 rounded-full text-sm capitalize ${
+                  // Added capitalize
+                  statusFilter === filterType
+                    ? "bg-casino-gold text-casino-deep-blue" // Active state
+                    : "bg-casino-deep-blue text-casino-silver" // Inactive state
+                }`}
+              >
+                {filterType}
+              </button>
+            ))}
+          </div>
+
           {/* Date and Search Filters */}
           <div className="flex items-center gap-2">
             {/* Date Range Picker */}
@@ -443,19 +512,28 @@ const GameHistory = () => {
             </p>
           )}
 
-          {/* No Results Message */}
+          {/* No Results Message (when search/filter yields nothing from existing data) */}
           {!loading &&
             !isLoadingMore &&
             !error &&
-            gameHistory.length > 0 &&
-            filteredHistory.length === 0 && (
+            gameHistory.length > 0 && // We have *some* data loaded
+            filteredHistory.length === 0 && ( // But the current filter shows none
               <p className="text-center text-casino-silver py-4">
-                No game history matches your search term.
+                No game history matches your current filters.
               </p>
             )}
+
+          {/* No Results Message (when fetch returned nothing initially) */}
           {!loading && !isLoadingMore && !error && gameHistory.length === 0 && (
             <p className="text-center text-casino-silver py-4">
               No game history found for the selected criteria.
+            </p>
+          )}
+
+          {/* End of List Indicator */}
+          {!loading && !isLoadingMore && !hasMore && gameHistory.length > 0 && (
+            <p className="text-center text-casino-silver/70 text-sm py-4">
+              End of history.
             </p>
           )}
         </motion.div>
