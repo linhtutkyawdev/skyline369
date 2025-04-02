@@ -1,7 +1,16 @@
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, History, Wallet, Sparkles, LogOut, Edit } from "lucide-react";
+import {
+  X,
+  History,
+  Wallet,
+  Sparkles,
+  LogOut,
+  Edit,
+  Gamepad2,
+} from "lucide-react"; // Added Gamepad2
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom"; // Added useNavigate
 import { useUserStore } from "@/store/user";
 import { useStateStore } from "@/store/state";
 import { useToast } from "@/hooks/use-toast";
@@ -13,6 +22,7 @@ const ProfileModal = () => {
   const { activeModal, setActiveModal } = useStateStore();
   const { user, setUser } = useUserStore();
   const { toast } = useToast();
+  const navigate = useNavigate(); // Added navigate hook
 
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
@@ -118,6 +128,29 @@ const ProfileModal = () => {
                     {user && user.userInfo && "$ " + user.userInfo.game_balance}
                   </span>
                 </div>
+                {/* History Links */}
+                {/* <div className="grid grid-cols-2 gap-3 w-full">
+                  <button
+                    onClick={() => {
+                      setActiveModal(null); // Close modal
+                      navigate("/history/transaction");
+                    }}
+                    className="p-3 rounded-lg bg-casino-light-blue w-full flex items-center justify-center gap-2 transition-all hover:bg-opacity-80"
+                  >
+                    <History className="w-5 h-5 text-casino-gold" />
+                    <span className="text-white text-sm">Transactions</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setActiveModal(null); // Close modal
+                      navigate("/history/game");
+                    }}
+                    className="p-3 rounded-lg bg-casino-light-blue w-full flex items-center justify-center gap-2 transition-all hover:bg-opacity-80"
+                  >
+                    <Gamepad2 className="w-5 h-5 text-casino-gold" />
+                    <span className="text-white text-sm">Game History</span>
+                  </button>
+                </div> */}
                 {/* <button className="p-3 rounded-lg bg-casino-light-blue w-full flex items-center justify-center gap-3 transition-all hover:bg-opacity-80">
                   <Edit className="w-5 h-5 text-casino-gold" />
                   <span className="text-white">Edit Profile</span>
