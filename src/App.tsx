@@ -220,17 +220,14 @@ const App = () => {
       )}
 
       {/* check fullscreen  */}
-      {/* {!fullscreen && isMobile && (
+      {!fullscreen && isMobile && (
         <div
           onClick={() => toggle()}
-          className="fixed top-0 z-[100] w-screen h-screen cursor-pointer bg-zinc-950/60 glass-effect"
+          className="fixed bottom-0 right-0 z-[100] cursor-pointer"
         >
-          <div className="flex flex-col w-full h-full items-center justify-center">
-            <Fullscreen className="w-8 h-8 m-4 text-casino-silver" />
-            Please click anywhere on the screen to enter fullscreen mode
-          </div>
+          <Fullscreen className="w-6 h-6 m-4 text-white animate-pulse" />
         </div>
-      )} */}
+      )}
 
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
