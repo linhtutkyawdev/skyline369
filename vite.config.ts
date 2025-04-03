@@ -1,4 +1,5 @@
 import { defineConfig } from "vite";
+import { VitePWA } from "vite-plugin-pwa";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
@@ -7,15 +8,39 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 3000,
-    proxy: {
-      "/api/index.php/v1": {
-        target: "https://staging.slotegrator.com",
-        changeOrigin: true,
-        secure: false,
-      },
-    },
   },
-  plugins: [react()],
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: "prompt",
+      injectRegister: false,
+
+      pwaAssets: {
+        disabled: false,
+        config: true,
+      },
+
+      manifest: {
+        name: "Skyline",
+        short_name: "Skyline",
+        description: "Best Casino App",
+        theme_color: "#000080",
+      },
+
+      workbox: {
+        globPatterns: ["**/*.{js,css,html,svg,png,ico}"],
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+      },
+
+      devOptions: {
+        enabled: true,
+        navigateFallback: "index.html",
+        suppressWarnings: true,
+        type: "module",
+      },
+    }),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
