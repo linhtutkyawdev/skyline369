@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Moon, Sun, Volume2, VolumeX, Bell, Languages } from "lucide-react";
+import { X, Volume2, VolumeX, Bell, Languages } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { Switch } from "./ui/switch";

@@ -2,6 +2,12 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useStateStore } from "@/store/state";
+import {
+  ArrowDownToLine,
+  ArrowUpFromLine,
+  History,
+  Gamepad2,
+} from "lucide-react";
 
 const FooterNav = () => {
   const navigate = useNavigate();
@@ -20,7 +26,7 @@ const FooterNav = () => {
         onClick={() => setActiveModal("deposit")}
       >
         <div className="w-10 h-10 2xl:w-12 2xl:h-12 rounded-full gold-badge flex items-center justify-center 2xl:mb-1 group-hover:animate-pulse-glow">
-          <span className="text-casino-deep-blue font-bold">D</span>
+          <ArrowDownToLine className="text-casino-deep-blue" size={20} />
         </div>
         <span className="text-casino-silver text-xs 2xl:text-base mt-1">
           {t("deposit")}
@@ -32,7 +38,7 @@ const FooterNav = () => {
         onClick={() => setActiveModal("withdraw")}
       >
         <div className="w-10 h-10 2xl:w-12 2xl:h-12 rounded-full gold-badge flex items-center justify-center 2xl:mb-1 group-hover:animate-pulse-glow">
-          <span className="text-casino-deep-blue font-bold">W</span>
+          <ArrowUpFromLine className="text-casino-deep-blue" size={20} />
         </div>
         <span className="text-casino-silver text-xs 2xl:text-base mt-1">
           {t("withdraw")}
@@ -44,7 +50,7 @@ const FooterNav = () => {
         onClick={() => navigate("/history/transaction")}
       >
         <div className="w-10 h-10 2xl:w-12 2xl:h-12 rounded-full gold-badge flex items-center justify-center 2xl:mb-1 group-hover:animate-pulse-glow">
-          <span className="text-casino-deep-blue font-bold">T</span>
+          <History className="text-casino-deep-blue" size={20} />
         </div>
         <span className="text-casino-silver text-xs 2xl:text-base mt-1">
           Transactions
@@ -56,7 +62,7 @@ const FooterNav = () => {
         onClick={() => navigate("/history/game")}
       >
         <div className="w-10 h-10 2xl:w-12 2xl:h-12 rounded-full gold-badge flex items-center justify-center 2xl:mb-1 group-hover:animate-pulse-glow">
-          <span className="text-casino-deep-blue font-bold">L</span>
+          <Gamepad2 className="text-casino-deep-blue" size={20} />
         </div>
         <span className="text-casino-silver text-xs 2xl:text-base mt-1">
           Gamelogs
