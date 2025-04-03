@@ -32,12 +32,12 @@ export default defineConfig(({ mode }) => ({
         start_url: "/",
         icons: [
           {
-            src: "favicon.ico", // Or path to a 192x192 icon
+            src: "192.png", // Or path to a 192x192 icon
             sizes: "192x192",
             type: "image/x-icon",
           },
           {
-            src: "favicon.ico", // Or path to a 512x512 icon
+            src: "512.png", // Or path to a 512x512 icon
             sizes: "512x512",
             type: "image/x-icon",
           },
