@@ -47,7 +47,7 @@ export default defineConfig(() => ({
     },
   },
   build: {
-    outDir: "/www/wwwroot/skyline/public/dist", // Change this to your desired folder
+    outDir: "/dist", // Change this to your desired folder
     emptyOutDir: true,
   },
 }));
