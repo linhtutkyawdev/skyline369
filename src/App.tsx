@@ -20,8 +20,6 @@ import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
-import Deposit from "./pages/Deposit";
-import Withdraw from "./pages/Withdraw";
 import Share from "./pages/Share";
 import Messages from "./pages/Messages";
 import Category from "./pages/Category";
@@ -242,8 +240,6 @@ const App = () => {
                 <Route path="/game/:id" element={<Game />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/contact" element={<Contact />} />
-                <Route path="/deposit" element={<Deposit />} />
-                <Route path="/withdraw" element={<Withdraw />} />
                 <Route path="/history/game" element={<GameHistory />} />
                 <Route
                   path="/history/transaction"

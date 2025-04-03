@@ -450,9 +450,7 @@ const GameHistory = () => {
                       {record.game_provider}
                     </p>
                     <p className="text-casino-silver text-xs mt-1">
-                      Bet: {record.bet_amount.toFixed(2)} {record.currency}
-                    </p>
-                    <p className="text-casino-silver text-xs mt-1">
+                      Bet: {record.bet_amount.toFixed(2)} {record.currency} |
                       Win: {record.win_amount.toFixed(2)} {record.currency}
                     </p>
                   </div>
@@ -487,9 +485,6 @@ const GameHistory = () => {
                     </p>
                     <p className="text-casino-silver text-xs mt-1">
                       {record.bet_time}
-                    </p>
-                    <p className="text-casino-silver text-xs mt-1">
-                      ID: {record.bet_id}
                     </p>
                   </div>
                 </div>

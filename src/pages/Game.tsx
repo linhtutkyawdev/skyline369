@@ -65,10 +65,10 @@ const Game = () => {
       <div className="w-screen h-screen">
         <button
           onClick={() => navigate(searchParams.get("back"))}
-          className="flex bg-gradient-to-r from-transparent via-slate-950/50 to-black p-2 ps-4 pe-12 absolute top-0 right-0 items-center gap-2 text-casino-silver hover:text-white transition-colors"
+          className="flex bg-gradient-to-l from-transparent via-slate-950/50 to-black p-2 ps-2 pe-4 xl:pe-12 absolute top-10 left-0 items-center gap-2 text-casino-silver hover:text-white transition-colors"
         >
-          <ArrowLeft className="w-5 h-5" />
-          <span>Back</span>
+          <ArrowLeft className="xl:w-5 xl:h-5 h-4 w-4" />
+          <span className="text-sm xl:text-base">Back</span>
         </button>
         <iframe
           src={url}
