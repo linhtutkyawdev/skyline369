@@ -7,11 +7,19 @@ import { Switch } from "./ui/switch";
 import { SupportedLanguages } from "@/i18n";
 import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 import { useStateStore } from "@/store/state";
+import { useSettingsStore } from "@/store/settings"; // Import the settings store
 
 const SettingsModal = () => {
   const { activeModal, setActiveModal } = useStateStore();
-  const [soundEnabled, setSoundEnabled] = useState(true);
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
+  // Get settings state and setters from the store
+  const {
+    soundEnabled, // Keep sound effects state if needed elsewhere, or remove if not
+    setSoundEnabled,
+    musicEnabled, // Add music state
+    setMusicEnabled, // Add music setter
+    notificationsEnabled,
+    setNotificationsEnabled,
+  } = useSettingsStore();
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
@@ -84,7 +92,8 @@ const SettingsModal = () => {
                 />
               </div> */}
 
-              <div className="flex items-center justify-between bg-casino-deep-blue rounded-lg p-4">
+              {/* Sound Effects Switch (Optional - keep if separate control is needed) */}
+              {/* <div className="flex items-center justify-between bg-casino-deep-blue rounded-lg p-4">
                 <div className="flex items-center gap-3">
                   {soundEnabled ? (
                     <Volume2 className="text-casino-silver" />
@@ -98,6 +107,24 @@ const SettingsModal = () => {
                   onCheckedChange={setSoundEnabled}
                   className="data-[state=checked]:bg-casino-gold"
                 />
+              </div> */}
+
+              {/* Background Music Switch */}
+              <div className="flex items-center justify-between bg-casino-deep-blue rounded-lg p-4">
+                <div className="flex items-center gap-3">
+                  {musicEnabled ? (
+                    <Volume2 className="text-casino-silver" /> // Use Volume2/VolumeX icons
+                  ) : (
+                    <VolumeX className="text-casino-silver" />
+                  )}
+                  <span className="text-white">{t("background_music")}</span>{" "}
+                  {/* Change label */}
+                </div>
+                <Switch
+                  checked={musicEnabled} // Use music state from store
+                  onCheckedChange={setMusicEnabled} // Use music setter from store
+                  className="data-[state=checked]:bg-casino-gold"
+                />
               </div>
 
               <div className="flex items-center justify-between bg-casino-deep-blue rounded-lg p-4">
@@ -106,8 +133,8 @@ const SettingsModal = () => {
                   <span className="text-white">{t("notifications")}</span>
                 </div>
                 <Switch
-                  checked={notificationsEnabled}
-                  onCheckedChange={setNotificationsEnabled}
+                  checked={notificationsEnabled} // Use state from store
+                  onCheckedChange={setNotificationsEnabled} // Use setter from store
                   className="data-[state=checked]:bg-casino-gold"
                 />
               </div>

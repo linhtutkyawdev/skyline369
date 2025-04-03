@@ -9,7 +9,7 @@ import {
   useParams,
   useLocation,
 } from "react-router-dom";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react"; // Add useState
 import { useFullscreen, useToggle } from "react-use";
 import { isMobile } from "react-device-detect";
 import { Fullscreen, TriangleAlert } from "lucide-react";
@@ -35,10 +35,24 @@ import axiosInstance from "./lib/axiosInstance";
 import GameHistory from "./pages/GameHistory";
 import TransationHistory from "./pages/TransactionHistory";
 import { UserInfo } from "./types/user";
+import { useSettingsStore } from "./store/settings"; // Import settings store
+
+// List of background music files in the public folder
+const bgMusicFiles = [
+  "/bg_music_1.mp3",
+  "/bg_music_2.mp3",
+  "/bg_music_3.mp3",
+  "/bg_music_4.mp3",
+];
 
 const queryClient = new QueryClient();
 
 const App = () => {
+  const audioRef = useRef<HTMLAudioElement>(null); // Ref for the audio element
+  const { musicEnabled } = useSettingsStore(); // Get music setting state
+  const [currentTrackIndex, setCurrentTrackIndex] = useState<number | null>(
+    null
+  ); // Keep track of the current song
   const orientation = useScreenOrientation();
   const ref = useRef<HTMLDivElement>(null);
   const [show, toggle] = useToggle(false);
@@ -195,6 +209,58 @@ const App = () => {
     });
   }, []);
 
+  // Effect to handle background music playback
+  useEffect(() => {
+    const audioElement = audioRef.current;
+    if (!audioElement) return;
+
+    const playRandomTrack = () => {
+      let nextIndex;
+      do {
+        nextIndex = Math.floor(Math.random() * bgMusicFiles.length);
+      } while (nextIndex === currentTrackIndex && bgMusicFiles.length > 1); // Avoid repeating the same track if possible
+
+      setCurrentTrackIndex(nextIndex);
+      audioElement.src = bgMusicFiles[nextIndex];
+      audioElement
+        .play()
+        .catch((error) => console.error("Audio play failed:", error)); // Handle potential play errors
+    };
+
+    // Add event listener for when a track ends
+    const handleTrackEnd = () => {
+      playRandomTrack();
+    };
+
+    if (musicEnabled) {
+      audioElement.volume = 0.3; // Set a default volume (adjust as needed)
+      if (audioElement.paused || audioElement.src === "") {
+        playRandomTrack(); // Start playing if enabled and not already playing
+      } else {
+        // If already playing (e.g., navigated back), ensure it continues
+        audioElement
+          .play()
+          .catch((error) => console.error("Audio play failed:", error));
+      }
+      audioElement.addEventListener("ended", handleTrackEnd);
+    } else {
+      audioElement.pause();
+      // audioElement.currentTime = 0; // Optional: Reset track position
+      // audioElement.src = ""; // Optional: Clear source
+      setCurrentTrackIndex(null); // Reset track index
+      audioElement.removeEventListener("ended", handleTrackEnd);
+    }
+
+    // Cleanup listener on component unmount or when musicEnabled changes
+    return () => {
+      audioElement.removeEventListener("ended", handleTrackEnd);
+      // Optional: Pause music on unmount if desired, though settings store handles persistence
+      // if (audioElement) {
+      //   audioElement.pause();
+      // }
+    };
+  }, [musicEnabled, currentTrackIndex]); // Rerun effect if musicEnabled or currentTrackIndex changes
+
   return (
     <div className="bg-main w-screen h-screen" ref={ref}>
       {/* check orientation */}
@@ -253,7 +319,10 @@ const App = () => {
             )}
             <ModalContainer />
           </BrowserRouter>
-        </TooltipProvider>
+        </TooltipProvider>{" "}
+        {/* Remove duplicate closing tag */}
+        {/* Add the audio element, hidden from view, just before the main div closes */}
+        <audio ref={audioRef} loop={false}></audio>
       </QueryClientProvider>
     </div>
   );
