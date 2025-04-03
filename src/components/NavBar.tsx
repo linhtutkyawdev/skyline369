@@ -98,6 +98,18 @@ const NavBar = () => {
               {t("settings")}
             </span>
           </div>
+
+          <div
+            className="nav-icon group cursor-pointer"
+            onClick={() => navigate("/withdraw")}
+          >
+            <div className="w-10 h-10 2xl:w-12 2xl:h-12 rounded-full metal-badge flex items-center justify-center 2xl:mb-1 group-hover:animate-pulse-glow">
+              <Settings className="w-5 h-5 2xl:w-6 2xl:h-6 text-[#b3c8e7]" />
+            </div>
+            <span className="text-casino-silver text-xs 2xl:text-base">
+              Test
+            </span>
+          </div>
         </div>
       </header>
     </>
