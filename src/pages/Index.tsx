@@ -165,7 +165,7 @@ const Index = () => {
   ];
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden">
+    <div className="h-screen w-screen flex flex-col overflow-hidden">
       <NavBar />
       <div className="flex flex-col items-center justify-center h-full -mt-12 lg:-mt-8">
         <Logo />

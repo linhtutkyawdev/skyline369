@@ -74,6 +74,7 @@ const Game = () => {
           src={url}
           title="Embedded Website"
           className="w-full h-full border-none"
+          allowFullScreen
         ></iframe>
       </div>
     );
