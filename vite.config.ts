@@ -34,12 +34,12 @@ export default defineConfig(({ mode }) => ({
           {
             src: "192.png", // Or path to a 192x192 icon
             sizes: "192x192",
-            type: "image/x-icon",
+            type: "image/png",
           },
           {
             src: "512.png", // Or path to a 512x512 icon
             sizes: "512x512",
-            type: "image/x-icon",
+            type: "image/png",
           },
         ],
       },
