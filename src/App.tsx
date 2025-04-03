@@ -198,7 +198,7 @@ const App = () => {
   }, []);
 
   return (
-    <div className="bg-main" ref={ref}>
+    <div className="bg-main w-screen h-screen" ref={ref}>
       {/* check orientation */}
       {(orientation === "portrait-primary" ||
         orientation === "portrait-secondary") && (
