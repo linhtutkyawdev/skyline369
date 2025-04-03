@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => ({
     react(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.ico", "placeholder.svg"], // Add other static assets if needed
+      includeAssets: ["192.png", "512.png"], // Add other static assets if needed
       manifest: {
         name: "Skyline369 App",
         short_name: "Skyline369",
