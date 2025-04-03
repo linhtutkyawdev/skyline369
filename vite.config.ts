@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
+import { VitePWA } from "vite-plugin-pwa";
 import path from "path";
 
 // https://vitejs.dev/config/
@@ -15,7 +16,35 @@ export default defineConfig(({ mode }) => ({
       },
     },
   },
-  plugins: [react()],
+  plugins: [
+    react(),
+    VitePWA({
+      registerType: "autoUpdate",
+      includeAssets: ["favicon.ico", "placeholder.svg"], // Add other static assets if needed
+      manifest: {
+        name: "Skyline369 App",
+        short_name: "Skyline369",
+        description: "My Awesome Skyline369 App description",
+        theme_color: "#ffffff",
+        background_color: "#ffffff",
+        display: "standalone",
+        scope: "/",
+        start_url: "/",
+        icons: [
+          {
+            src: "favicon.ico", // Or path to a 192x192 icon
+            sizes: "192x192",
+            type: "image/x-icon",
+          },
+          {
+            src: "favicon.ico", // Or path to a 512x512 icon
+            sizes: "512x512",
+            type: "image/x-icon",
+          },
+        ],
+      },
+    }),
+  ],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
