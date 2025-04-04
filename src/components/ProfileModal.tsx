@@ -10,7 +10,8 @@ import {
   Gamepad2,
 } from "lucide-react"; // Added Gamepad2
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom"; // Added useNavigate
+import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next"; // Import useTranslation
 import { useUserStore } from "@/store/user";
 import { useStateStore } from "@/store/state";
 import { useToast } from "@/hooks/use-toast";
@@ -22,8 +23,8 @@ const ProfileModal = () => {
   const { activeModal, setActiveModal } = useStateStore();
   const { user, setUser } = useUserStore();
   const { toast } = useToast();
-  const navigate = useNavigate(); // Added navigate hook
-
+  const navigate = useNavigate();
+  const { t } = useTranslation(); // Get translation function
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setActiveModal(null);
@@ -49,20 +50,20 @@ const ProfileModal = () => {
 
       if (res.data.status.errorCode != 0 && res.data.status.errorCode != 200)
         throw new ApiError(
-          "An error has occured!",
+          t("apiErrorOccurred"),
           res.data.status.errorCode,
           res.data.status.mess
         );
       setActiveModal(null);
       setUser(null);
       toast({
-        title: "Logout Success",
-        description: "Successfully logged out of your account.",
+        title: t("logoutSuccessTitle"),
+        description: t("logoutSuccessDesc"),
       });
     } catch (error) {
       if (error instanceof ApiError) {
         toast({
-          title: "Logout Failed",
+          title: t("logoutFailedTitle"),
           description: error.message,
           variant: "destructive",
         });
@@ -93,7 +94,7 @@ const ProfileModal = () => {
               className="flex justify-between items-center mb-6"
             >
               <h2 className="text-xl font-semibold text-casino-silver">
-                Profile
+                {t("profile")}
               </h2>
               <Button
                 variant="ghost"
@@ -113,7 +114,7 @@ const ProfileModal = () => {
               <div className="w-24 h-24 -mt-8 rounded-full overflow-hidden border-2 border-casino-gold flex items-center justify-center">
                 <img
                   src="/login_modal_bg.png"
-                  alt="profile"
+                  alt={t("profileAlt")}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -123,7 +124,7 @@ const ProfileModal = () => {
               <p className="text-casino-silver text-sm">{user.email}</p>
               <div className="space-y-4 w-full">
                 <div className="bg-casino-deep-blue rounded-xl p-4 w-full flex justify-between items-center mt-4">
-                  <span className="text-casino-silver">Balance</span>
+                  <span className="text-casino-silver">{t("balance")}</span>
                   <span className="text-casino-gold font-bold text-xl">
                     {user && user.userInfo && "$ " + user.userInfo.game_balance}
                   </span>
@@ -138,7 +139,7 @@ const ProfileModal = () => {
                     className="p-3 rounded-lg bg-casino-light-blue w-full flex items-center justify-center gap-2 transition-all hover:bg-opacity-80"
                   >
                     <History className="w-5 h-5 text-casino-gold" />
-                    <span className="text-white text-sm">Transactions</span>
+                    <span className="text-white text-sm">{t("transactions")}</span>
                   </button>
                   <button
                     onClick={() => {
@@ -148,12 +149,12 @@ const ProfileModal = () => {
                     className="p-3 rounded-lg bg-casino-light-blue w-full flex items-center justify-center gap-2 transition-all hover:bg-opacity-80"
                   >
                     <Gamepad2 className="w-5 h-5 text-casino-gold" />
-                    <span className="text-white text-sm">Game History</span>
+                    <span className="text-white text-sm">{t("game_history")}</span>
                   </button>
                 </div> */}
                 {/* <button className="p-3 rounded-lg bg-casino-light-blue w-full flex items-center justify-center gap-3 transition-all hover:bg-opacity-80">
                   <Edit className="w-5 h-5 text-casino-gold" />
-                  <span className="text-white">Edit Profile</span>
+                  <span className="text-white">{t("editProfile")}</span>
                 </button> */}
                 <button
                   onClick={async () => {
@@ -162,7 +163,7 @@ const ProfileModal = () => {
                   className="p-3 rounded-lg bg-red-600/70 w-full flex items-center justify-center gap-3 transition-all hover:bg-red-600/60"
                 >
                   <LogOut className="w-5 h-5 text-casino-gold" />
-                  <span className="text-white">Logout</span>
+                  <span className="text-white">{t("log_out")}</span>
                 </button>
               </div>
             </motion.div>

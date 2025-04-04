@@ -23,6 +23,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
+import { useTranslation } from "react-i18next"; // Import useTranslation
 // Potentially add ToggleGroup if using that component
 // import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
@@ -31,7 +32,7 @@ const GameHistory = () => {
   const { loading, setLoading, error, setError } = useStateStore();
   const { user, setUser } = useUserStore();
   const navigate = useNavigate();
-
+  const { t } = useTranslation(); // Get translation function
   // Component state
   const [gameHistory, setGameHistory] = useState<ProcessedGameHistoryRecord[]>(
     []
@@ -96,7 +97,7 @@ const GameHistory = () => {
           responses.data.status.errorCode != 200
         ) {
           throw new ApiError(
-            "API Error",
+            t("apiErrorTitle"),
             responses.data.status.errorCode,
             responses.data.status.mess
           );
@@ -186,7 +187,11 @@ const GameHistory = () => {
         const apiError =
           err instanceof ApiError
             ? err
-            : new ApiError("Network Error", 500, "Failed to fetch data.");
+            : new ApiError(
+                t("networkErrorTitle"),
+                500,
+                t("fetchDataFailedDesc")
+              );
 
         if (apiError.statusCode === 401) {
           setUser(null);
@@ -312,14 +317,14 @@ const GameHistory = () => {
           className="flex items-center gap-2 text-casino-silver hover:text-white transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
-          <span>Back</span>
+          <span>{t("back")}</span>
         </button>
         <motion.h1
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-3xl font-bold text-center text-white lg:mb-8"
         >
-          Game History {/* Updated Title */}
+          {t("game_history")}
         </motion.h1>
         <div className="w-20" /> {/* Spacer */}
       </motion.div>
@@ -345,7 +350,11 @@ const GameHistory = () => {
                     : "bg-casino-deep-blue text-casino-silver" // Inactive state
                 }`}
               >
-                {filterType}
+                {t(
+                  `filter${
+                    filterType.charAt(0).toUpperCase() + filterType.slice(1)
+                  }`
+                )}
               </button>
             ))}
           </div>
@@ -374,7 +383,7 @@ const GameHistory = () => {
                       format(date.from, "LLL dd, y")
                     )
                   ) : (
-                    <span>Pick date range</span>
+                    <span>{t("pickDateRange")}</span>
                   )}
                 </Button>
               </PopoverTrigger>
@@ -398,7 +407,7 @@ const GameHistory = () => {
             <div className="relative">
               <Input
                 type="text"
-                placeholder="Search..."
+                placeholder={t("searchPlaceholderDots")}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="h-10 max-w-[12rem] rounded-full bg-casino-deep-blue text-casino-silver pl-10 pr-4 focus:ring-casino-gold focus:border-casino-gold"
@@ -418,7 +427,9 @@ const GameHistory = () => {
         >
           {/* Initial Loading Indicator */}
           {loading && currentPage === 1 && (
-            <p className="text-center text-casino-silver py-4">Loading...</p>
+            <p className="text-center text-casino-silver py-4">
+              {t("loadingDots")}
+            </p>
           )}
 
           {/* Error Message */}
@@ -450,8 +461,9 @@ const GameHistory = () => {
                       {record.game_provider}
                     </p>
                     <p className="text-casino-silver text-xs mt-1">
-                      Bet: {record.bet_amount.toFixed(2)} {record.currency} |
-                      Win: {record.win_amount.toFixed(2)} {record.currency}
+                      {t("betLabel")}: {record.bet_amount.toFixed(2)}{" "}
+                      {record.currency} | {t("winLabel")}:{" "}
+                      {record.win_amount.toFixed(2)} {record.currency}
                     </p>
                   </div>
 
@@ -495,7 +507,7 @@ const GameHistory = () => {
           {/* Show only if isLoadingMore is true AND the main loading is false */}
           {isLoadingMore && !loading && (
             <p className="text-center text-casino-silver py-4">
-              Loading more...
+              {t("loadingMoreDots")}
             </p>
           )}
           {/* No Results Message (when search/filter yields nothing from existing data) */}
@@ -505,21 +517,21 @@ const GameHistory = () => {
             gameHistory.length > 0 && // We have *some* data loaded
             filteredHistory.length === 0 && ( // But the current filter shows none
               <p className="text-center text-casino-silver py-4">
-                No game history matches your current filters.
+                {t("noHistoryMatchFilter")}
               </p>
             )}
 
           {/* No Results Message (when fetch returned nothing initially) */}
           {!loading && !isLoadingMore && !error && gameHistory.length === 0 && (
             <p className="text-center text-casino-silver py-4">
-              No game history found for the selected criteria.
+              {t("noHistoryFound")}
             </p>
           )}
 
           {/* End of List Indicator */}
           {!loading && !isLoadingMore && !hasMore && gameHistory.length > 0 && (
             <p className="text-center text-casino-silver/70 text-sm py-4">
-              End of history.
+              {t("endOfHistory")}
             </p>
           )}
         </motion.div>

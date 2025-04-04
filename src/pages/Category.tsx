@@ -55,7 +55,7 @@ export default function Category() {
           responses.data.status.errorCode != 200
         )
           throw new ApiError(
-            "An error has occured!",
+            t("apiErrorOccurred"),
             responses.data.status.errorCode,
             responses.data.status.mess
           );
@@ -94,7 +94,7 @@ export default function Category() {
         responses.data.status.errorCode != 200
       )
         throw new ApiError(
-          "An error has occured!",
+          t("apiErrorOccurred"),
           responses.data.status.errorCode,
           responses.data.status.mess
         );
@@ -218,10 +218,10 @@ export default function Category() {
         <div className="flex flex-col items-center gap-4">
           <div className="text-casino-gold text-2xl font-bold flex gap-2 items-center">
             <Loader2 className="w-8 h-8 animate-spin" />
-            Loading
+            {t("loading")}
           </div>
           <div className="text-casino-silver text-lg font-semibold">
-            Please wait a moment.
+            {t("pleaseWait")}
           </div>
         </div>
       </div>
@@ -243,7 +243,7 @@ export default function Category() {
           className="flex w-[10rem] items-center gap-2 text-casino-silver hover:text-white transition-colors mt-2 text-sm xl:text-base px-4"
         >
           <ArrowLeft className="w-4 h-4 xl:w-5 xl:h-5" />
-          <span>Back</span>
+          <span>{t("back")}</span>
         </button>
 
         {/* Provider productCodes */}
@@ -273,7 +273,7 @@ export default function Category() {
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
           type="text"
-          placeholder="Search"
+          placeholder={t("searchPlaceholder")}
           className="w-[10rem] h-8 xl:h-10 px-3 py-1 xl:px-4 xl:py-2 rounded-full glass-effect text-casino-silver placeholder:text-casino-silver mr-4"
         />
       </div>
@@ -309,12 +309,12 @@ export default function Category() {
                   <div className="absolute top-3 right-3">
                     <div className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
                       <span className="animate-pulse w-2 h-2 bg-white rounded-full"></span>
-                      LIVE
+                      {t("live")}
                     </div>
                   </div>
                 )}
                 <div className="absolute bottom-3 left-3 bg-black bg-opacity-60 px-2 py-1 rounded text-xs 2xl:text-sm text-white">
-                  {game.on_line} players
+                  {t("playersOnline", { count: parseInt(game.on_line) || 0 })}
                 </div>
               </div>
               <div className="px-4 py-1 2xl:pt-6 bg-gradient-to-t h-40 2xl:h-48 from-casino-deep-blue to-transparent flex flex-col justify-center">
@@ -325,7 +325,7 @@ export default function Category() {
                   {game.productCode}
                 </p>
                 <button className="mt-3 2xl:mt-6 px-4 py-2 bg-casino-gold text-casino-deep-blue rounded-md font-medium hover:bg-opacity-90 transition-all 2xl:text-xl">
-                  Play Now
+                  {t("playNow")}
                 </button>
               </div>
             </motion.div>
@@ -339,7 +339,7 @@ export default function Category() {
         filteredGames.length < 15 && (
           <div ref={lastGameElementRef} className="text-center py-6">
             <div className="inline-block w-8 h-8 border-4 border-casino-light-blue border-t-casino-gold rounded-full animate-spin"></div>
-            <p className="text-casino-silver mt-2">Loading more games...</p>
+            <p className="text-casino-silver mt-2">{t("loadingMoreGames")}</p>
           </div>
         )}
 
@@ -347,7 +347,7 @@ export default function Category() {
       getPage(gameType, productCode).currentPage >=
         getPage(gameType, productCode).lastPage ? (
         <div className="text-center py-6 text-casino-silver">
-          No more games to load
+          {t("noMoreGames")}
         </div>
       ) : (
         filteredGames.length >= 15 && (

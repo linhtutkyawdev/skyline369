@@ -39,7 +39,7 @@ const Settings = () => {
           className="flex items-center gap-2 text-casino-silver hover:text-white transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
-          <span>Back</span>
+          <span>{t("back")}</span>
         </button>
       </motion.div>
 
@@ -48,7 +48,7 @@ const Settings = () => {
         animate={{ opacity: 1, y: 0 }}
         className="text-3xl font-bold text-center text-white mb-8"
       >
-        Settings
+        {t("settings")}
       </motion.h1>
 
       <motion.div
@@ -64,7 +64,7 @@ const Settings = () => {
               ) : (
                 <Sun className="text-casino-gold" />
               )}
-              <span className="text-white">Dark Mode</span>
+              <span className="text-white">{t("darkMode")}</span>
             </div>
             <Switch
               checked={darkMode}
@@ -92,7 +92,7 @@ const Settings = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Bell className="text-casino-silver" />
-              <span className="text-white">Notifications</span>
+              <span className="text-white">{t("notifications")}</span>
             </div>
             <Switch
               checked={notificationsEnabled}
@@ -105,7 +105,7 @@ const Settings = () => {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Languages className="text-casino-silver" />
-                <span className="text-white">Language</span>
+                <span className="text-white">{t("language")}</span>
               </div>
 
               {/* <Select
@@ -113,11 +113,11 @@ const Settings = () => {
                 onValueChange={i18n.changeLanguage}
               >
                 <SelectTrigger className="bg-casino-deep-blue text-white border border-casino-light-blue rounded-md px-3 py-1 max-w-40">
-                  <SelectValue placeholder="English" />
+                  <SelectValue placeholder={t("languagePlaceholder")} />
                 </SelectTrigger>
                 <SelectContent className="bg-casino-deep-blue text-white border border-casino-light-blue rounded-md p-1">
-                  <SelectItem value="en">English</SelectItem>
-                  <SelectItem value="my">Myanmar</SelectItem>
+                  <SelectItem value="en">{t("en")}</SelectItem>
+                  <SelectItem value="my">{t("my")}</SelectItem>
                 </SelectContent>
               </Select> */}
 
@@ -127,7 +127,7 @@ const Settings = () => {
                 }
                 className="bg-casino-deep-blue text-white border border-casino-light-blue rounded-md px-3 py-1 max-w-40"
               >
-                {i18n.language == "en" ? "English" : "Myanmar"}
+                {i18n.language == "en" ? t("en") : t("my")}
               </button>
             </div>
           </div>

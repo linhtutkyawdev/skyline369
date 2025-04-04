@@ -108,7 +108,7 @@ const DepositModal = () => {
         responses.data.status.errorCode != 200
       )
         throw new ApiError(
-          "An error has occured!",
+          t("apiErrorOccurred"),
           responses.data.status.errorCode,
           responses.data.status.mess
         );
@@ -131,28 +131,28 @@ const DepositModal = () => {
         if (!selectedDepositChannel) {
           toast({
             variant: "destructive",
-            title: "Invalid payment method",
-            description: "Please select a payment method.",
+            title: t("invalidPaymentMethodTitle"),
+            description: t("invalidPaymentMethodDesc"),
           });
           break;
         }
         if (!amount || amount < selectedDepositChannel.single_min) {
           toast({
             variant: "destructive",
-            title: "Invalid amount",
-            description: `Minimun deposit amount is $${
-              selectedDepositChannel.single_min * 1
-            }.`,
+            title: t("invalidAmountTitle"),
+            description: t("minDepositAmountDesc", {
+              amount: selectedDepositChannel.single_min * 1,
+            }),
           });
           break;
         }
         if (amount && amount > selectedDepositChannel.single_max) {
           toast({
             variant: "destructive",
-            title: "Invalid amount",
-            description: `Maximun deposit amount is $${
-              selectedDepositChannel.single_max * 1
-            }.`,
+            title: t("invalidAmountTitle"),
+            description: t("maxDepositAmountDesc", {
+              amount: selectedDepositChannel.single_max * 1,
+            }),
           });
           break;
         }
@@ -162,24 +162,24 @@ const DepositModal = () => {
         if (!transactionId) {
           toast({
             variant: "destructive",
-            title: "Invalid transaction ID",
-            description: "Please enter your transaction ID.",
+            title: t("invalidTxIdTitle"),
+            description: t("invalidTxIdDesc"),
           });
           break;
         }
         if (!senderName) {
           toast({
             variant: "destructive",
-            title: "Invalid sender name",
-            description: "Please enter your name.",
+            title: t("invalidSenderNameTitle"),
+            description: t("invalidSenderNameDesc"),
           });
           break;
         }
         if (!receiptImage) {
           toast({
             variant: "destructive",
-            title: "Invalid receipt image",
-            description: "Please upload a receipt image.",
+            title: t("invalidReceiptImageTitle"),
+            description: t("invalidReceiptImageDesc"),
           });
           break;
         }
@@ -189,8 +189,8 @@ const DepositModal = () => {
         if (!user || !amount || !selectedDepositChannel) {
           toast({
             variant: "destructive",
-            title: "Something went wrong!",
-            description: "Please try again.",
+            title: t("loginErrorTitle"),
+            description: t("pleaseTryAgain"),
           });
           break;
         }
@@ -275,10 +275,12 @@ const DepositModal = () => {
                 className="grid grid-cols-2 gap-4 pb-6"
               >
                 <label className="text-casino-silver block">
-                  Select Payment Method
+                  {t("selectPaymentMethod")}
                 </label>
                 {selectedDepositChannel ? (
-                  <label className="text-casino-silver block">Amount</label>
+                  <label className="text-casino-silver block">
+                    {t("amountLabel")}
+                  </label>
                 ) : (
                   <div></div>
                 )}
@@ -314,17 +316,24 @@ const DepositModal = () => {
                             c.card_bank_name && (
                             <div className="flex flex-col items-start mt-4">
                               <span className="text-white text-sm">
-                                Receiver: {c.card_username}
+                                {t("receiverLabel", { name: c.card_username })}
                               </span>
                               <span className="text-white text-sm">
-                                Card Number: {c.card_number}
+                                {t("cardNumberLabel", {
+                                  number: c.card_number,
+                                })}
                               </span>
                               <span className="text-white text-sm">
-                                One Time Limit: {c.single_min} - {c.single_max}
+                                {t("oneTimeLimitLabel", {
+                                  min: c.single_min,
+                                  max: c.single_max,
+                                })}
                               </span>
                               <span className="text-white text-sm">
-                                Availabe Time: {c.disable_starttime} -{" "}
-                                {c.disable_endtime}
+                                {t("availableTimeLabel", {
+                                  start: c.disable_starttime,
+                                  end: c.disable_endtime,
+                                })}
                               </span>
                             </div>
                           )}
@@ -347,12 +356,12 @@ const DepositModal = () => {
                             >
                               {value == c.card_number ? (
                                 <>
-                                  Coppied
+                                  {t("copied")}
                                   <CheckIcon className="w-4 h-4 mx-2" />
                                 </>
                               ) : (
                                 <>
-                                  Copy Card Number{" "}
+                                  {t("copyCardNumber")}{" "}
                                   <Copy className="w-4 h-4 mx-2" />
                                 </>
                               )}
@@ -363,7 +372,7 @@ const DepositModal = () => {
                                 setStep("QR");
                               }}
                             >
-                              Show QR <QrCode className="w-4 h-4 mx-2" />
+                              {t("showQr")} <QrCode className="w-4 h-4 mx-2" />
                             </button>
                           </div>
                         )}
@@ -372,24 +381,24 @@ const DepositModal = () => {
                 {!selectedDepositChannel && (
                   <>
                     <button className="w-full flex items-center justify-between gap-4 bg-casino-deep-blue border border-casino-light-blue rounded-lg p-5 hover:bg-opacity-80 transition-all">
-                      <span className="text-white">KBZ Pay</span>
+                      <span className="text-white">{t("kbzPay")}</span>
                       <Building className="text-casino-gold w-6 h-6" />
                     </button>
                     <button className="w-full flex items-center justify-between gap-4 bg-casino-deep-blue border border-casino-light-blue rounded-lg p-5 hover:bg-opacity-80 transition-all">
-                      <span className="text-white">AYA Pay</span>
+                      <span className="text-white">{t("ayaPay")}</span>
                       <Building className="text-casino-gold w-6 h-6" />
                     </button>
                     <button className="w-full flex items-center justify-between gap-4 bg-casino-deep-blue border border-casino-light-blue rounded-lg p-5 hover:bg-opacity-80 transition-all">
-                      <span className="text-white">Bank 2</span>
+                      <span className="text-white">{t("bank2")}</span>
                       <Building className="text-casino-gold w-6 h-6" />
                       {/* <span className="text-white">MR. Test Receiver 2</span> */}
                     </button>
                     <button className="w-full flex items-center justify-between gap-4 bg-casino-deep-blue border border-casino-light-blue rounded-lg p-5 hover:bg-opacity-80 transition-all">
-                      <span className="text-white">Bank 3</span>
+                      <span className="text-white">{t("bank3")}</span>
                       <Building className="text-casino-gold w-6 h-6" />
                     </button>
                     <button className="w-full flex items-center justify-between gap-4 bg-casino-deep-blue border border-casino-light-blue rounded-lg p-5 hover:bg-opacity-80 transition-all">
-                      <span className="text-white">Bank 4</span>
+                      <span className="text-white">{t("bank4")}</span>
                       <Building className="text-casino-gold w-6 h-6" />
                     </button>
                   </>
@@ -403,7 +412,7 @@ const DepositModal = () => {
                         value={amount}
                         onChange={(e) => setAmount(parseFloat(e.target.value))}
                         className="w-full bg-casino-deep-blue border border-casino-light-blue rounded-lg p-4 text-white focus:outline-none focus:ring-2 focus:ring-casino-gold"
-                        placeholder="Enter amount"
+                        placeholder={t("enterAmountPlaceholder")}
                       />
 
                       <div className="grid grid-cols-2 gap-2 mt-4">
@@ -481,13 +490,13 @@ const DepositModal = () => {
                       }}
                       className="w-full py-2 bg-casino-accent text-silver-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
                     >
-                      Go Back
+                      {t("goBack")}
                     </button>
                     <button
                       onClick={handleDeposit}
                       className="w-full py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
                     >
-                      Proceed to Payment
+                      {t("proceedToPayment")}
                     </button>
                   </>
                 )}
@@ -501,12 +510,12 @@ const DepositModal = () => {
                 className="grid grid-cols-2 gap-4 pb-6"
               >
                 <label className="text-casino-silver block">
-                  Scan or Save the QR Code
+                  {t("scanOrSaveQr")}
                 </label>
 
                 <img
                   src={selectedDepositChannel.img}
-                  alt="qr_code"
+                  alt={t("qrCodeAlt")}
                   className="h-52 mx-auto w-auto col-span-2"
                 />
 
@@ -516,7 +525,7 @@ const DepositModal = () => {
                   }}
                   className="w-full py-2 bg-casino-accent text-silver-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
                 >
-                  Go Back
+                  {t("goBack")}
                 </button>
                 <button
                   onClick={() => {
@@ -533,7 +542,7 @@ const DepositModal = () => {
                   }}
                   className="w-full py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
                 >
-                  Download QR
+                  {t("downloadQr")}
                 </button>
               </motion.div>
             )}
@@ -546,7 +555,7 @@ const DepositModal = () => {
               >
                 <div className="space-y-2">
                   <label className="text-casino-silver block mb-2">
-                    Select Payment Method
+                    {t("selectPaymentMethod")}
                   </label>
                   <div className="w-full flex flex-col relative bg-casino-deep-blue border border-casino-light-blue rounded-lg p-4 hover:bg-opacity-80 transition-all">
                     <div className="flex w-full items-center justify-between gap-4">
@@ -557,16 +566,20 @@ const DepositModal = () => {
                       <CreditCard className="text-casino-gold w-6 h-6" />
                     </div>
                     <div className="grid grid-cols-2 items-start mt-2">
-                      <span className="text-white text-sm">Receiver</span>
+                      <span className="text-white text-sm">
+                        {t("receiver")}
+                      </span>
                       <span className="text-white text-sm">
                         : {selectedDepositChannel.card_username}
                       </span>
-                      <span className="text-white text-sm">Card Number</span>
+                      <span className="text-white text-sm">
+                        {t("cardNumber")}
+                      </span>
                       <span className="text-white text-sm">
                         : {selectedDepositChannel.card_number}
                       </span>
                       <span className="text-white text-sm">
-                        Ammount to transfer
+                        {t("amountToTransfer")}
                       </span>
                       <span className="text-white text-sm">: ${amount}</span>
                     </div>
@@ -578,7 +591,7 @@ const DepositModal = () => {
                     value={transactionId}
                     onChange={(e) => setTransactionId(e.target.value)}
                     className="w-full bg-casino-deep-blue border border-casino-light-blue rounded-lg p-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-casino-gold"
-                    placeholder="Enter Transaction ID"
+                    placeholder={t("enterTxIdPlaceholder")}
                   />
                   <input
                     type="text"
@@ -586,13 +599,13 @@ const DepositModal = () => {
                     value={senderName}
                     onChange={(e) => setSenderName(e.target.value)}
                     className="w-full bg-casino-deep-blue border border-casino-light-blue rounded-lg p-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-casino-gold"
-                    placeholder="Enter Your Name"
+                    placeholder={t("enterYourNamePlaceholder")}
                   />
                 </div>
                 {/* Receipt Image Upload */}
                 <div>
                   <label className="text-casino-silver block mb-2">
-                    Transaction Receipt Image
+                    {t("txReceiptImageLabel")}
                   </label>
                   <div
                     className={`border-2 border-dashed rounded-lg p-6 text-center ${
@@ -606,7 +619,7 @@ const DepositModal = () => {
                         <div className="relative flex items-center justify-center mx-auto w-full max-w-xs overflow-hidden rounded-lg">
                           <img
                             src={previewUrl}
-                            alt="Receipt preview"
+                            alt={t("receiptPreviewAlt")}
                             className="h-32 w-auto object-cover"
                           />
                         </div>
@@ -620,7 +633,7 @@ const DepositModal = () => {
                               setPreviewUrl(null);
                             }}
                           >
-                            Change Image
+                            {t("changeImage")}
                           </Button>
                         </div>
                       </div>
@@ -631,11 +644,10 @@ const DepositModal = () => {
                         </div>
                         <div className="space-y-1">
                           <p className="text-sm text-casino-silver">
-                            Drag and drop your receipt image here, or click to
-                            select
+                            {t("dragDropReceiptPrompt")}
                           </p>
                           <p className="text-xs text-casino-silver">
-                            JPG, PNG or GIF up to 10MB
+                            {t("imageUploadHint")}
                           </p>
                         </div>
                         <Button
@@ -644,7 +656,7 @@ const DepositModal = () => {
                           className="relative text-casino-silver bg-casino-blue hover:bg-casino-light-blue hover:text-casino-silver"
                         >
                           <Upload className="mr-2 h-4 w-4" />
-                          Upload Receipt
+                          {t("uploadReceipt")}
                           <input
                             type="file"
                             className="absolute inset-0 cursor-pointer opacity-0"
@@ -667,13 +679,13 @@ const DepositModal = () => {
                   }}
                   className="w-full py-2 bg-casino-accent text-silver-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
                 >
-                  Go Back
+                  {t("goBack")}
                 </button>
                 <button
                   onClick={handleDeposit}
                   className="w-full py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
                 >
-                  Proceed to Payment
+                  {t("proceedToPayment")}
                 </button>
               </motion.div>
             )}
@@ -686,32 +698,34 @@ const DepositModal = () => {
                 className="space-y-4"
               >
                 <div className="text-casino-silver text-sm mb-4">
-                  Please confirm your deposit details.
+                  {t("confirmDepositDetailsPrompt")}
                 </div>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-casino-silver">Bank:</span>
+                    <span className="text-casino-silver">{t("bankLabel")}</span>
                     <span className="text-casino-gold">
                       {selectedDepositChannel.card_bank_name}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-casino-silver">Amount:</span>
+                    <span className="text-casino-silver">
+                      {t("amountLabelColon")}
+                    </span>
                     <span className="text-casino-gold">${amount}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-casino-silver">From:</span>
+                    <span className="text-casino-silver">{t("fromLabel")}</span>
                     <span className="text-casino-gold">{senderName}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-casino-silver">To:</span>
+                    <span className="text-casino-silver">{t("toLabel")}</span>
                     <span className="text-casino-gold">
                       {selectedDepositChannel.card_username} (
                       {selectedDepositChannel.card_number})
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-casino-silver">Transaction ID:</span>
+                    <span className="text-casino-silver">{t("txIdLabel")}</span>
                     <span className="text-casino-gold">{transactionId}</span>
                   </div>
                 </div>
@@ -719,8 +733,8 @@ const DepositModal = () => {
                 <div className="p-3 bg-blue-900 bg-opacity-30 rounded-lg flex items-start gap-3">
                   <AlertCircle className="text-blue-400 w-5 h-5 mt-0.5 flex-shrink-0" />
                   <p className="text-blue-100 text-sm">
-                    <span className="font-semibold">Important:</span> Please
-                    ensure the details above are correct before proceeding.
+                    <span className="font-semibold">{t("importantLabel")}</span>{" "}
+                    {t("ensureDetailsCorrectPrompt")}
                   </p>
                 </div>
                 <button
@@ -728,7 +742,7 @@ const DepositModal = () => {
                   disabled={loading}
                   className="w-full flex items-center justify-center py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
                 >
-                  Confirm Deposit{" "}
+                  {t("confirmDeposit")}{" "}
                   {loading && <Loader2 className="ml-2 animate-spin w-6 h-6" />}
                 </button>
               </motion.div>
@@ -742,7 +756,7 @@ const DepositModal = () => {
                 className="space-y-4"
               >
                 <div className="text-casino-silver text-sm mb-4">
-                  Deposit requested successfully!
+                  {t("depositSuccessTitle")}
                 </div>
 
                 <div className="rounded-full p-4 bg-blue-900 bg-opacity-30 w-20 h-20 mx-auto">
@@ -750,20 +764,24 @@ const DepositModal = () => {
                 </div>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-casino-silver">Order Number:</span>
+                    <span className="text-casino-silver">
+                      {t("orderNumberLabel")}
+                    </span>
                     <span className="text-casino-gold">{order.order_no}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-casino-silver">Amount:</span>
+                    <span className="text-casino-silver">
+                      {t("amountLabelColon")}
+                    </span>
                     <span className="text-casino-gold">${order.money}</span>
                   </div>
 
                   <div className="flex items-center justify-between">
-                    <span className="text-casino-silver">From:</span>
+                    <span className="text-casino-silver">{t("fromLabel")}</span>
                     <span className="text-casino-gold">{order.payer_name}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-casino-silver">To:</span>
+                    <span className="text-casino-silver">{t("toLabel")}</span>
                     <span className="text-casino-gold">{order.account}</span>
                   </div>
                 </div>
@@ -772,8 +790,7 @@ const DepositModal = () => {
                   <div className="p-3 bg-blue-900 bg-opacity-30 rounded-lg flex items-start gap-3">
                     <AlertCircle className="text-blue-400 w-5 h-5 mt-0.5 flex-shrink-0" />
                     <p className="text-blue-100 text-sm">
-                      The deposit will be processed within 24 hours. If you have
-                      any questions, please contact our support team.
+                      {t("depositProcessingInfo")}
                     </p>
                   </div>
                 )}
@@ -791,7 +808,7 @@ const DepositModal = () => {
                   }}
                   className="w-full py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
                 >
-                  Check your deposit requests
+                  {t("checkDepositRequests")}
                 </button>
               </motion.div>
             )}
@@ -807,17 +824,19 @@ const DepositModal = () => {
                   <X className="text-red-500 w-full h-full" />
                 </div>
                 <div className="text-casino-silver text-sm mb-4">
-                  Deposit failed!
+                  {t("depositFailedTitle")}
                 </div>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-casino-silver">Bank:</span>
+                    <span className="text-casino-silver">{t("bankLabel")}</span>
                     <span className="text-casino-gold">
                       {selectedDepositChannel.card_bank_name}
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-casino-silver">Amount:</span>
+                    <span className="text-casino-silver">
+                      {t("amountLabelColon")}
+                    </span>
                     <span className="text-casino-gold">${amount}</span>
                   </div>
                 </div>
@@ -826,7 +845,7 @@ const DepositModal = () => {
                   onClick={() => handleDeposit()}
                   className="w-full py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
                 >
-                  Try Again
+                  {t("tryAgain")}
                 </button>
               </motion.div>
             )}

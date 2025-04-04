@@ -12,9 +12,11 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next"; // Import useTranslation
 
 const Index = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation(); // Get translation function
   const [currentIndex, setCurrentIndex] = useState(0);
   const [api, setApi] = useState<any>(null);
 
@@ -85,79 +87,79 @@ const Index = () => {
 
   const items = [
     {
-      title: "SLOTS",
+      title: t("categorySlots"),
       icon: <img src="/slots.png" className={IMAGE_CLASS_NAME} />,
       path: "/slots",
       isLive: false,
     },
     {
-      title: "ROULETTE",
+      title: t("categoryRoulette"),
       icon: <img src="/roulette.png" className={IMAGE_CLASS_NAME} />,
       path: "/roulette",
       isLive: false,
     },
     {
-      title: "BLACKJACK",
+      title: t("categoryBlackjack"),
       icon: <img src="/blackjack.png" className={IMAGE_CLASS_NAME} />,
       path: "/blackjack",
       isLive: true,
     },
     {
-      title: "POKER",
+      title: t("categoryPoker"),
       icon: <img src="/poker.png" className={IMAGE_CLASS_NAME} />,
       path: "/poker",
       isLive: true,
     },
     {
-      title: "DRAGON TIGER",
+      title: t("categoryDragonTiger"),
       icon: <img src="/dragon_tiger.png" className={IMAGE_CLASS_NAME} />,
       path: "/dragon tiger",
       isLive: false,
     },
     {
-      title: "SIC BO",
+      title: t("categorySicBo"),
       icon: <img src="/sicbo.png" className={IMAGE_CLASS_NAME} />,
       path: "/sic bo",
       isLive: false,
     },
     {
-      title: "TABLE",
+      title: t("categoryTable"),
       icon: <Table2 className={IMAGE_CLASS_NAME} />,
       path: "/table",
       isLive: false,
     },
     {
-      title: "LOTTERY",
+      title: t("categoryLottery"),
       icon: <Clover className={IMAGE_CLASS_NAME} />,
       path: "/lottery",
       isLive: false,
     },
     {
-      title: "CARD",
+      title: t("categoryCard"),
       icon: <Spade className={IMAGE_CLASS_NAME} />,
       path: "/card",
       isLive: false,
     },
     {
-      title: "Shan Koe Mee",
+      title: t("categoryShanKoeMee"),
       icon: <Heart className={IMAGE_CLASS_NAME} />,
       path: "/skm",
       isLive: false,
     },
     {
-      title: "Pai Gow",
+      title: t("categoryPaiGow"),
       icon: <Dice5 className={IMAGE_CLASS_NAME} />,
       path: "/paigow",
       isLive: false,
     },
     {
-      title: "POKER",
+      title: t("categoryPoker2"), // Using a different key for the second Poker entry
       icon: <img src="/poker.png" className={IMAGE_CLASS_NAME} />,
       path: "/poker",
       isLive: false,
     },
     {
-      title: "BACCARAT",
+      title: t("categoryBaccarat"),
       icon: <img src="/baccarat.png" className={IMAGE_CLASS_NAME} />,
       path: "/baccarat",
       isLive: false,

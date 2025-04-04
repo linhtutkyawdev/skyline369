@@ -2,13 +2,13 @@ import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState } from "react";
-
+import { useTranslation } from "react-i18next"; // Import useTranslation
 const filterOptions = ["global", "personal", "support"];
 
 const Messages = () => {
   const navigate = useNavigate();
   const [selectedFilter, setSelectedFilter] = useState("global");
-
+  const { t } = useTranslation(); // Get translation function
   return (
     <div className="h-screen pb-8 pt-12 lg:pt-16 px-6">
       <motion.div
@@ -21,7 +21,7 @@ const Messages = () => {
           className="flex items-center gap-2 text-casino-silver hover:text-white transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
-          <span>Back</span>
+          <span>{t("back")}</span>
         </button>
       </motion.div>
 
@@ -30,7 +30,7 @@ const Messages = () => {
         animate={{ opacity: 1, y: 0 }}
         className="text-3xl font-bold text-center text-white -mt-8 mb-4"
       >
-        Messages
+        {t("messages")}
       </motion.h1>
 
       <div className="max-w-3xl mx-auto space-y-4 lg:space-y-4">
@@ -56,7 +56,7 @@ const Messages = () => {
                   : "text-casino-silver"
               }`}
             >
-              {filter.charAt(0).toUpperCase() + filter.slice(1)}
+              {t(`filter${filter.charAt(0).toUpperCase() + filter.slice(1)}`)}
             </button>
           ))}
         </motion.div>
@@ -67,7 +67,7 @@ const Messages = () => {
           transition={{ delay: 0.2 }}
           className="space-y-4 overflow-y-scroll scrollbar-none max-h-[calc(100vh-10rem)] lg:max-h-[calc(100vh-13.5rem)]"
         >
-          Still in development
+          {t("stillInDevelopment")}
         </motion.div>
       </div>
     </div>

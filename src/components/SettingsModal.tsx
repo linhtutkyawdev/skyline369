@@ -117,7 +117,7 @@ const SettingsModal = () => {
                   ) : (
                     <VolumeX className="text-casino-silver" />
                   )}
-                  <span className="text-white">{t("background_music")}</span>{" "}
+                  <span className="text-white">{t("sound_effects")}</span>{" "}
                   {/* Change label */}
                 </div>
                 <Switch
@@ -151,7 +151,10 @@ const SettingsModal = () => {
                     className="bg-casino-deep-blue rounded-lg p-1"
                     defaultValue={i18n.language}
                     onValueChange={(lang) => {
-                      if (lang) i18n.changeLanguage(lang);
+                      if (lang) {
+                        i18n.changeLanguage(lang);
+                        localStorage.setItem("i18nextLng", lang); // Save language to localStorage
+                      }
                     }}
                   >
                     {SupportedLanguages.map((lang) => (

@@ -2,13 +2,14 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "react-i18next"; // Import useTranslation
 import { useToast } from "@/hooks/use-toast";
 import { useStateStore } from "@/store/state";
 
 const ShareModal = () => {
   const { activeModal, setActiveModal } = useStateStore();
   const { toast } = useToast();
-
+  const { t } = useTranslation(); // Get translation function
   const link = "https://skyline369.me";
   const [copied, setCopied] = useState(false);
 
@@ -17,8 +18,8 @@ const ShareModal = () => {
     setCopied(true);
 
     toast({
-      title: "Link Copied!",
-      description: "Link copied to clipboard",
+      title: t("linkCopiedTitle"),
+      description: t("linkCopiedDesc"),
     });
 
     setTimeout(() => setCopied(false), 2000);
@@ -26,7 +27,7 @@ const ShareModal = () => {
 
   const shareOptions = [
     {
-      name: "Facebook",
+      name: t("facebook"),
       color: "#1877F2",
       icon: (
         <svg
@@ -43,7 +44,7 @@ const ShareModal = () => {
       ),
     },
     {
-      name: "Tiktok",
+      name: t("tiktok"),
       color: "#040404",
       icon: (
         <svg
@@ -61,7 +62,7 @@ const ShareModal = () => {
     },
 
     {
-      name: "Viber",
+      name: t("viber"),
       color: "#7360f2",
       icon: (
         <svg
@@ -93,7 +94,7 @@ const ShareModal = () => {
       ),
     },
     {
-      name: "Telegram",
+      name: t("telegram"),
       color: "#229ED9",
       icon: (
         <svg
@@ -110,7 +111,7 @@ const ShareModal = () => {
       ),
     },
     {
-      name: "Messenger",
+      name: t("messenger"),
       color: "#0099FF",
       icon: (
         <svg
@@ -166,7 +167,7 @@ const ShareModal = () => {
               className="flex justify-between items-center"
             >
               <h2 className="text-xl font-semibold text-casino-silver">
-                Share
+                {t("share")}
               </h2>
               <Button
                 variant="ghost"
@@ -196,7 +197,7 @@ const ShareModal = () => {
                   disabled={copied}
                   className="min-w-[5.2rem] disabled:bg-green-600 disabled:text-white bg-casino-gold text-casino-deep-blue hover:animate-pulse-glow"
                 >
-                  {copied ? "Copied!" : <Copy className="w-4 h-4" />}
+                  {copied ? t("copiedStatus") : <Copy className="w-4 h-4" />}
                 </Button>
               </div>
               <div className="flex justify-between bg-casino-deep-blue p-6 gap-4 rounded-lg">
@@ -215,7 +216,7 @@ const ShareModal = () => {
               </div>
               <div className="flex items-center justify-center gap-2">
                 <span className="text-casino-silver text-sm">
-                  Love the game? Write a feedback
+                  {t("loveTheGamePrompt")}
                 </span>
                 <button
                   className="text-casino-gold hover:text-casino-gold/80 text-sm font-medium"
@@ -223,7 +224,7 @@ const ShareModal = () => {
                     setActiveModal("messages");
                   }}
                 >
-                  here
+                  {t("hereLink")}
                 </button>
               </div>
             </motion.div>

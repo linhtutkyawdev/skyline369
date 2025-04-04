@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next"; // Import useTranslation
 
 const Logo = () => {
+  const { t } = useTranslation(); // Get translation function
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
@@ -25,7 +27,7 @@ const Logo = () => {
         className="mt-1 px-4 2xl:px-6 2xl:py-1 rounded-full bg-gradient-to-r from-casino-gold to-casino-silver text-casino-deep-blue text-xs uppercase tracking-wider font-medium"
         whileHover={{ scale: 1.05 }}
       >
-        Sport Betting Casino Online
+        {t("tagline")}
       </motion.div>
     </motion.div>
   );

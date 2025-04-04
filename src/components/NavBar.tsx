@@ -23,7 +23,7 @@ const NavBar = () => {
           >
             <img
               src="/login_modal_bg.png"
-              alt="profile"
+              alt={t("profileAlt")}
               className="w-full h-full object-cover"
             />
           </div>
@@ -58,7 +58,7 @@ const NavBar = () => {
             <div className="w-10 h-10 2xl:w-12 2xl:h-12 rounded-full metal-badge flex items-center justify-center 2xl:mb-1 group-hover:animate-pulse-glow">
               <Share className="w-5 h-5 2xl:w-6 2xl:h-6 text-casino-silver" />
             </div>
-            <span className="text-casino-silver text-xs 2xl:text-base">
+            <span className="text-casino-silver text-[10px] 2xl:text-[13px]">
               {t("share")}
             </span>
           </div>
@@ -68,9 +68,11 @@ const NavBar = () => {
             onClick={() => setActiveModal("contact_us")}
           >
             <div className="w-10 h-10 2xl:w-12 2xl:h-12 rounded-full metal-badge flex items-center justify-center 2xl:mb-1 group-hover:animate-pulse-glow">
-              <span className="text-[#b3c8e7] font-bold text-sm">US</span>
+              <span className="text-[#b3c8e7] font-bold text-sm">
+                {t("usAbbreviation")}
+              </span>
             </div>
-            <span className="text-casino-silver text-xs 2xl:text-base">
+            <span className="text-casino-silver text-[10px] 2xl:text-[13px]">
               {t("contact_us")}
             </span>
           </div>
@@ -82,7 +84,7 @@ const NavBar = () => {
             <div className="w-10 h-10 2xl:w-12 2xl:h-12 rounded-full metal-badge flex items-center justify-center 2xl:mb-1 group-hover:animate-pulse-glow">
               <MessageSquare className="w-5 h-5 2xl:w-6 2xl:h-6 text-[#b3c8e7]" />
             </div>
-            <span className="text-casino-silver text-xs 2xl:text-base">
+            <span className="text-casino-silver text-[10px] 2xl:text-[13px]">
               {t("messages")}
             </span>
           </div>
@@ -94,7 +96,7 @@ const NavBar = () => {
             <div className="w-10 h-10 2xl:w-12 2xl:h-12 rounded-full metal-badge flex items-center justify-center 2xl:mb-1 group-hover:animate-pulse-glow">
               <Settings className="w-5 h-5 2xl:w-6 2xl:h-6 text-[#b3c8e7]" />
             </div>
-            <span className="text-casino-silver text-xs 2xl:text-base">
+            <span className="text-casino-silver text-[10px] 2xl:text-[13px]">
               {t("settings")}
             </span>
           </div>

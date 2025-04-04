@@ -2,24 +2,26 @@ import { ArrowLeft, Copy, Facebook, Link, Link2, Share2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { useTranslation } from "react-i18next"; // Import useTranslation
 import { useToast } from "@/components/ui/use-toast";
 
 const Share = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation(); // Get translation function
   const [link] = useState("https://casino-app.com/ref/user123");
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(link);
     toast({
-      title: "Link Copied",
-      description: "The referral link has been copied to your clipboard.",
+      title: t("linkCopiedTitleSharePage"),
+      description: t("linkCopiedDescSharePage"),
     });
   };
 
   const shareOptions = [
     {
-      name: "Facebook",
+      name: t("facebook"),
       color: "#1877F2",
       icon: (
         <svg
@@ -36,7 +38,7 @@ const Share = () => {
       ),
     },
     {
-      name: "Tiktok",
+      name: t("tiktok"),
       color: "#040404",
       icon: (
         <svg
@@ -54,7 +56,7 @@ const Share = () => {
     },
 
     {
-      name: "Viber",
+      name: t("viber"),
       color: "#7360f2",
       icon: (
         <svg
@@ -86,7 +88,7 @@ const Share = () => {
       ),
     },
     {
-      name: "Telegram",
+      name: t("telegram"),
       color: "#229ED9",
       icon: (
         <svg
@@ -103,7 +105,7 @@ const Share = () => {
       ),
     },
     {
-      name: "Messenger",
+      name: t("messenger"),
       color: "#0099FF",
       icon: (
         <svg
@@ -133,7 +135,7 @@ const Share = () => {
           className="flex items-center gap-2 text-casino-silver hover:text-white transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
-          <span>Back</span>
+          <span>{t("back")}</span>
         </button>
       </motion.div>
 
@@ -142,7 +144,7 @@ const Share = () => {
         animate={{ opacity: 1, y: 0 }}
         className="text-3xl font-bold text-center text-white mb-8"
       >
-        Share & Earn
+        {t("share_earn")}
       </motion.h1>
 
       <motion.div
@@ -156,11 +158,9 @@ const Share = () => {
             <Link2 className="w-10 h-10 text-casino-gold" />
           </div>
           <h2 className="text-xl font-semibold text-white">
-            Share Your Referral Link
+            {t("card_title")}
           </h2>
-          <p className="text-casino-silver mt-2">
-            Invite friends and earn 10% of their deposits
-          </p>
+          <p className="text-casino-silver mt-2">{t("card_sub_title")}</p>
         </div>
 
         <div className="mb-8">
@@ -196,17 +196,17 @@ const Share = () => {
         </div>
 
         <div className="bg-casino-deep-blue p-4 rounded-lg border border-casino-light-blue">
-          <h3 className="text-white font-medium mb-2">Referral Stats</h3>
+          <h3 className="text-white font-medium mb-2">{t("referal_status")}</h3>
           <div className="flex justify-between text-casino-silver mb-2">
-            <span>Total Referrals</span>
+            <span>{t("total_referals")}</span>
             <span className="text-white">12</span>
           </div>
           <div className="flex justify-between text-casino-silver mb-2">
-            <span>Active Users</span>
+            <span>{t("active_users")}</span>
             <span className="text-white">8</span>
           </div>
           <div className="flex justify-between text-casino-silver">
-            <span>Total Earnings</span>
+            <span>{t("total_earnings")}</span>
             <span className="text-casino-gold">$250.00</span>
           </div>
         </div>

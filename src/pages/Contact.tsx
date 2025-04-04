@@ -1,10 +1,10 @@
 import { ArrowLeft, Mail, Phone, MessageSquare } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-
+import { useTranslation } from "react-i18next"; // Import useTranslation
 const Contact = () => {
   const navigate = useNavigate();
-
+  const { t } = useTranslation(); // Get translation function
   return (
     <div className="h-screen overflow-y-scroll pb-20 pt-6 px-6">
       <motion.div
@@ -17,7 +17,7 @@ const Contact = () => {
           className="flex items-center gap-2 text-casino-silver hover:text-white transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
-          <span>Back</span>
+          <span>{t("back")}</span>
         </button>
       </motion.div>
 
@@ -26,7 +26,7 @@ const Contact = () => {
         animate={{ opacity: 1, y: 0 }}
         className="text-3xl font-bold text-center text-white mb-8"
       >
-        Contact Us
+        {t("contact_us")}
       </motion.h1>
 
       <motion.div
@@ -34,10 +34,7 @@ const Contact = () => {
         animate={{ opacity: 1, y: 0 }}
         className="glass-effect rounded-2xl p-6 max-w-md mx-auto"
       >
-        <p className="text-casino-silver text-center mb-8">
-          Our support team is available 24/7. Choose your preferred method of
-          contact below.
-        </p>
+        <p className="text-casino-silver text-center mb-8">{t("sub_title")}</p>
 
         <div className="space-y-4">
           <a
@@ -48,7 +45,7 @@ const Contact = () => {
               <Mail className="w-5 h-5 text-casino-deep-blue" />
             </div>
             <div>
-              <h3 className="text-white font-medium">Email Support</h3>
+              <h3 className="text-white font-medium">{t("email_support")}</h3>
               <p className="text-casino-silver text-sm">
                 support@skyline369.com
               </p>
@@ -63,7 +60,7 @@ const Contact = () => {
               <Phone className="w-5 h-5 text-casino-deep-blue" />
             </div>
             <div>
-              <h3 className="text-white font-medium">Phone Support</h3>
+              <h3 className="text-white font-medium">{t("phone_support")}</h3>
               <p className="text-casino-silver text-sm">+95 9 123 456 789</p>
             </div>
           </a>
@@ -76,18 +73,17 @@ const Contact = () => {
               <MessageSquare className="w-5 h-5 text-casino-deep-blue" />
             </div>
             <div>
-              <h3 className="text-white font-medium">Live Chat</h3>
-              <p className="text-casino-silver text-sm">Available 24/7</p>
+              <h3 className="text-white font-medium">{t("live_chat")}</h3>
+              <p className="text-casino-silver text-sm">{t("available247")}</p>
             </div>
           </a>
         </div>
 
         <div className="mt-8 p-4 rounded-lg bg-casino-deep-blue">
-          <h3 className="text-casino-gold font-medium mb-2">Office Hours</h3>
-          <p className="text-white text-sm">
-            Our customer support team is available 24 hours a day, 7 days a
-            week.
-          </p>
+          <h3 className="text-casino-gold font-medium mb-2">
+            {t("office_hours")}
+          </h3>
+          <p className="text-white text-sm">{t("office_hours_value")}</p>
         </div>
       </motion.div>
     </div>

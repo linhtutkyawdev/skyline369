@@ -82,8 +82,8 @@ const LoginModal = () => {
     } catch (error) {
       if (error)
         toast({
-          title: "Something went wrong!",
-          description: "Cannot login to the system.",
+          title: t("loginErrorTitle"),
+          description: t("loginErrorDescription"),
           variant: "destructive",
         });
     }
@@ -145,7 +145,7 @@ const LoginModal = () => {
             <Mail className="absolute left-3 top-3 h-5 w-5 text-casino-silver" />
             <Input
               type="email"
-              placeholder="Email"
+              placeholder={t("email")}
               className="pl-10"
               {...registerForgotPasswordForm("email")}
               required

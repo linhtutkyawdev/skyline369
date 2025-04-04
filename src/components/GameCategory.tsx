@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-
+import { useTranslation } from "react-i18next"; // Import useTranslation
 interface GameCategoryProps {
   title: string;
   icon: React.ReactNode;
@@ -19,6 +19,7 @@ const GameCategory = ({
   isAdjacent = false,
   isLive = false,
 }: GameCategoryProps) => {
+  const { t } = useTranslation(); // Get translation function
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -41,7 +42,7 @@ const GameCategory = ({
         <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-20">
           <div className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full flex items-center gap-1">
             <span className="animate-pulse w-2 h-2 bg-white rounded-full"></span>
-            LIVE
+            {t("live")}
           </div>
         </div>
       )}

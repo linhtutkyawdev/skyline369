@@ -52,8 +52,8 @@ const WithdrawModal = () => {
     if (!user.token) {
       toast({
         variant: "destructive",
-        title: "Authentication Error",
-        description: "User token not found. Please log in again.",
+        title: t("authErrorTitle"),
+        description: t("authTokenNotFoundDesc"),
       });
       return;
     }
@@ -67,8 +67,8 @@ const WithdrawModal = () => {
     ) {
       toast({
         variant: "destructive",
-        title: "Missing Information",
-        description: "Please fill in all bank details.",
+        title: t("missingInfoTitle"),
+        description: t("fillBankDetailsDesc"),
       });
       return;
     }
@@ -91,27 +91,26 @@ const WithdrawModal = () => {
           userInfo: { ...user.userInfo, ...response.data.data }, // Merge new data
         });
         toast({
-          title: "Bank Information Updated",
-          description: "Your bank information has been updated successfully.",
+          title: t("bankInfoUpdatedTitle"),
+          description: t("bankInfoUpdatedDesc"),
         });
         // Optionally close modal or switch view if needed
         // setActiveModal(null);
       } else {
         toast({
           variant: "destructive",
-          title: "Update Failed",
+          title: t("updateFailedTitle"),
           description:
-            response.data.status.msg || "Could not update bank info.",
+            response.data.status.msg || t("updateBankInfoFailedDesc"),
         });
       }
     } catch (error: any) {
       console.error("Error updating bank info:", error);
       toast({
         variant: "destructive",
-        title: "Update Error",
+        title: t("updateErrorTitle"),
         description:
-          error.response?.data?.status?.msg ||
-          "An unexpected error occurred. Please try again.",
+          error.response?.data?.status?.msg || t("unexpectedErrorDesc"),
       });
     } finally {
       setIsBankUpdateLoading(false);
@@ -129,8 +128,12 @@ const WithdrawModal = () => {
     if (!amount || amount < 1000 || amount > 10000) {
       toast({
         variant: "destructive",
-        title: "Invalid Amount",
-        description: `Withdrawal amount must be between $1,000 and $10,000. You entered $${amount.toLocaleString()}.`,
+        title: t("invalidAmountTitle"),
+        description: t("withdrawAmountLimitDesc", {
+          min: 1000,
+          max: 10000,
+          amount: amount.toLocaleString(),
+        }),
       });
       return;
     }
@@ -142,10 +145,11 @@ const WithdrawModal = () => {
     ) {
       toast({
         variant: "destructive",
-        title: "Insufficient Balance",
-        description: `Your current game balance of $${
-          user.userInfo?.game_balance?.toLocaleString() ?? 0
-        } is less than the requested withdrawal amount of $${amount.toLocaleString()}.`,
+        title: t("insufficientBalanceTitle"),
+        description: t("insufficientBalanceDesc", {
+          balance: user.userInfo?.game_balance?.toLocaleString() ?? 0,
+          amount: amount.toLocaleString(),
+        }),
       });
       return;
     }
@@ -157,8 +161,8 @@ const WithdrawModal = () => {
     if (!user.token || !amount) {
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Missing required information.",
+        title: t("errorTitle"),
+        description: t("missingRequiredInfoDesc"),
       });
       return false;
     }
@@ -177,10 +181,10 @@ const WithdrawModal = () => {
 
       if (transferToMainResponse.data.status.errorCode !== 0) {
         throw new ApiError(
-          "Transfer Failed",
+          t("transferFailedTitle"),
           transferToMainResponse.data.status.errorCode,
           transferToMainResponse.data.status.msg ||
-            "Could not transfer funds to main wallet."
+            t("transferToMainFailedDesc")
         );
       }
       transferToMainSuccessful = true;
@@ -205,10 +209,10 @@ const WithdrawModal = () => {
       } else {
         // Withdrawal failed, need to rollback transfer
         throw new ApiError(
-          "Withdrawal Failed",
+          t("withdrawalFailedTitle"),
           drawingResponse.data.status.errorCode,
           drawingResponse.data.status.msg ||
-            "Withdrawal request failed after funds transfer."
+            t("withdrawalFailedAfterTransferDesc")
         );
       }
     } catch (error: any) {
@@ -235,9 +239,8 @@ const WithdrawModal = () => {
           // Notify user or admin about the critical state
           toast({
             variant: "destructive",
-            title: "CRITICAL ERROR",
-            description:
-              "Withdrawal failed and could not return funds automatically. Please contact support immediately.",
+            title: t("criticalErrorTitle"),
+            description: t("criticalRollbackFailedDesc"),
             duration: 10000, // Show longer
           });
           setWithdrawStep("failed"); // Still show failed state
@@ -250,7 +253,9 @@ const WithdrawModal = () => {
       toast({
         variant: "destructive",
         title:
-          error instanceof ApiError ? error.name : "Withdrawal Process Failed",
+          error instanceof ApiError
+            ? error.name
+            : t("withdrawalProcessFailedTitle"),
         description: withdrawalErrorMessage,
       });
       setWithdrawStep("failed");
@@ -315,7 +320,7 @@ const WithdrawModal = () => {
               className="flex justify-between items-center mb-4"
             >
               <h2 className="text-xl font-semibold text-casino-silver">
-                Withdraw
+                {t("withdraw")}
               </h2>
               <Button
                 variant="ghost"
@@ -350,19 +355,19 @@ const WithdrawModal = () => {
                         <div className="space-y-1 text-sm">
                           <p className="text-casino-silver/90">
                             <span className="font-medium text-casino-silver/70 w-28 inline-block">
-                              Bank Branch:
+                              {t("bankBranchLabel")}
                             </span>{" "}
                             {user.userInfo.bank_branch_name || "N/A"}
                           </p>
                           <p className="text-casino-silver/90">
                             <span className="font-medium text-casino-silver/70 w-28 inline-block">
-                              Account Holder:
+                              {t("accountHolderLabel")}
                             </span>{" "}
                             {user.userInfo.bank_username || "N/A"}
                           </p>
                           <p className="text-casino-silver/90">
                             <span className="font-medium text-casino-silver/70 w-28 inline-block">
-                              Card Number:
+                              {t("cardNumberLabelColon")}
                             </span>{" "}
                             {user.userInfo.bank_card || "N/A"}
                           </p>
@@ -376,7 +381,10 @@ const WithdrawModal = () => {
                             htmlFor="amount"
                             className="text-casino-silver block mb-2"
                           >
-                            Withdraw Amount ($1,000 - $10,000)
+                            {t("withdrawAmountRangeLabel", {
+                              min: 1000,
+                              max: 10000,
+                            })}
                           </Label>
                           <Input
                             type="number"
@@ -384,7 +392,7 @@ const WithdrawModal = () => {
                             value={amount === 0 ? "" : amount} // Show placeholder if 0
                             onChange={(e) => setAmount(Number(e.target.value))}
                             className="w-full bg-casino-deep-blue border border-casino-light-blue rounded-lg p-4 text-white focus:outline-none focus:ring-2 focus:ring-casino-gold"
-                            placeholder="Enter amount"
+                            placeholder={t("enterAmountPlaceholder")}
                             min="100"
                             max="10000"
                           />
@@ -392,9 +400,7 @@ const WithdrawModal = () => {
                         <div className="p-3 bg-blue-900 bg-opacity-30 rounded-lg flex items-start gap-3">
                           <AlertCircle className="text-blue-400 w-5 h-5 mt-0.5 flex-shrink-0" />
                           <p className="text-blue-100 text-sm">
-                            The deposit will be processed within 24 hours. If
-                            you have any questions, please contact our support
-                            team.
+                            {t("depositProcessingInfo")}
                           </p>
                         </div>
                       </div>
@@ -414,14 +420,14 @@ const WithdrawModal = () => {
                         disabled={isWithdrawLoading}
                         className="w-full py-2 bg-casino-accent text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                       >
-                        Update Bank Info
+                        {t("updateBankInfo")}
                       </button>
                       <button
                         onClick={handleWithdrawSubmit}
                         disabled={isWithdrawLoading}
                         className="w-full py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                       >
-                        Request Withdrawal
+                        {t("requestWithdrawal")}
                       </button>
                     </div>
                   )}
@@ -430,15 +436,19 @@ const WithdrawModal = () => {
                   {withdrawStep === "confirm" && user && user.userInfo && (
                     <div className="space-y-4">
                       <div className="text-casino-silver text-sm mb-4">
-                        Please confirm your deposit details.
+                        {t("confirmWithdrawalDetailsPrompt")}
                       </div>
                       <div className="space-y-2">
                         <div className="flex items-center justify-between">
-                          <span className="text-casino-silver">Amount:</span>
+                          <span className="text-casino-silver">
+                            {t("amountLabelColon")}
+                          </span>
                           <span className="text-casino-gold">${amount}</span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-casino-silver">Bank:</span>
+                          <span className="text-casino-silver">
+                            {t("bankLabel")}
+                          </span>
                           <span className="text-casino-gold">
                             {user.userInfo.bank_name} -{" "}
                             {user.userInfo.bank_branch_name}
@@ -446,7 +456,7 @@ const WithdrawModal = () => {
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-casino-silver">
-                            Card Number:
+                            {t("cardNumberLabelColon")}
                           </span>
                           <span className="text-casino-gold">
                             {user.userInfo.bank_card}
@@ -454,7 +464,7 @@ const WithdrawModal = () => {
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-casino-silver">
-                            Bank Holder:
+                            {t("bankHolderLabel")}
                           </span>
                           <span className="text-casino-gold">
                             {user.userInfo.bank_username}
@@ -465,8 +475,10 @@ const WithdrawModal = () => {
                       <div className="p-3 bg-blue-900 bg-opacity-30 rounded-lg flex items-start gap-3">
                         <AlertCircle className="text-blue-400 w-5 h-5 mt-0.5 flex-shrink-0" />
                         <p className="text-blue-100 text-sm">
-                          <span className="font-semibold">Important:</span>{" "}
-                          Please ensure the details above are correct before
+                          <span className="font-semibold">
+                            {t("importantLabel")}
+                          </span>{" "}
+                          {t("ensureDetailsCorrectPrompt")}
                           proceeding.
                         </p>
                       </div>
@@ -475,7 +487,7 @@ const WithdrawModal = () => {
                         disabled={isWithdrawLoading}
                         className="w-full flex items-center justify-center py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
                       >
-                        Confirm Withdrawal{" "}
+                        {t("confirmWithdrawal")}{" "}
                         {isWithdrawLoading && (
                           <Loader2 className="ml-2 animate-spin w-6 h-6" />
                         )}
@@ -490,11 +502,12 @@ const WithdrawModal = () => {
                         <CheckIcon className="text-casino-gold w-full h-full" />
                       </div>
                       <h3 className="text-xl font-semibold text-casino-silver">
-                        Withdrawal Request Successful
+                        {t("withdrawalSuccessTitle")}
                       </h3>
                       <p className="text-casino-silver/80 mt-3 mb-8">
-                        Your request to withdraw ${amount.toLocaleString()} has
-                        been submitted. It may take some time to process.
+                        {t("withdrawalSuccessDesc", {
+                          amount: amount.toLocaleString(),
+                        })}
                       </p>
                       <Button
                         onClick={() => {
@@ -503,7 +516,7 @@ const WithdrawModal = () => {
                         }}
                         className="w-full flex items-center justify-center py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
                       >
-                        Check your withdrawals
+                        {t("checkWithdrawals")}
                       </Button>
                     </div>
                   )}
@@ -516,11 +529,10 @@ const WithdrawModal = () => {
                       <XCircle className="h-12 w-12 text-red-500 mx-auto" />{" "}
                       {/* Smaller icon */}
                       <h3 className="text-xl font-semibold text-casino-silver">
-                        Withdrawal Request Failed
+                        {t("withdrawalRequestFailedTitle")}
                       </h3>
                       <p className="text-casino-silver/80">
-                        There was an issue submitting your withdrawal request.
-                        Please try again or contact support.
+                        {t("withdrawalFailedDesc")}
                       </p>
                       <div className="flex gap-4 justify-center mt-4">
                         <Button
@@ -528,13 +540,13 @@ const WithdrawModal = () => {
                           onClick={closeModalAndReset}
                           className="text-casino-silver border-casino-light-blue hover:bg-casino-light-blue/20"
                         >
-                          Close
+                          {t("close")}
                         </Button>
                         <Button
                           onClick={() => setWithdrawStep("amount")} // Go back to amount step
                           className="bg-casino-gold text-casino-deep-blue hover:bg-opacity-90"
                         >
-                          Try Again
+                          {t("tryAgain")}
                         </Button>
                       </div>
                     </div>
@@ -548,7 +560,7 @@ const WithdrawModal = () => {
                       htmlFor="bank_name"
                       className="text-casino-silver block mb-1" // Reduced mb
                     >
-                      Bank Name
+                      {t("bankNameLabel")}
                     </Label>
                     <Input
                       type="text"
@@ -563,7 +575,7 @@ const WithdrawModal = () => {
                       htmlFor="bank_branch_name"
                       className="text-casino-silver block mb-1" // Reduced mb
                     >
-                      Bank Branch
+                      {t("bankBranchFormLabel")}
                     </Label>
                     <Input
                       type="text"
@@ -578,7 +590,7 @@ const WithdrawModal = () => {
                       htmlFor="bank_username"
                       className="text-casino-silver block mb-1" // Reduced mb
                     >
-                      Account Holder
+                      {t("accountHolderFormLabel")}
                     </Label>
                     <Input
                       type="text"
@@ -593,7 +605,7 @@ const WithdrawModal = () => {
                       htmlFor="bank_card"
                       className="text-casino-silver block mb-1" // Reduced mb
                     >
-                      Bank Card Number
+                      {t("bankCardNumberLabel")}
                     </Label>
                     <Input
                       type="text"
@@ -606,9 +618,8 @@ const WithdrawModal = () => {
                   <div className="col-span-2 p-3 bg-blue-900 bg-opacity-30 rounded-lg flex items-start gap-3 mb-2">
                     <AlertCircle className="text-blue-400 w-5 h-5 mt-0.5 flex-shrink-0" />
                     <p className="text-blue-100 text-sm">
-                      You need to provide your bank information for withdrawal.
-                      Also you can only update your bank information once every
-                      14 days.
+                      {t("provideBankInfoPrompt")}
+                      {t("bankUpdateLimitInfo")}
                     </p>
                   </div>
                   <button
@@ -619,7 +630,7 @@ const WithdrawModal = () => {
                     {isBankUpdateLoading ? ( // Use correct loading state
                       <Loader2 className="h-5 w-5 animate-spin" />
                     ) : (
-                      "Update"
+                      t("update")
                     )}
                   </button>
                 </div>

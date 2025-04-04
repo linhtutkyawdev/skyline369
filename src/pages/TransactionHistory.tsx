@@ -19,13 +19,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
-
+import { useTranslation } from "react-i18next"; // Import useTranslation
 const TransationHistory = () => {
   // Global state and navigation
   const { loading, setLoading, error, setError } = useStateStore();
   const { user, setUser } = useUserStore();
   const navigate = useNavigate();
-
+  const { t } = useTranslation(); // Get translation function
   // Component state
   const [transactions, setTransactions] = useState<TrabsactionRecord[]>([]);
   const [selectedFilter, setSelectedFilter] = useState<
@@ -85,7 +85,7 @@ const TransationHistory = () => {
           responses.data.status.errorCode != 200
         ) {
           throw new ApiError(
-            "API Error", // Use a generic name or specific one if available
+            t("apiErrorTitle"),
             responses.data.status.errorCode,
             responses.data.status.mess
           );
@@ -107,7 +107,11 @@ const TransationHistory = () => {
         const apiError =
           err instanceof ApiError
             ? err
-            : new ApiError("Network Error", 500, "Failed to fetch data.");
+            : new ApiError(
+                t("networkErrorTitle"),
+                500,
+                t("fetchDataFailedDesc")
+              );
 
         if (apiError.statusCode === 401) {
           setUser(null); // Logout on auth error
@@ -199,7 +203,7 @@ const TransationHistory = () => {
           className="flex items-center gap-2 text-casino-silver hover:text-white transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
-          <span>Back</span>
+          <span>{t("back")}</span>
         </button>
 
         {/* Title */}
@@ -208,7 +212,7 @@ const TransationHistory = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-3xl font-bold text-center text-white lg:mb-8"
         >
-          Transaction History
+          {t("transactionHistoryTitle")}
         </motion.h1>
         <div className="w-20" />
       </motion.div>
@@ -233,7 +237,7 @@ const TransationHistory = () => {
                     : "bg-casino-deep-blue text-casino-silver"
                 }`}
               >
-                {filterType === "Withdrawal" ? "Withdrawals" : filterType}
+                {t(`filter${filterType}`)}
               </button>
             ))}
           </div>
@@ -262,7 +266,7 @@ const TransationHistory = () => {
                       format(date.from, "LLL dd, y")
                     )
                   ) : (
-                    <span>Pick date range</span>
+                    <span>{t("pickDateRange")}</span>
                   )}
                 </Button>
               </PopoverTrigger>
@@ -286,7 +290,7 @@ const TransationHistory = () => {
             <div className="relative">
               <Input
                 type="text"
-                placeholder="Search..."
+                placeholder={t("searchPlaceholderDots")}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="h-10 max-w-[12rem] rounded-full bg-casino-deep-blue text-casino-silver pl-10 pr-4 focus:ring-casino-gold focus:border-casino-gold"
@@ -306,7 +310,9 @@ const TransationHistory = () => {
         >
           {/* Initial Loading Indicator */}
           {loading && currentPage === 1 && (
-            <p className="text-center text-casino-silver py-4">Loading...</p>
+            <p className="text-center text-casino-silver py-4">
+              {t("loadingDots")}
+            </p>
           )}
 
           {/* Error Message */}
@@ -332,7 +338,7 @@ const TransationHistory = () => {
                   </h3>
                   <p className="text-casino-silver text-sm">{d.type}</p>
                   <p className="text-casino-silver text-xs mt-1">
-                    ID: {d.transaction_id}
+                    {t("userIdLabel", { id: d.transaction_id })}
                   </p>
                 </div>
                 <div className="text-right">
@@ -359,7 +365,7 @@ const TransationHistory = () => {
           {/* Loading More Indicator */}
           {isLoadingMore && (
             <p className="text-center text-casino-silver py-4">
-              Loading more...
+              {t("loadingMoreDots")}
             </p>
           )}
           {/* No Results Message (when search/filter yields nothing from existing data) */}
@@ -369,7 +375,7 @@ const TransationHistory = () => {
             transactions.length > 0 && // We have *some* data loaded
             filteredHistory.length === 0 && ( // But the current filter shows none
               <p className="text-center text-casino-silver py-4">
-                No transactions match your current filters.
+                {t("noTransactionsMatchFilter")}
               </p>
             )}
 
@@ -379,7 +385,7 @@ const TransationHistory = () => {
             !error &&
             transactions.length === 0 && (
               <p className="text-center text-casino-silver py-4">
-                No transactions found for the selected criteria.
+                {t("noTransactionsFound")}
               </p>
             )}
 
@@ -389,7 +395,7 @@ const TransationHistory = () => {
             !hasMore &&
             transactions.length > 0 && (
               <p className="text-center text-casino-silver/70 text-sm py-4">
-                End of history.
+                {t("endOfHistory")}
               </p>
             )}
         </motion.div>

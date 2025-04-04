@@ -3,10 +3,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Mail, Phone, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useStateStore } from "@/store/state";
-
+import { useTranslation } from "react-i18next"; // Import useTranslation
 const ContactUsModal = () => {
   const { activeModal, setActiveModal } = useStateStore();
-
+  const { t } = useTranslation(); // Get translation function
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setActiveModal(null);
@@ -44,7 +44,7 @@ const ContactUsModal = () => {
               className="flex justify-between items-center mb-6"
             >
               <h2 className="text-xl font-semibold text-casino-silver">
-                Contact Us
+                {t("contact_us")}
               </h2>
               <Button
                 variant="ghost"
@@ -70,7 +70,9 @@ const ContactUsModal = () => {
                     <Mail className="w-5 h-5 text-casino-deep-blue" />
                   </div>
                   <div>
-                    <h3 className="text-white font-medium">Email Support</h3>
+                    <h3 className="text-white font-medium">
+                      {t("email_support")}
+                    </h3>
                     <p className="text-casino-silver text-sm">
                       support@skyline369.com
                     </p>
@@ -85,7 +87,9 @@ const ContactUsModal = () => {
                     <Phone className="w-5 h-5 text-casino-deep-blue" />
                   </div>
                   <div>
-                    <h3 className="text-white font-medium">Phone Support</h3>
+                    <h3 className="text-white font-medium">
+                      {t("phone_support")}
+                    </h3>
                     <p className="text-casino-silver text-sm">
                       +95 9 123 456 789
                     </p>
@@ -100,8 +104,10 @@ const ContactUsModal = () => {
                     <MessageSquare className="w-5 h-5 text-casino-deep-blue" />
                   </div>
                   <div>
-                    <h3 className="text-white font-medium">Live Chat</h3>
-                    <p className="text-casino-silver text-sm">Available 24/7</p>
+                    <h3 className="text-white font-medium">{t("live_chat")}</h3>
+                    <p className="text-casino-silver text-sm">
+                      {t("available247")}
+                    </p>
                   </div>
                 </a>
 
@@ -135,9 +141,9 @@ const ContactUsModal = () => {
                     </svg>
                   </div>
                   <div>
-                    <h3 className="text-white font-medium">Viber</h3>
+                    <h3 className="text-white font-medium">{t("viber")}</h3>
                     <p className="text-casino-silver text-sm">
-                      Live Chat on Viber
+                      {t("liveChatOnViber")}
                     </p>
                   </div>
                 </a>
@@ -145,12 +151,9 @@ const ContactUsModal = () => {
 
               <div className="mt-8 p-4 rounded-lg bg-casino-deep-blue">
                 <h3 className="text-casino-gold font-medium mb-2">
-                  Office Hours
+                  {t("office_hours")}
                 </h3>
-                <p className="text-white text-sm">
-                  Our customer support team is available 24 hours a day, 7 days
-                  a week.
-                </p>
+                <p className="text-white text-sm">{t("office_hours_value")}</p>
               </div>
             </motion.div>
           </motion.div>

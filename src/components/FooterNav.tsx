@@ -28,7 +28,7 @@ const FooterNav = () => {
         <div className="w-10 h-10 2xl:w-12 2xl:h-12 rounded-full gold-badge flex items-center justify-center 2xl:mb-1 group-hover:animate-pulse-glow">
           <ArrowDownToLine className="text-casino-deep-blue" size={20} />
         </div>
-        <span className="text-casino-silver text-xs 2xl:text-base mt-1">
+        <span className="text-casino-silver text-[10px] 2xl:text-[13px]">
           {t("deposit")}
         </span>
       </div>
@@ -40,7 +40,7 @@ const FooterNav = () => {
         <div className="w-10 h-10 2xl:w-12 2xl:h-12 rounded-full gold-badge flex items-center justify-center 2xl:mb-1 group-hover:animate-pulse-glow">
           <ArrowUpFromLine className="text-casino-deep-blue" size={20} />
         </div>
-        <span className="text-casino-silver text-xs 2xl:text-base mt-1">
+        <span className="text-casino-silver text-[10px] 2xl:text-[13px]">
           {t("withdraw")}
         </span>
       </div>
@@ -52,8 +52,8 @@ const FooterNav = () => {
         <div className="w-10 h-10 2xl:w-12 2xl:h-12 rounded-full gold-badge flex items-center justify-center 2xl:mb-1 group-hover:animate-pulse-glow">
           <History className="text-casino-deep-blue" size={20} />
         </div>
-        <span className="text-casino-silver text-xs 2xl:text-base mt-1">
-          Transactions
+        <span className="text-casino-silver text-[10px] 2xl:text-[13px]">
+          {t("transactions")}
         </span>
       </div>
 
@@ -64,8 +64,8 @@ const FooterNav = () => {
         <div className="w-10 h-10 2xl:w-12 2xl:h-12 rounded-full gold-badge flex items-center justify-center 2xl:mb-1 group-hover:animate-pulse-glow">
           <Gamepad2 className="text-casino-deep-blue" size={20} />
         </div>
-        <span className="text-casino-silver text-xs 2xl:text-base mt-1">
-          Gamelogs
+        <span className="text-casino-silver text-[10px] 2xl:text-[13px]">
+          {t("gamelogs")}
         </span>
       </div>
     </motion.footer>

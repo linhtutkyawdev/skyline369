@@ -145,8 +145,8 @@ const RegisterModal = () => {
       setStep("email");
       setUser(response);
       toast({
-        title: "Registration successful",
-        description: "Welcome to Skyline369 🎉",
+        title: t("registrationSuccessTitle"),
+        description: t("registrationSuccessDesc"),
       });
       resetEmailForm();
       resetEmailAndOtpForm();
@@ -231,7 +231,7 @@ const RegisterModal = () => {
                   <Input
                     name="email"
                     type="email"
-                    placeholder="Email"
+                    placeholder={t("email")}
                     className="pl-10"
                     {...registerEmailForm("email")}
                     required
@@ -251,7 +251,7 @@ const RegisterModal = () => {
                   disabled={isEmailSubmitting}
                   className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-deep-blue"
                 >
-                  Continue{" "}
+                  {t("continue")}{" "}
                   {isEmailSubmitting ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   ) : (
@@ -261,7 +261,7 @@ const RegisterModal = () => {
                 <div className="text-center mt-4 space-y-2">
                   <div className="flex items-center justify-center gap-2">
                     <span className="text-casino-silver text-sm">
-                      Already have an account?
+                      {t("alreadyHaveAccount")}
                     </span>
                     <button
                       type="button"
@@ -274,7 +274,7 @@ const RegisterModal = () => {
                         setActiveModal("login")
                       }
                     >
-                      Login
+                      {t("login")}
                     </button>
                   </div>
                 </div>
@@ -291,8 +291,7 @@ const RegisterModal = () => {
               >
                 <div className="relative space-y-2">
                   <p className="text-casino-silver text-sm">
-                    Please enter the verification code sent to{" "}
-                    {watchEmail("email")}
+                    {t("enterOtpPrompt")} {watchEmail("email")}
                   </p>
                   <input
                     name="email"
@@ -304,7 +303,7 @@ const RegisterModal = () => {
                   <Input
                     name="otp"
                     type="text"
-                    placeholder="XXXXXX"
+                    placeholder={t("otpPlaceholder")}
                     className="text-center tracking-[1rem] font-2xl"
                     {...registerEmailAndOtpForm("otp")}
                     required
@@ -325,7 +324,7 @@ const RegisterModal = () => {
                   disabled={isEmailAndOtpSubmitting}
                   className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-deep-blue"
                 >
-                  Verify{" "}
+                  {t("verify")}{" "}
                   {isEmailAndOtpSubmitting ? (
                     <Loader2 className="ml-2 h-4 w-4 animate-spin" />
                   ) : (
@@ -373,7 +372,7 @@ const RegisterModal = () => {
                   <Input
                     name="password"
                     type="password"
-                    placeholder="Password"
+                    placeholder={t("password")}
                     className="pl-10"
                     {...registerFinalForm("password")}
                     required
@@ -393,7 +392,7 @@ const RegisterModal = () => {
                   <Input
                     name="confirmPassword"
                     type="password"
-                    placeholder="Confirm Password"
+                    placeholder={t("confirmPassword")}
                     className="pl-10"
                     {...registerFinalForm("confirmPassword")}
                     required
@@ -413,7 +412,7 @@ const RegisterModal = () => {
                   disabled={isFinalSubmitting}
                   className="w-full bg-casino-gold hover:bg-casino-gold/90 text-casino-deep-blue"
                 >
-                  Register{" "}
+                  {t("register")}{" "}
                   {isFinalSubmitting ? (
                     <Loader2 className="ml-2 h-4 w-4 animate-spin" />
                   ) : (
