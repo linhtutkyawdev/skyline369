@@ -32,14 +32,15 @@ const WithdrawModal = () => {
   const [amount, setAmount] = useState<number>(0);
   const { user, setUser } = useUserStore();
   const [newBankInfo, setNewBankInfo] = useState({
-    bank_name: user?.userInfo?.bank_name || "",
-    bank_branch_name: user?.userInfo?.bank_branch_name || "",
-    bank_username: user?.userInfo?.bank_username || "",
-    bank_card: user?.userInfo?.bank_card || "",
+    bank_name: "",
+    bank_branch_name: "",
+    bank_username: "",
+    bank_card: "",
   });
   const [isBankUpdateLoading, setIsBankUpdateLoading] = useState(false);
   const [isWithdrawLoading, setIsWithdrawLoading] = useState(false);
   const [withdrawStep, setWithdrawStep] = useState<WithdrawStep>("amount");
+  const [oldBankInfo, setOldBankInfo] = useState<UserInfo | null>(null);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -94,6 +95,7 @@ const WithdrawModal = () => {
           title: t("bankInfoUpdatedTitle"),
           description: t("bankInfoUpdatedDesc"),
         });
+        setOldBankInfo(null); // Reset old info on success
         // Optionally close modal or switch view if needed
         // setActiveModal(null);
       } else {
@@ -273,6 +275,7 @@ const WithdrawModal = () => {
 
   const closeModalAndReset = () => {
     resetWithdrawal();
+    setOldBankInfo(null); // Reset old info
     setActiveModal(null);
   };
 
@@ -406,6 +409,7 @@ const WithdrawModal = () => {
                       </div>
                       <button
                         onClick={() => {
+                          setOldBankInfo(user.userInfo); // Store old info
                           setUser({
                             ...user,
                             userInfo: {
@@ -567,6 +571,7 @@ const WithdrawModal = () => {
                       id="bank_name"
                       value={newBankInfo.bank_name}
                       onChange={(e) => handleInputChange(e, "bank_name")}
+                      placeholder={oldBankInfo?.bank_name || t("bankNameLabel")}
                       className="w-full bg-casino-deep-blue border border-casino-light-blue rounded-lg p-4 text-white focus:outline-none focus:ring-2 focus:ring-casino-gold"
                     />
                   </div>
@@ -582,6 +587,10 @@ const WithdrawModal = () => {
                       id="bank_branch_name"
                       value={newBankInfo.bank_branch_name}
                       onChange={(e) => handleInputChange(e, "bank_branch_name")}
+                      placeholder={
+                        oldBankInfo?.bank_branch_name ||
+                        t("bankBranchFormLabel")
+                      }
                       className="w-full bg-casino-deep-blue border border-casino-light-blue rounded-lg p-4 text-white focus:outline-none focus:ring-2 focus:ring-casino-gold"
                     />
                   </div>
@@ -597,6 +606,10 @@ const WithdrawModal = () => {
                       id="bank_username"
                       value={newBankInfo.bank_username}
                       onChange={(e) => handleInputChange(e, "bank_username")}
+                      placeholder={
+                        oldBankInfo?.bank_username ||
+                        t("accountHolderFormLabel")
+                      }
                       className="w-full bg-casino-deep-blue border border-casino-light-blue rounded-lg p-4 text-white focus:outline-none focus:ring-2 focus:ring-casino-gold"
                     />
                   </div>
@@ -612,6 +625,9 @@ const WithdrawModal = () => {
                       id="bank_card"
                       value={newBankInfo.bank_card}
                       onChange={(e) => handleInputChange(e, "bank_card")}
+                      placeholder={
+                        oldBankInfo?.bank_card || t("bankCardNumberLabel")
+                      }
                       className="w-full bg-casino-deep-blue border border-casino-light-blue rounded-lg p-4 text-white focus:outline-none focus:ring-2 focus:ring-casino-gold"
                     />
                   </div>

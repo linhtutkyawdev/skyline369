@@ -378,31 +378,6 @@ const DepositModal = () => {
                         )}
                     </div>
                   ))}
-                {!selectedDepositChannel && (
-                  <>
-                    <button className="w-full flex items-center justify-between gap-4 bg-casino-deep-blue border border-casino-light-blue rounded-lg p-5 hover:bg-opacity-80 transition-all">
-                      <span className="text-white">{t("kbzPay")}</span>
-                      <Building className="text-casino-gold w-6 h-6" />
-                    </button>
-                    <button className="w-full flex items-center justify-between gap-4 bg-casino-deep-blue border border-casino-light-blue rounded-lg p-5 hover:bg-opacity-80 transition-all">
-                      <span className="text-white">{t("ayaPay")}</span>
-                      <Building className="text-casino-gold w-6 h-6" />
-                    </button>
-                    <button className="w-full flex items-center justify-between gap-4 bg-casino-deep-blue border border-casino-light-blue rounded-lg p-5 hover:bg-opacity-80 transition-all">
-                      <span className="text-white">{t("bank2")}</span>
-                      <Building className="text-casino-gold w-6 h-6" />
-                      {/* <span className="text-white">MR. Test Receiver 2</span> */}
-                    </button>
-                    <button className="w-full flex items-center justify-between gap-4 bg-casino-deep-blue border border-casino-light-blue rounded-lg p-5 hover:bg-opacity-80 transition-all">
-                      <span className="text-white">{t("bank3")}</span>
-                      <Building className="text-casino-gold w-6 h-6" />
-                    </button>
-                    <button className="w-full flex items-center justify-between gap-4 bg-casino-deep-blue border border-casino-light-blue rounded-lg p-5 hover:bg-opacity-80 transition-all">
-                      <span className="text-white">{t("bank4")}</span>
-                      <Building className="text-casino-gold w-6 h-6" />
-                    </button>
-                  </>
-                )}
 
                 {selectedDepositChannel && (
                   <>
