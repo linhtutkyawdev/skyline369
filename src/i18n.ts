@@ -3,6 +3,7 @@ import { initReactI18next } from "react-i18next";
 import en from "@/translations/en";
 import my from "@/translations/my";
 import th from "@/translations/th";
+import zh from "@/translations/zh"; // Import Chinese translations
 
 // the translations
 // (tip move them in a JSON file and import them,
@@ -11,6 +12,7 @@ const resources = {
   en,
   th,
   my,
+  zh, // Add Chinese resources
 };
 
 export type TSupportedLanguages = keyof typeof resources;

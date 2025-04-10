@@ -1,8 +1,9 @@
 export default {
   translation: {
-    en: "English",
+    en: "English", // Keep other language names for reference
     th: "Thailand",
     my: "Myanmar",
+    zh: "Chinese", // Add Chinese
     register_login: "Register / Login",
     share: "Share",
     contact_us: "Contact Us",

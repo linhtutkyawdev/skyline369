@@ -1,8 +1,9 @@
 export default {
   translation: {
-    en: "အင်္ဂလိပ်",
-    th: "ထိုင်း",
-    my: "မြန်မာ",
+    en: "English", // Keep other language names for reference
+    th: "Thailand",
+    my: "Myanmar",
+    zh: "Chinese", // Add Chinese
     register_login: "အကောင့်ဖွင့် / ဝင်ရောက်",
     share: "မျှဝေပါ",
     contact_us: "ဆက်သွယ်ရန်",
@@ -49,7 +50,7 @@ export default {
       "ကျွန်ုပ်တို့၏ဖောက်သည်ပံ့ပိုးမှုအဖွဲ့သည် တစ်ပတ်လုံး 24 နာရီ ရရှိနိုင်ပါသည်။",
     notifications: "အသိပေးချက်များ",
     sound_effects: "ဂီတ",
-    language: "ဘာသာစကား",
+    language: "Language",
     "Login Successfully": "အကောင့်ကိုအောင်မြင်စွာဝင်ရောက်လိုက်ပါပြီ 🎉",
     "Wrong Password.": "မှန်ကန်သောစကားဝှက်ကိုထည့်သွင်းပါ!",
     request_successful: "တောင်းဆိုမှုအောင်မြင်ပါသည်!",

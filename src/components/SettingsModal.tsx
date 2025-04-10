@@ -9,14 +9,18 @@ import {
   Mail,
   // KeyRound, // Removed unused icon
   Loader2,
-  ArrowLeft, // Import ArrowLeft for back button
+  ArrowLeft,
+  Edit, // Import ArrowLeft for back button
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input"; // Import Input
 import { useTranslation } from "react-i18next";
 import { Switch } from "./ui/switch";
 import { SupportedLanguages } from "@/i18n";
-import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
+import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group"; // Ensure ToggleGroup is imported
+// Remove RadioGroup and Label imports if they exist from previous attempts
+// import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+// import { Label } from "@/components/ui/label";
 import { useStateStore } from "@/store/state";
 import { useSettingsStore } from "@/store/settings";
 import { useUserStore } from "@/store/user"; // Import user store
@@ -134,6 +138,7 @@ const SettingsModal = () => {
           exit={{ opacity: 0 }}
         >
           <motion.div
+            // ref={modalContainerRef} // Remove ref attachment
             className="bg-casino-deep-blue/80 w-full max-w-md rounded-lg border border-casino-light-blue p-6 modal-container" // Reverted to max-w-md, can adjust if needed
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -199,8 +204,7 @@ const SettingsModal = () => {
                       className="bg-casino-deep-blue text-casino-gold border border-casino-light-blue hover:bg-casino-gold hover:text-casino-deep-blue px-4 py-1 text-sm rounded-md"
                       onClick={() => setShowPasswordReset(true)}
                     >
-                      {/* Text already in label, button can be simpler */}
-                      {t("reset_password")}
+                      <Edit />
                     </Button>
                   </div>
 
@@ -212,7 +216,7 @@ const SettingsModal = () => {
                     </div>
                     <ToggleGroup
                       type="single"
-                      className="bg-casino-deep-blue rounded-lg p-1"
+                      className="bg-casino-deep-blue rounded-lg p-2 grid grid-cols-2 gap-2" // Use grid with 2 columns and gap
                       defaultValue={i18n.language}
                       onValueChange={(lang) => {
                         if (lang) {
@@ -222,7 +226,11 @@ const SettingsModal = () => {
                       }}
                     >
                       {SupportedLanguages.map((lang) => (
-                        <ToggleGroupItem value={lang} key={lang}>
+                        <ToggleGroupItem
+                          value={lang}
+                          key={lang}
+                          className="data-[state=on]:bg-casino-gold data-[state=on]:text-casino-deep-blue text-casino-silver px-3 py-1 text-xs rounded-md border border-transparent hover:border-casino-light-blue" // Adjusted styling
+                        >
                           {t(lang)}
                         </ToggleGroupItem>
                       ))}
