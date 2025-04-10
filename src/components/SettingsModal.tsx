@@ -307,12 +307,12 @@ const SettingsModal = () => {
                     {/* Back Button */}
                     <Button
                       type="button" // Prevent form submission
-                      variant="outline"
+                      variant="secondary"
                       onClick={() => {
                         setShowPasswordReset(false);
                         reset();
                       }}
-                      className="flex-1 border-casino-silver text-casino-silver hover:bg-casino-silver/10 hover:text-white"
+                      className="flex-1 bg-casino-accent hover:bg-casino-accent/90 text-casino-deep-blue"
                     >
                       <ArrowLeft className="mr-2 h-4 w-4" />
                       {t("back")}
