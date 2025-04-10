@@ -159,7 +159,7 @@ const DepositModal = () => {
         setStep("detail");
         break;
       case "detail":
-        if (!transactionId) {
+        if (!transactionId || !/^\d+$/.test(transactionId)) {
           toast({
             variant: "destructive",
             title: t("invalidTxIdTitle"),
