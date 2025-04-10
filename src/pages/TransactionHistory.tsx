@@ -190,6 +190,59 @@ const TransationHistory = () => {
     loadTransactionListing,
   ]); // Dependencies
 
+  // Helper function to determine status color based on string
+  const getStatusColorClass = (status: string, type: string): string => {
+    const lowerStatus = status.toLowerCase();
+
+    // Recharge Statuses (Deposit)
+    if (type === "Deposit") {
+      switch (status) {
+        case "Unpaid": // 0
+          return "text-red-400"; // Or maybe text-gray-400? Using red for now.
+        case "Unconfirmed": // 1
+          return "text-amber-500";
+        case "Remittance Successful": // 2
+          return "text-green-400";
+        case "Failed": // 3
+          return "text-red-400";
+        default:
+          return "text-white"; // Default to white if unknown failure/other
+      }
+    }
+
+    // Drawing Statuses (Withdrawal)
+    if (type === "Withdrawal") {
+      switch (status) {
+        case "Pending Review": // 1
+          return "text-amber-500";
+        case "Successful, Pending Payment": // 2
+          return "text-amber-500"; // Still pending actual payment
+        case "Paying": // 3
+          return "text-amber-500";
+        case "Payment Successful": // 4
+          return "text-green-400";
+        case "Rejected": // 5
+          return "text-red-400";
+        case "Reject Deduction": // 6
+          return "text-red-400";
+        default:
+          return "text-white"; // Default to white if unknown
+      }
+    }
+
+    // Generic fallback if type is neither Deposit nor Withdrawal (shouldn't happen based on filter)
+    if (lowerStatus.includes("success") || lowerStatus.includes("approved"))
+      return "text-green-400";
+    if (
+      lowerStatus.includes("pending") ||
+      lowerStatus.includes("unconfirmed") ||
+      lowerStatus.includes("review")
+    ) {
+      return "text-amber-500";
+    }
+    return "text-white"; // Default to white
+  };
+
   return (
     <div className="h-screen pb-8 pt-12 lg:pt-16 px-6">
       {/* Back Button */}
@@ -343,15 +396,10 @@ const TransationHistory = () => {
                 </div>
                 <div className="text-right">
                   <p
-                    className={`font-bold text-sm ${
-                      d.status.toLowerCase().includes("pending") ||
-                      d.status.toLowerCase().includes("unconfirmed")
-                        ? "text-amber-500"
-                        : d.status.toLowerCase().includes("success") ||
-                          d.status.toLowerCase().includes("approved")
-                        ? "text-green-400"
-                        : "text-red-400"
-                    }`}
+                    className={`font-bold text-sm ${getStatusColorClass(
+                      d.status,
+                      d.type
+                    )}`}
                   >
                     {d.status}
                   </p>
