@@ -23,7 +23,7 @@ import Game from "./pages/Game";
 import { useUserStore } from "./store/user";
 import { DepositChannel } from "./types/deposit_channel";
 import { ApiResponse } from "./types/api_response";
-import { useStateStore } from "./store/state";
+import { useStateStore, PlatformConfig } from "./store/state"; // Import PlatformConfig type
 import { useToast } from "./hooks/use-toast";
 import { ApiError } from "./types/api_error";
 import axiosInstance from "./lib/axiosInstance";
@@ -65,6 +65,8 @@ const App = () => {
     setLoading,
     setError,
     error,
+    platformConfig, // Get platformConfig state
+    setPlatformConfig, // Get setter for platformConfig
   } = useStateStore();
 
   const { toast } = useToast();
@@ -193,6 +195,51 @@ const App = () => {
     }
   };
 
+  const loadPlatformConfig = async () => {
+    // Check for user and token since it's required for the POST request
+    if (!user || !user.token) {
+      console.log("User or token missing, skipping platform config load.");
+      setPlatformConfig(null); // Ensure config is cleared if no user
+      return; // Exit if no user/token
+    }
+
+    setLoading(true); // Use global loading state
+    try {
+      const response = await axiosInstance.post<ApiResponse<PlatformConfig>>(
+        "/platform_config",
+        { token: user.token } // Add token to the POST body
+      );
+
+      if (
+        response.data.status.errorCode !== 0 &&
+        response.data.status.errorCode !== 200
+      ) {
+        throw new ApiError(
+          t("apiErrorTitle"), // Use translation
+          response.data.status.errorCode,
+          response.data.status.mess
+        );
+      }
+
+      setPlatformConfig(response.data.data);
+    } catch (err) {
+      console.error("Error loading platform config:", err);
+      // Handle specific errors if needed, e.g., network error
+      const apiError =
+        err instanceof ApiError
+          ? err
+          : new ApiError(
+              t("networkErrorTitle"), // Use translation
+              500,
+              t("fetchDataFailedDesc") // Use translation
+            );
+      setError(apiError); // Set global error state
+      setPlatformConfig(null); // Clear config on error
+    } finally {
+      setLoading(false); // Ensure loading is set to false
+    }
+  };
+
   useEffect(() => {
     if (activeModal === "login" || activeModal === "register") return;
     if (!user) setActiveModal("login");
@@ -207,38 +254,84 @@ const App = () => {
       });
   }, [error]);
 
+  // Consolidated useEffect for initial data loading based on user token
   useEffect(() => {
-    (async () => {
-      if (!user || !user.token) return;
-      if (!user.userInfo || depositChannels.length === 0)
-        await loadDepositChannels();
-      if (user.userInfo && user.userInfo.balance > 0) await transferBalance();
-      if (!user.userInfo || user.userInfo.balance > 0)
-        setTimeout(async () => await loadUserInfo(), 100);
-    })();
-  }, [user]);
+    const loadInitialData = async () => {
+      if (!user || !user.token) {
+        // Clear data on logout or if no token
+        setDepositChannels([]);
+        setPlatformConfig(null);
+        // setUser(null) is handled elsewhere based on 401 errors
+        return;
+      }
 
+      setLoading(true); // Set loading true at the start
+      setError(null); // Clear previous errors
+
+      try {
+        // Fetch config first, as it might dictate maintenance mode
+        await loadPlatformConfig();
+
+        // Fetch channels and user info (can run in parallel if independent)
+        // If platformConfig fetch failed, subsequent calls might be skipped
+        // depending on error handling in loadPlatformConfig
+        if (!error) {
+          // Check if platform config load caused an error
+          await Promise.all([loadDepositChannels(), loadUserInfo()]);
+          // Transfer balance logic needs careful consideration
+          // Let's run loadUserInfo again after potential transfer to get updated balance
+          // This might need further refinement based on exact requirements
+          if (user.userInfo && user.userInfo.balance > 0) {
+            await transferBalance();
+            await loadUserInfo(); // Reload user info after transfer
+          }
+        }
+      } catch (err) {
+        // Errors from loadDepositChannels/loadUserInfo are handled within those functions
+        // Setting the global error state there.
+        console.error("Error during initial data load sequence:", err);
+      } finally {
+        setLoading(false); // Set loading false at the end
+      }
+    };
+
+    loadInitialData();
+    // Dependencies: user.token triggers reload on login/logout
+    // Include setters/other dependencies if used directly inside the effect
+  }, [user?.token]); // Use optional chaining for safety
+
+  // Removed useEffect dependent on activeModal for data loading
+  // Removed useEffect with window.load listener
+
+  // Effect to set document title from platform config
   useEffect(() => {
-    (async () => {
-      if (user && user.userInfo && user.userInfo.balance > 0)
-        await transferBalance();
-      await loadUserInfo();
-    })();
-  }, [activeModal]);
-
-  useEffect(() => {
-    window.addEventListener("load", async () => {
-      if (!user || !user.token) return;
-      await loadDepositChannels();
-      if (user.userInfo && user.userInfo.balance > 0) await transferBalance();
-      await loadUserInfo();
-    });
-  }, []);
-
-  // Music playback logic moved to AppContent component below
+    if (platformConfig?.site_title) {
+      document.title = platformConfig.site_title;
+    }
+    // Optionally, set a default title if config is null or title is missing
+    // else {
+    //   document.title = "Default App Title";
+    // }
+  }, [platformConfig]);
 
   return (
-    <div className="bg-main w-screen h-screen" ref={ref}>
+    <div className="bg-main w-screen h-screen relative" ref={ref}>
+      {" "}
+      {/* Added relative positioning */}
+      {/* Maintenance Mode Overlay */}
+      {platformConfig?.is_maintain === "yes" && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm">
+          <div className="text-center p-8 bg-casino-deep-blue/90 rounded-lg shadow-xl border border-casino-black">
+            <h2 className="text-2xl font-bold text-casino-gold mb-4">
+              {t("maintenanceTitle", "Under Maintenance")}
+            </h2>
+            <p className="text-casino-silver">
+              {platformConfig.maintain_desc ||
+                t("maintenanceDefaultDesc", "We will be back shortly.")}
+            </p>
+          </div>
+        </div>
+      )}
       {/* check orientation */}
       {(orientation === "portrait-primary" ||
         orientation === "portrait-secondary") && (
@@ -258,7 +351,6 @@ const App = () => {
           </div>
         </div>
       )}
-
       {/* check fullscreen  */}
       {!fullscreen && isMobile && (
         <div
@@ -268,7 +360,6 @@ const App = () => {
           <Fullscreen className="w-6 h-6 m-4 text-white animate-pulse" />
         </div>
       )}
-
       <QueryClientProvider client={queryClient}>
         <TooltipProvider>
           <Toaster />

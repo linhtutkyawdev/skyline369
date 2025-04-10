@@ -286,98 +286,106 @@ const DepositModal = () => {
                 )}
 
                 {depositChannels.length > 0 &&
-                  depositChannels.map((c) => (
-                    <div key={c.card_id}>
-                      <button
-                        onClick={() =>
-                          setSelectedDepositChannel(
-                            selectedDepositChannel &&
-                              selectedDepositChannel.card_bank_name ===
-                                c.card_bank_name
-                              ? null
-                              : c
-                          )
-                        }
-                        className="w-full flex flex-col relative bg-casino-deep-blue border border-casino-light-blue rounded-lg p-5 hover:bg-opacity-80 transition-all"
-                      >
-                        <div className="flex w-full items-center justify-between gap-4">
-                          <span className="text-white flex items-center">
-                            {c.card_bank_name}
+                  depositChannels.map(
+                    (c) =>
+                      (!selectedDepositChannel ||
+                        selectedDepositChannel.card_bank_name ===
+                          c.card_bank_name) && (
+                        <div key={c.card_id}>
+                          <button
+                            onClick={() =>
+                              setSelectedDepositChannel(
+                                selectedDepositChannel &&
+                                  selectedDepositChannel.card_bank_name ===
+                                    c.card_bank_name
+                                  ? null
+                                  : c
+                              )
+                            }
+                            className="w-full flex flex-col relative bg-casino-deep-blue border border-casino-light-blue rounded-lg p-5 hover:bg-opacity-80 transition-all"
+                          >
+                            <div className="flex w-full items-center justify-between gap-4">
+                              <span className="text-white flex items-center">
+                                {c.card_bank_name}
+                                {selectedDepositChannel &&
+                                  selectedDepositChannel.card_bank_name ===
+                                    c.card_bank_name && (
+                                    <CheckIcon className="text-casino-gold w-4 h-4 mx-2" />
+                                  )}
+                              </span>
+                              <CreditCard className="text-casino-gold w-6 h-6" />
+                            </div>
                             {selectedDepositChannel &&
                               selectedDepositChannel.card_bank_name ===
                                 c.card_bank_name && (
-                                <CheckIcon className="text-casino-gold w-4 h-4 mx-2" />
+                                <div className="flex flex-col items-start mt-4">
+                                  <span className="text-white text-sm">
+                                    {t("receiverLabel", {
+                                      name: c.card_username,
+                                    })}
+                                  </span>
+                                  <span className="text-white text-sm">
+                                    {t("cardNumberLabel", {
+                                      number: c.card_number,
+                                    })}
+                                  </span>
+                                  <span className="text-white text-sm">
+                                    {t("oneTimeLimitLabel", {
+                                      min: c.single_min,
+                                      max: c.single_max,
+                                    })}
+                                  </span>
+                                  <span className="text-white text-sm">
+                                    {t("availableTimeLabel", {
+                                      start: c.disable_starttime,
+                                      end: c.disable_endtime,
+                                    })}
+                                  </span>
+                                </div>
                               )}
-                          </span>
-                          <CreditCard className="text-casino-gold w-6 h-6" />
+                            {/* <span className="text-white">{c.card_number}</span> */}
+                            {/* <span className="text-white">{c.card_type}</span> */}
+                            {/* <span className="text-white">{c.card_username}</span> */}
+                            {/* <span className="text-white">{c.single_min}</span> */}
+                            {/* <span className="text-white">{c.single_max}</span> */}
+                          </button>
+                          {selectedDepositChannel &&
+                            selectedDepositChannel.card_bank_name ===
+                              c.card_bank_name && (
+                              <div className="flex gap-2">
+                                <button
+                                  className="flex flex-grow items-center justify-center mt-2 bg-casino-light-blue text-white py-2 rounded-md hover:bg-opacity-80 transition-all"
+                                  onClick={() => {
+                                    copy(c.card_number);
+                                    setTimeout(() => copy(""), 2000);
+                                  }}
+                                >
+                                  {value == c.card_number ? (
+                                    <>
+                                      {t("copied")}
+                                      <CheckIcon className="w-4 h-4 mx-2" />
+                                    </>
+                                  ) : (
+                                    <>
+                                      {t("copyCardNumber")}{" "}
+                                      <Copy className="w-4 h-4 mx-2" />
+                                    </>
+                                  )}
+                                </button>
+                                <button
+                                  className="flex px-4 items-center justify-center mt-2 bg-casino-light-blue text-white py-2 rounded-md hover:bg-opacity-80 transition-all"
+                                  onClick={() => {
+                                    setStep("QR");
+                                  }}
+                                >
+                                  {t("showQr")}{" "}
+                                  <QrCode className="w-4 h-4 mx-2" />
+                                </button>
+                              </div>
+                            )}
                         </div>
-                        {selectedDepositChannel &&
-                          selectedDepositChannel.card_bank_name ===
-                            c.card_bank_name && (
-                            <div className="flex flex-col items-start mt-4">
-                              <span className="text-white text-sm">
-                                {t("receiverLabel", { name: c.card_username })}
-                              </span>
-                              <span className="text-white text-sm">
-                                {t("cardNumberLabel", {
-                                  number: c.card_number,
-                                })}
-                              </span>
-                              <span className="text-white text-sm">
-                                {t("oneTimeLimitLabel", {
-                                  min: c.single_min,
-                                  max: c.single_max,
-                                })}
-                              </span>
-                              <span className="text-white text-sm">
-                                {t("availableTimeLabel", {
-                                  start: c.disable_starttime,
-                                  end: c.disable_endtime,
-                                })}
-                              </span>
-                            </div>
-                          )}
-                        {/* <span className="text-white">{c.card_number}</span> */}
-                        {/* <span className="text-white">{c.card_type}</span> */}
-                        {/* <span className="text-white">{c.card_username}</span> */}
-                        {/* <span className="text-white">{c.single_min}</span> */}
-                        {/* <span className="text-white">{c.single_max}</span> */}
-                      </button>
-                      {selectedDepositChannel &&
-                        selectedDepositChannel.card_bank_name ===
-                          c.card_bank_name && (
-                          <div className="flex gap-2">
-                            <button
-                              className="flex flex-grow items-center justify-center mt-2 bg-casino-light-blue text-white py-2 rounded-md hover:bg-opacity-80 transition-all"
-                              onClick={() => {
-                                copy(c.card_number);
-                                setTimeout(() => copy(""), 2000);
-                              }}
-                            >
-                              {value == c.card_number ? (
-                                <>
-                                  {t("copied")}
-                                  <CheckIcon className="w-4 h-4 mx-2" />
-                                </>
-                              ) : (
-                                <>
-                                  {t("copyCardNumber")}{" "}
-                                  <Copy className="w-4 h-4 mx-2" />
-                                </>
-                              )}
-                            </button>
-                            <button
-                              className="flex px-4 items-center justify-center mt-2 bg-casino-light-blue text-white py-2 rounded-md hover:bg-opacity-80 transition-all"
-                              onClick={() => {
-                                setStep("QR");
-                              }}
-                            >
-                              {t("showQr")} <QrCode className="w-4 h-4 mx-2" />
-                            </button>
-                          </div>
-                        )}
-                    </div>
-                  ))}
+                      )
+                  )}
 
                 {selectedDepositChannel && (
                   <>

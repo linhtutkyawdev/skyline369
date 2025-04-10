@@ -3,32 +3,47 @@ import { Modal } from "@/types/modal";
 import { DepositChannel } from "@/types/deposit_channel";
 import { ApiError } from "@/types/api_error";
 
-type Store = {
-  loading: boolean;
-  setLoading: (loading: boolean) => void;
-
-  error: ApiError | null;
-  setError: (error: ApiError) => void;
-
-  activeModal: Modal | null;
-  setActiveModal: (activeModal: Modal | null) => void;
-
-  depositChannels: DepositChannel[];
-  setDepositChannels: (depositChannels: DepositChannel[]) => void;
+// Define the PlatformConfig type based on the API response
+export type PlatformConfig = {
+  withdraw_start_limit: string;
+  withdraw_end_limit: string;
+  withdraw_start_at: string;
+  withdraw_end_at: string;
+  site_title: string;
+  site_name: string;
+  service_link: string;
+  service_link_type: string;
+  service_link_1: string;
+  service_link_type_1: string;
+  service_link_2: string;
+  service_link_type_2: string;
+  is_maintain: "yes" | "no";
+  maintain_desc: string;
 };
 
-export const useStateStore = create<Store>()((set) => ({
+interface StateStore {
+  // Renamed to StateStore for consistency with filename
+  loading: boolean;
+  setLoading: (loading: boolean) => void;
+  error: ApiError | null;
+  setError: (error: ApiError | null) => void;
+  activeModal: Modal | null; // Use Modal
+  setActiveModal: (modal: Modal | null) => void;
+  depositChannels: DepositChannel[];
+  setDepositChannels: (channels: DepositChannel[]) => void;
+  platformConfig: PlatformConfig | null; // Add platformConfig state
+  setPlatformConfig: (config: PlatformConfig | null) => void; // Add setter
+}
+
+export const useStateStore = create<StateStore>((set) => ({
   loading: false,
-  setLoading: (loading: boolean) => set((state) => ({ ...state, loading })),
-
+  setLoading: (loading) => set({ loading }), // Simplified setter
   error: null,
-  setError: (error: ApiError | null) => set((state) => ({ ...state, error })),
-
+  setError: (error) => set({ error }),
   activeModal: null,
-  setActiveModal: (activeModal: Modal | null) =>
-    set((state) => ({ ...state, activeModal })),
-
+  setActiveModal: (modal) => set({ activeModal: modal }),
   depositChannels: [],
-  setDepositChannels: (depositChannels: DepositChannel[]) =>
-    set((state) => ({ ...state, depositChannels })),
+  setDepositChannels: (channels) => set({ depositChannels: channels }), // Simplified setter
+  platformConfig: null, // Initialize platformConfig
+  setPlatformConfig: (config) => set({ platformConfig: config }), // Implement setter
 }));
