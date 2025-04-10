@@ -17,6 +17,7 @@ import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import Share from "./pages/Share";
 import Messages from "./pages/Messages";
+import MessageDetail from "./pages/MessageDetail"; // Import the new component
 import Category from "./pages/Category";
 import ModalContainer from "./components/ModalContainer";
 import Game from "./pages/Game";
@@ -490,6 +491,8 @@ const AppContent: React.FC<AppContentProps> = ({
           <Route path="/history/transaction" element={<TransationHistory />} />
           <Route path="/share" element={<Share />} />
           <Route path="/messages" element={<Messages />} />
+          <Route path="/messages/:messageId" element={<MessageDetail />} />{" "}
+          {/* Add route for message detail */}
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

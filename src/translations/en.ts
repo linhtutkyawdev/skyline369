@@ -33,6 +33,7 @@ export default {
     share_earn: "Share & Earn",
     card_title: "Share Your Referal Link",
     card_sub_title: "Invite friends and earn 10% of their deposits",
+    cancel: "Cancel",
     referal_status: "Referal Stats",
     total_referals: "Total Referals",
     active_users: "Active Users",
@@ -84,6 +85,7 @@ export default {
     cardNumberLabel: "Card Number: {{number}}",
     oneTimeLimitLabel: "One Time Limit: {{min}} - {{max}}",
     availableTimeLabel: "Availabe Time: {{start}} - {{end}}",
+    available24hLabel: "Availabe Time: 24 hours",
     copied: "Copied",
     copyCardNumber: "Copy Card Number",
     showQr: "Show QR",
@@ -249,5 +251,9 @@ export default {
     filterWithdrawal: "Withdrawals", // Note: Plural as used in the button
     noTransactionsMatchFilter: "No transactions match your current filters.",
     noTransactionsFound: "No transactions found for the selected criteria.",
+    sender: "Sender",
+    unread: "Unread",
+    noMessagesFound: "No messages found in this category.",
+    messageNotFound: "Message not found.",
   },
 };

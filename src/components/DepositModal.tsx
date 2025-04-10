@@ -335,12 +335,21 @@ const DepositModal = () => {
                                       max: c.single_max,
                                     })}
                                   </span>
-                                  <span className="text-white text-sm">
-                                    {t("availableTimeLabel", {
-                                      start: c.disable_starttime,
-                                      end: c.disable_endtime,
-                                    })}
-                                  </span>
+                                  {(c.disable_starttime == "00:00" &&
+                                    c.disable_endtime == "00:00") ||
+                                  (!c.disable_starttime &&
+                                    !c.disable_endtime) ? (
+                                    <span className="text-white text-sm">
+                                      {t("available24hLabel")}
+                                    </span>
+                                  ) : (
+                                    <span className="text-white text-sm">
+                                      {t("availableTimeLabel", {
+                                        start: c.disable_endtime,
+                                        end: c.disable_starttime,
+                                      })}
+                                    </span>
+                                  )}
                                 </div>
                               )}
                             {/* <span className="text-white">{c.card_number}</span> */}

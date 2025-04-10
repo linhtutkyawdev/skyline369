@@ -274,9 +274,23 @@ const WithdrawModal = () => {
   };
 
   const closeModalAndReset = () => {
-    resetWithdrawal();
-    setOldBankInfo(null); // Reset old info
-    setActiveModal(null);
+    resetWithdrawal(); // Resets amount and withdrawal step
+
+    // If bank info update was in progress, restore original info
+    if (oldBankInfo) {
+      setUser({ ...user, userInfo: oldBankInfo });
+    }
+
+    // Clear temporary states related to bank update
+    setOldBankInfo(null);
+    setNewBankInfo({
+      bank_name: "",
+      bank_branch_name: "",
+      bank_username: "",
+      bank_card: "",
+    });
+
+    setActiveModal(null); // Close the modal
   };
 
   useEffect(() => {
@@ -513,7 +527,7 @@ const WithdrawModal = () => {
                           amount: amount.toLocaleString(),
                         })}
                       </p>
-                      <Button
+                      <button
                         onClick={() => {
                           closeModalAndReset();
                           navigate("/history/transaction");
@@ -521,7 +535,7 @@ const WithdrawModal = () => {
                         className="w-full flex items-center justify-center py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
                       >
                         {t("checkWithdrawals")}
-                      </Button>
+                      </button>
                     </div>
                   )}
 
@@ -638,17 +652,40 @@ const WithdrawModal = () => {
                       {t("bankUpdateLimitInfo")}
                     </p>
                   </div>
-                  <button
-                    onClick={handleUpdateBankInfo}
-                    disabled={isBankUpdateLoading}
-                    className="col-span-2 w-full py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                  >
-                    {isBankUpdateLoading ? ( // Use correct loading state
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                    ) : (
-                      t("update")
-                    )}
-                  </button>
+                  {/* --- Action Buttons --- */}
+                  <div className="col-span-2 flex gap-4 mt-2">
+                    {" "}
+                    {/* Adjusted mt and added col-span-2 */}
+                    <button
+                      // Cancel Button - Apply Accent Style
+                      onClick={() => {
+                        if (oldBankInfo) {
+                          setUser({ ...user, userInfo: oldBankInfo }); // Restore old info
+                        }
+                        setOldBankInfo(null); // Clear the stored old info
+                        // Resetting newBankInfo might be good practice too
+                        setNewBankInfo({
+                          bank_name: "",
+                          bank_branch_name: "",
+                          bank_username: "",
+                          bank_card: "",
+                        });
+                      }}
+                      disabled={isBankUpdateLoading}
+                      className="w-full py-2 bg-casino-accent text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    >
+                      {t("cancel")}
+                    </button>
+                    <button
+                      // Update Button - Apply Gold Style
+                      onClick={handleUpdateBankInfo}
+                      disabled={isBankUpdateLoading}
+                      className="w-full py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    >
+                      {/* Icons removed for consistency as requested */}
+                      {t("update")} {/* Keep original text 'update' */}
+                    </button>
+                  </div>
                 </div>
               )}
             </motion.div>

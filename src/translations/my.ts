@@ -34,6 +34,7 @@ export default {
     card_title: "သင့်ရဲ့အကြံပြုလင့်ခ်ကိုမျှဝေပါ",
     card_sub_title:
       "မိတ်ဆွေများကိုဖိတ်ခေါ်ပြီးသူတို့၏ငွေသွင်းငွေများ၏ 10% ရယူပါ",
+    cancel: "ပယ်ဖျက်",
     referal_status: "အကြံပြုမှုအခြေအနေ",
     total_referals: "စုစုပေါင်းအကြံပြုမှု",
     active_users: "အသုံးပြုသူများ",
@@ -85,6 +86,7 @@ export default {
     cardNumberLabel: "ကတ်နံပါတ်: {{number}}",
     oneTimeLimitLabel: "တစ်ကြိမ်ကန့်သတ်ချက်: {{min}} - {{max}}",
     availableTimeLabel: "ရရှိနိုင်သောအချိန်: {{start}} - {{end}}",
+    available24hLabel: "ရရှိနိုင်သောအချိန်: ၂၄ နာရီ ရရှိနိုင်သည်",
     copied: "ကူးယူပြီးပါပြီ။",
     copyCardNumber: "ကတ်နံပါတ်ကို ကူးယူပါ",
     showQr: "QR ကိုပြပါ",
@@ -256,5 +258,9 @@ export default {
       "သင့်ရွေးချယ်ထားသော စစ်ထုတ်မှုများနှင့် ကိုက်ညီသော ငွေလွှဲမှုမရှိပါ။",
     noTransactionsFound:
       "ရွေးချယ်ထားသော စံနှုန်းများနှင့် ကိုက်ညီသော ငွေလွှဲမှုမရှိပါ။",
+    sender: "ပေးပို့သူ",
+    unread: "မဖတ်ရသေး",
+    noMessagesFound: "ဤအမျိုးအစားတွင် မက်ဆေ့ချ်များ မတွေ့ပါ။",
+    messageNotFound: "မက်ဆေ့ချ် မတွေ့ပါ။",
   },
 };
