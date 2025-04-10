@@ -262,5 +262,14 @@ export default {
     unread: "မဖတ်ရသေး",
     noMessagesFound: "ဤအမျိုးအစားတွင် မက်ဆေ့ချ်များ မတွေ့ပါ။",
     messageNotFound: "မက်ဆေ့ချ် မတွေ့ပါ။",
+    currentPassword: "လက်ရှိ စကားဝှက်",
+    newPassword: "စကားဝှက်အသစ်",
+    confirmNewPassword: "စကားဝှက်အသစ် အတည်ပြုပါ",
+    updatePassword: "စကားဝှက် မွမ်းမံပါ",
+    passwordResetSuccessTitle: "စကားဝှက် မွမ်းမံပြီးပါပြီ",
+    passwordResetSuccessDesc: "သင့်စကားဝှက်ကို အောင်မြင်စွာ မွမ်းမံပြီးပါပြီ။",
+    passwordResetErrorDesc:
+      "စကားဝှက် မွမ်းမံရန် မအောင်မြင်ပါ။ သင်၏ လက်ရှိ စကားဝှက်ကို စစ်ဆေးပြီး ထပ်မံကြိုးစားပါ။",
+    // tokenPlaceholder: "ပြန်လည်သတ်မှတ် တိုကင် ထည့်ပါ", // Removed unused translation
   },
 };

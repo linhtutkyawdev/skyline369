@@ -1,40 +1,128 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react"; // Import useState
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Volume2, VolumeX, Bell, Languages } from "lucide-react";
+import {
+  X,
+  Volume2,
+  VolumeX,
+  Languages,
+  Lock,
+  Mail,
+  // KeyRound, // Removed unused icon
+  Loader2,
+  ArrowLeft, // Import ArrowLeft for back button
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input"; // Import Input
 import { useTranslation } from "react-i18next";
 import { Switch } from "./ui/switch";
 import { SupportedLanguages } from "@/i18n";
 import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 import { useStateStore } from "@/store/state";
-import { useSettingsStore } from "@/store/settings"; // Import the settings store
+import { useSettingsStore } from "@/store/settings";
+import { useUserStore } from "@/store/user"; // Import user store
+import { useForm, SubmitHandler } from "react-hook-form"; // Import react-hook-form
+import { zodResolver } from "@hookform/resolvers/zod"; // Import zodResolver
+import { PasswordResetInputs, passwordResetSchema } from "@/types/validations"; // Import validation schema/type
+import axiosInstance from "@/lib/axiosInstance"; // Import axios
+import { useToast } from "@/hooks/use-toast"; // Import useToast
 
 const SettingsModal = () => {
   const { activeModal, setActiveModal } = useStateStore();
-  // Get settings state and setters from the store
+  const { user } = useUserStore(); // Get user data for email
+  const { toast } = useToast(); // Initialize toast
   const {
-    soundEnabled, // Keep sound effects state if needed elsewhere, or remove if not
-    setSoundEnabled,
-    musicEnabled, // Add music state
-    setMusicEnabled, // Add music setter
-    notificationsEnabled,
-    setNotificationsEnabled,
+    // soundEnabled, // Removed soundEnabled as it seems unused now
+    // setSoundEnabled,
+    musicEnabled,
+    setMusicEnabled,
+    // notificationsEnabled, // Removed notification state
+    // setNotificationsEnabled,
   } = useSettingsStore();
   const { t, i18n } = useTranslation();
+  const [showPasswordReset, setShowPasswordReset] = useState(false); // State for form visibility
+
+  // Setup react-hook-form for password reset
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset,
+    setValue, // To set the email value
+  } = useForm<PasswordResetInputs>({
+    resolver: zodResolver(passwordResetSchema),
+    defaultValues: {
+      email: user?.email || "", // Pre-fill email from user store
+      // token: "", // Removed token from default values
+      newPassword: "",
+      confirmNewPassword: "",
+    },
+  });
+
+  // Update email in form if user data changes
+  useEffect(() => {
+    if (user?.email) {
+      setValue("email", user.email);
+    }
+  }, [user, setValue]);
+
+  // Password Reset Submit Handler
+  const onPasswordResetSubmit: SubmitHandler<PasswordResetInputs> = async (
+    data
+  ) => {
+    try {
+      const response = await axiosInstance.post("/reset_pass", {
+        token: user?.token || "", // Use token from user store
+        type: "email", // As specified in the API requirements
+        email: data.email,
+        password: data.newPassword, // Map form field to API field
+      });
+
+      if (response.data.status.errorCode === 0) {
+        toast({
+          title: t("passwordResetSuccessTitle"),
+          description: t("passwordResetSuccessDesc"),
+        });
+        reset(); // Reset form on success
+        setActiveModal(null); // Close modal on success
+      } else {
+        toast({
+          title: t("errorTitle"), // Use a generic error title
+          description:
+            t("" + response.data.status.mess) || t("passwordResetErrorDesc"), // Use API message or fallback
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error("Password reset error:", error);
+      toast({
+        title: t("errorTitle"),
+        description: t("passwordResetErrorDesc"), // Fallback error description
+        variant: "destructive",
+      });
+    }
+  };
 
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setActiveModal(null);
+      if (e.key === "Escape") {
+        setActiveModal(null);
+        setShowPasswordReset(false); // Reset state on Escape
+        reset(); // Reset form as well
+      }
     };
 
     if (activeModal === "settings") {
       window.addEventListener("keydown", handleEscKey);
+    } else {
+      // Reset state if modal becomes inactive for any reason
+      setShowPasswordReset(false);
+      reset();
     }
 
     return () => {
       window.removeEventListener("keydown", handleEscKey);
     };
-  }, [activeModal]);
+  }, [activeModal, setActiveModal, reset]); // Added dependencies
 
   return (
     <AnimatePresence>
@@ -46,7 +134,7 @@ const SettingsModal = () => {
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="bg-casino-deep-blue/80 w-full max-w-md rounded-lg border border-casino-light-blue p-6 modal-container"
+            className="bg-casino-deep-blue/80 w-full max-w-md rounded-lg border border-casino-light-blue p-6 modal-container" // Reverted to max-w-md, can adjust if needed
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
@@ -59,12 +147,16 @@ const SettingsModal = () => {
               className="flex justify-between items-center mb-6"
             >
               <h2 className="text-xl font-semibold text-casino-silver">
-                {t("settings")}
+                {showPasswordReset ? t("reset_password") : t("settings")}
               </h2>
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setActiveModal(null)}
+                onClick={() => {
+                  setActiveModal(null);
+                  setShowPasswordReset(false); // Reset state on close button click
+                  reset(); // Reset form as well
+                }}
                 className="text-casino-silver"
               >
                 <X className="h-5 w-5" />
@@ -74,97 +166,165 @@ const SettingsModal = () => {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="space-y-4"
+              className="space-y-4 max-h-[calc(100vh-8rem)] overflow-y-auto pr-2" // Added max-height, scroll, and right padding for scrollbar
             >
-              {/* <div className="flex items-center justify-between bg-casino-deep-blue rounded-lg p-4">
-                <div className="flex items-center gap-3">
-                  {darkMode ? (
-                    <Moon className="text-casino-silver" />
-                  ) : (
-                    <Sun className="text-casino-gold" />
-                  )}
-                  <span className="text-white">Dark Mode</span>
-                </div>
-                <Switch
-                  checked={darkMode}
-                  onCheckedChange={setDarkMode}
-                  className="data-[state=checked]:bg-casino-gold"
-                />
-              </div> */}
-
-              {/* Sound Effects Switch (Optional - keep if separate control is needed) */}
-              {/* <div className="flex items-center justify-between bg-casino-deep-blue rounded-lg p-4">
-                <div className="flex items-center gap-3">
-                  {soundEnabled ? (
-                    <Volume2 className="text-casino-silver" />
-                  ) : (
-                    <VolumeX className="text-casino-silver" />
-                  )}
-                  <span className="text-white">{t("sound_effects")}</span>
-                </div>
-                <Switch
-                  checked={soundEnabled}
-                  onCheckedChange={setSoundEnabled}
-                  className="data-[state=checked]:bg-casino-gold"
-                />
-              </div> */}
-
-              {/* Background Music Switch */}
-              <div className="flex items-center justify-between bg-casino-deep-blue rounded-lg p-4">
-                <div className="flex items-center gap-3">
-                  {musicEnabled ? (
-                    <Volume2 className="text-casino-silver" /> // Use Volume2/VolumeX icons
-                  ) : (
-                    <VolumeX className="text-casino-silver" />
-                  )}
-                  <span className="text-white">{t("sound_effects")}</span>{" "}
-                  {/* Change label */}
-                </div>
-                <Switch
-                  checked={musicEnabled} // Use music state from store
-                  onCheckedChange={setMusicEnabled} // Use music setter from store
-                  className="data-[state=checked]:bg-casino-gold"
-                />
-              </div>
-
-              <div className="flex items-center justify-between bg-casino-deep-blue rounded-lg p-4">
-                <div className="flex items-center gap-3">
-                  <Bell className="text-casino-silver" />
-                  <span className="text-white">{t("notifications")}</span>
-                </div>
-                <Switch
-                  checked={notificationsEnabled} // Use state from store
-                  onCheckedChange={setNotificationsEnabled} // Use setter from store
-                  className="data-[state=checked]:bg-casino-gold"
-                />
-              </div>
-
-              <div className="pt-4 border-t border-casino-light-blue">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Languages className="text-casino-silver" />
-                    <span className="text-white">{t("language")}</span>
+              {!showPasswordReset ? (
+                // Main Settings View
+                <>
+                  {/* Background Music Switch */}
+                  <div className="flex items-center justify-between bg-casino-deep-blue rounded-lg p-4">
+                    <div className="flex items-center gap-3">
+                      {musicEnabled ? (
+                        <Volume2 className="text-casino-silver" />
+                      ) : (
+                        <VolumeX className="text-casino-silver" />
+                      )}
+                      <span className="text-white">{t("sound_effects")}</span>
+                    </div>
+                    <Switch
+                      checked={musicEnabled}
+                      onCheckedChange={setMusicEnabled}
+                      className="data-[state=checked]:bg-casino-gold"
+                    />
                   </div>
 
-                  <ToggleGroup
-                    type="single"
-                    className="bg-casino-deep-blue rounded-lg p-1"
-                    defaultValue={i18n.language}
-                    onValueChange={(lang) => {
-                      if (lang) {
-                        i18n.changeLanguage(lang);
-                        localStorage.setItem("i18nextLng", lang); // Save language to localStorage
-                      }
-                    }}
-                  >
-                    {SupportedLanguages.map((lang) => (
-                      <ToggleGroupItem value={lang} key={lang}>
-                        {t(lang)}
-                      </ToggleGroupItem>
-                    ))}
-                  </ToggleGroup>
-                </div>
-              </div>
+                  {/* Reset Password Button */}
+                  <div className="flex items-center justify-between bg-casino-deep-blue rounded-lg p-4">
+                    <div className="flex items-center gap-3">
+                      <Lock className="text-casino-silver" />
+                      <span className="text-white">{t("reset_password")}</span>
+                    </div>
+                    <Button
+                      // Use default variant, apply custom styles
+                      className="bg-casino-deep-blue text-casino-gold border border-casino-light-blue hover:bg-casino-gold hover:text-casino-deep-blue px-4 py-1 text-sm rounded-md"
+                      onClick={() => setShowPasswordReset(true)}
+                    >
+                      {/* Text already in label, button can be simpler */}
+                      {t("reset_password")}
+                    </Button>
+                  </div>
+
+                  {/* Language Selection */}
+                  <div className="flex items-center justify-between bg-casino-deep-blue rounded-lg p-4">
+                    <div className="flex items-center gap-3">
+                      <Languages className="text-casino-silver" />
+                      <span className="text-white">{t("language")}</span>
+                    </div>
+                    <ToggleGroup
+                      type="single"
+                      className="bg-casino-deep-blue rounded-lg p-1"
+                      defaultValue={i18n.language}
+                      onValueChange={(lang) => {
+                        if (lang) {
+                          i18n.changeLanguage(lang);
+                          localStorage.setItem("i18nextLng", lang);
+                        }
+                      }}
+                    >
+                      {SupportedLanguages.map((lang) => (
+                        <ToggleGroupItem value={lang} key={lang}>
+                          {t(lang)}
+                        </ToggleGroupItem>
+                      ))}
+                    </ToggleGroup>
+                  </div>
+                </>
+              ) : (
+                // Password Reset Form View
+                <motion.form
+                  onSubmit={handleSubmit(onPasswordResetSubmit)}
+                  className="space-y-6 pt-4" // Removed px-8
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.1 }} // Faster delay
+                >
+                  {/* Email Input (Read Only) */}
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-3 h-5 w-5 text-casino-silver" />
+                    <Input
+                      type="email"
+                      placeholder={t("email")}
+                      className="pl-10 bg-gray-700/50 text-gray-400 cursor-not-allowed"
+                      {...register("email")}
+                      readOnly
+                    />
+                  </div>
+
+                  {/* Token Input Field Removed */}
+
+                  {/* New Password Input */}
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-3 h-5 w-5 text-casino-silver" />
+                    <Input
+                      type="password"
+                      placeholder={t("newPassword")}
+                      className="pl-10"
+                      {...register("newPassword")}
+                      required
+                    />
+                    {errors.newPassword && (
+                      <motion.p
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="absolute -bottom-5 ml-4 text-red-500 text-xs"
+                      >
+                        {errors.newPassword.message}
+                      </motion.p>
+                    )}
+                  </div>
+
+                  {/* Confirm New Password Input */}
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-3 h-5 w-5 text-casino-silver" />
+                    <Input
+                      type="password"
+                      placeholder={t("confirmNewPassword")}
+                      className="pl-10"
+                      {...register("confirmNewPassword")}
+                      required
+                    />
+                    {errors.confirmNewPassword && (
+                      <motion.p
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="absolute -bottom-5 ml-4 text-red-500 text-xs"
+                      >
+                        {errors.confirmNewPassword.message}
+                      </motion.p>
+                    )}
+                  </div>
+
+                  {/* Footer Buttons */}
+                  <div className="flex gap-4 mt-6">
+                    {/* Back Button */}
+                    <Button
+                      type="button" // Prevent form submission
+                      variant="outline"
+                      onClick={() => {
+                        setShowPasswordReset(false);
+                        reset();
+                      }}
+                      className="flex-1 border-casino-silver text-casino-silver hover:bg-casino-silver/10 hover:text-white"
+                    >
+                      <ArrowLeft className="mr-2 h-4 w-4" />
+                      {t("back")}
+                    </Button>
+
+                    {/* Submit Button */}
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="flex-1 bg-casino-gold hover:bg-casino-gold/90 text-casino-deep-blue"
+                    >
+                      {isSubmitting ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      ) : (
+                        t("updatePassword")
+                      )}
+                    </Button>
+                  </div>
+                </motion.form>
+              )}
             </motion.div>
           </motion.div>
         </motion.div>

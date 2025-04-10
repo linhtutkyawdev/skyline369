@@ -52,3 +52,22 @@ export const registerSchema = emailSchema
     message: "Passwords do not match",
     path: ["confirmPassword"],
   });
+
+// Schema for the final step of password reset (using token)
+export const passwordResetSchema = z
+  .object({
+    email: z.string().email().min(1, { message: "Email is required" }),
+    // Removed token field from schema
+    newPassword: z
+      .string()
+      .min(8, { message: "New password is too short" })
+      .max(20, { message: "New password is too long" }),
+    confirmNewPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmNewPassword, {
+    message: "New passwords do not match",
+    path: ["confirmNewPassword"],
+  });
+// Removed refine check comparing current and new password
+
+export type PasswordResetInputs = z.infer<typeof passwordResetSchema>;

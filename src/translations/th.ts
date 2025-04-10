@@ -247,5 +247,14 @@ export default {
     unread: "ยังไม่ได้อ่าน",
     noMessagesFound: "ไม่พบข้อความในหมวดหมู่นี้",
     messageNotFound: "ไม่พบข้อความ",
+    currentPassword: "รหัสผ่านปัจจุบัน",
+    newPassword: "รหัสผ่านใหม่",
+    confirmNewPassword: "ยืนยันรหัสผ่านใหม่",
+    updatePassword: "อัปเดตรหัสผ่าน",
+    passwordResetSuccessTitle: "อัปเดตรหัสผ่านแล้ว",
+    passwordResetSuccessDesc: "อัปเดตรหัสผ่านของคุณเรียบร้อยแล้ว",
+    passwordResetErrorDesc:
+      "ไม่สามารถอัปเดตรหัสผ่านได้ กรุณาตรวจสอบรหัสผ่านปัจจุบันของคุณและลองอีกครั้ง",
+    // tokenPlaceholder: "ใส่โทเค็นรีเซ็ต", // Removed unused translation
   },
 };

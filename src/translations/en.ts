@@ -255,5 +255,14 @@ export default {
     unread: "Unread",
     noMessagesFound: "No messages found in this category.",
     messageNotFound: "Message not found.",
+    currentPassword: "Current Password",
+    newPassword: "New Password",
+    confirmNewPassword: "Confirm New Password",
+    updatePassword: "Update Password",
+    passwordResetSuccessTitle: "Password Updated",
+    passwordResetSuccessDesc: "Your password has been updated successfully.",
+    passwordResetErrorDesc:
+      "Failed to update password. Please check your current password and try again.",
+    // tokenPlaceholder: "Enter Reset Token", // Removed unused translation
   },
 };
