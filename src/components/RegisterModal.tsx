@@ -181,13 +181,13 @@ const RegisterModal = () => {
         >
           <motion.img
             src="/login_modal_bg.png"
-            className="absolute -top-[5%] left-0 h-[95%] xl:left-[5%] z-[60] object-cover"
+            className="absolute -top-[5%] sm:-left-[5%] md:left-0 h-[95%] lg:h-[70%] lg:top-[10%] lg:left-[10%] z-[60] object-cover"
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 30 }}
           ></motion.img>
           <motion.div
-            className="bg-casino-deep-blue w-full max-w-md rounded-lg border border-casino-light-blue p-6 modal-container"
+            className="bg-casino-deep-blue/50 -mr-[15%] lg:mr-0 w-full max-w-md rounded-lg border border-casino-light-blue p-6 modal-container"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
