@@ -27,6 +27,7 @@ const GameCategory = ({
       transition={{ duration: 0.5 }}
       whileHover={{ y: -5, transition: { duration: 0.2 } }}
       className={cn(
+        // Reverted padding, height, margin, text size to original sm+ values
         "game-card flex flex-col items-center justify-center p-4 sm:p-6 relative my-5",
         isSelected
           ? "h-40 2xl:h-56 w-full scale-105 z-10"

@@ -86,6 +86,7 @@ export default {
     available24hLabel: "พร้อมให้บริการ 24 ชั่วโมง",
     copied: "คัดลอกแล้ว",
     copyCardNumber: "คัดลอกหมายเลขบัตร",
+    copyNumber: "คัดลอกหมายเลข", // Added shorter label translation
     showQr: "แสดง QR",
     enterAmountPlaceholder: "ใส่จำนวนเงิน",
     goBack: "กลับไป",
@@ -257,5 +258,6 @@ export default {
     passwordResetErrorDesc:
       "ไม่สามารถอัปเดตรหัสผ่านได้ กรุณาตรวจสอบรหัสผ่านปัจจุบันของคุณและลองอีกครั้ง",
     // tokenPlaceholder: "ใส่โทเค็นรีเซ็ต", // Removed unused translation
+    provideTransactionInformation: "ข้อมูลธุรกรรม",
   },
 };

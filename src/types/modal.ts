@@ -8,4 +8,5 @@ export type Modal =
   | "settings"
   | "deposit"
   | "withdraw"
-  | "history";
+  | "history"
+  | "nav_menu"; // Added nav_menu modal type

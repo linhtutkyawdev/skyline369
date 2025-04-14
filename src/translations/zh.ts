@@ -85,6 +85,7 @@ export default {
     available24hLabel: "可用时间：24小时", // Placeholder: Availabe Time: 24 hours
     copied: "已复制", // Placeholder: Copied
     copyCardNumber: "复制卡号", // Placeholder: Copy Card Number
+    copyNumber: "复制号码", // Added shorter label translation
     showQr: "显示二维码", // Placeholder: Show QR
     enterAmountPlaceholder: "输入金额", // Placeholder: Enter amount
     goBack: "返回", // Placeholder: Go Back
@@ -252,5 +253,6 @@ export default {
     passwordResetSuccessDesc: "您的密码已成功更新。", // Placeholder: Your password has been updated successfully.
     passwordResetErrorDesc: "更新密码失败。请检查您当前的密码并重试。", // Placeholder: Failed to update password. Please check your current password and try again.
     // tokenPlaceholder: "输入重置令牌", // Removed unused translation
+    provideTransactionInformation: "交易信息",
   },
 };

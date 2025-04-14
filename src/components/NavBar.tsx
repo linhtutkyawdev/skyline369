@@ -1,9 +1,11 @@
-import { Share, MessageSquare, User, Settings, RefreshCcw } from "lucide-react";
+import { Share, MessageSquare, Settings, RefreshCcw, Menu } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStateStore } from "@/store/state";
 import { useUserStore } from "@/store/user";
+// Removed Dropdown imports
+import { Button } from "@/components/ui/button";
 
 const NavBar = () => {
   const navigate = useNavigate();
@@ -27,8 +29,6 @@ const NavBar = () => {
               className="w-full h-full object-cover"
             />
           </div>
-          {/* Username and Balance  */}
-
           <div className="flex flex-col items-start">
             <span className="text-casino-silver font-semibold text-sm 2xl:text-lg">
               {(user && user.name) || t("register_login")}
@@ -50,7 +50,9 @@ const NavBar = () => {
           </div>
         )}
 
-        <div className="flex items-center gap-3 mr-2 xl:gap-4 xl-mr-2 2xl:gap-8 2xl:mr-4">
+        {/* Inline icons for md and larger screens */}
+        <div className="hidden md:flex items-center gap-3 mr-2 xl:gap-4 xl-mr-2 2xl:gap-8 2xl:mr-4">
+          {/* Share Icon */}
           <div
             className="nav-icon group cursor-pointer"
             onClick={() => setActiveModal("share")}
@@ -62,7 +64,7 @@ const NavBar = () => {
               {t("share")}
             </span>
           </div>
-
+          {/* Contact Us Icon */}
           <div
             className="nav-icon group cursor-pointer"
             onClick={() => setActiveModal("contact_us")}
@@ -76,7 +78,7 @@ const NavBar = () => {
               {t("contact_us")}
             </span>
           </div>
-
+          {/* Messages Icon */}
           <div
             className="nav-icon group cursor-pointer"
             onClick={() => navigate("/messages")}
@@ -88,7 +90,7 @@ const NavBar = () => {
               {t("messages")}
             </span>
           </div>
-
+          {/* Settings Icon */}
           <div
             className="nav-icon group cursor-pointer"
             onClick={() => setActiveModal("settings")}
@@ -100,6 +102,18 @@ const NavBar = () => {
               {t("settings")}
             </span>
           </div>
+        </div>
+
+        {/* Menu Button for sm screens to trigger NavMenuModal */}
+        <div className="block md:hidden">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-casino-silver hover:text-white hover:bg-casino-light-blue/20"
+            onClick={() => setActiveModal("nav_menu")} // Trigger the new modal
+          >
+            <Menu className="h-6 w-6" />
+          </Button>
         </div>
       </header>
     </>

@@ -89,6 +89,7 @@ export default {
     available24hLabel: "Availabe Time: 24 hours",
     copied: "Copied",
     copyCardNumber: "Copy Card Number",
+    copyNumber: "Copy Number", // Added shorter label
     showQr: "Show QR",
     enterAmountPlaceholder: "Enter amount",
     goBack: "Go Back",
@@ -265,5 +266,6 @@ export default {
     passwordResetErrorDesc:
       "Failed to update password. Please check your current password and try again.",
     // tokenPlaceholder: "Enter Reset Token", // Removed unused translation
+    provideTransactionInformation: "Transaction Information",
   },
 };

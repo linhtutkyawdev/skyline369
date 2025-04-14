@@ -90,6 +90,7 @@ export default {
     available24hLabel: "ရရှိနိုင်သောအချိန်: ၂၄ နာရီ ရရှိနိုင်သည်",
     copied: "ကူးယူပြီးပါပြီ။",
     copyCardNumber: "ကတ်နံပါတ်ကို ကူးယူပါ",
+    copyNumber: "နံပါတ်ကူးယူပါ", // Added shorter label translation
     showQr: "QR ကိုပြပါ",
     enterAmountPlaceholder: "ပမာဏထည့်ပါ",
     goBack: "နောက်သို့ပြန်သွားပါ",
@@ -272,5 +273,6 @@ export default {
     passwordResetErrorDesc:
       "စကားဝှက် မွမ်းမံရန် မအောင်မြင်ပါ။ သင်၏ လက်ရှိ စကားဝှက်ကို စစ်ဆေးပြီး ထပ်မံကြိုးစားပါ။",
     // tokenPlaceholder: "ပြန်လည်သတ်မှတ် တိုကင် ထည့်ပါ", // Removed unused translation
+    provideTransactionInformation: "ငွေလွှဲအချက်အလက်",
   },
 };

@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
   CreditCard,
-  Building,
   AlertCircle,
   CheckIcon,
   Copy,
@@ -26,6 +25,43 @@ import { Order } from "@/types/order";
 import { isMobile } from "react-device-detect";
 import { useNavigate } from "react-router-dom";
 
+// Simple Modal for Image Preview
+const ReceiptPreviewModal = ({ isOpen, onClose, imageUrl, altText }) => {
+  if (!isOpen || !imageUrl) return null;
+
+  return (
+    <motion.div
+      className="fixed inset-0 bg-black/80 z-60 flex items-center justify-center p-4 z-[100]"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose} // Close on backdrop click
+    >
+      <motion.div
+        className="relative bg-casino-deep-blue p-4 rounded-lg max-w-full h-full"
+        initial={{ scale: 0.7, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.7, opacity: 0 }}
+        onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
+      >
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onClose}
+          className="absolute top-2 right-2 text-casino-silver hover:text-white z-10"
+        >
+          <X className="h-6 w-6" />
+        </Button>
+        <img
+          src={imageUrl}
+          alt={altText}
+          className="max-w-full max-h-[calc(100vh-4rem)] object-contain rounded mx-auto" // Adjust max-h based on padding
+        />
+      </motion.div>
+    </motion.div>
+  );
+};
+
 type Step = "amount" | "detail" | "confirm" | "success" | "failed" | "QR";
 
 const DepositModal = () => {
@@ -43,6 +79,7 @@ const DepositModal = () => {
     useState<DepositChannel | null>(null);
 
   const [step, setStep] = useState<Step>("amount");
+  const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
 
   const { depositChannels, loading, setLoading } = useStateStore();
   const { user, setUser } = useUserStore();
@@ -50,38 +87,55 @@ const DepositModal = () => {
   const [{ value }, copy] = useCopyToClipboard();
   const navigate = useNavigate();
 
+  const resetState = () => {
+    setSelectedDepositChannel(null);
+    setAmount(0);
+    setSenderName("");
+    setTransactionId("");
+    setReceiptImage(null);
+    setPreviewUrl(null);
+    setStep("amount");
+    setOrder(null); // Ensure order is also reset
+    setIsReceiptModalOpen(false);
+    setActiveModal(null);
+  };
+
   const handlePresetAmount = (value: number) => {
     setAmount(value);
   };
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      const file = event.target.files[0];
+  const handleFileSelect = (file: File | null) => {
+    if (file) {
       setReceiptImage(file);
-
-      // Create a preview URL
       const fileUrl = URL.createObjectURL(file);
       setPreviewUrl(fileUrl);
+      // Cleanup will be handled by useEffect below
+    } else {
+      // Clear image and preview if no file is selected (e.g., user cancels selection)
+      setReceiptImage(null);
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl); // Revoke previous URL if clearing
+      }
+      setPreviewUrl(null);
     }
+  };
+
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0] ?? null;
+    handleFileSelect(file);
   };
 
   const handleImageDrop = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
-    if (event.dataTransfer.files && event.dataTransfer.files[0]) {
-      const file = event.dataTransfer.files[0];
-      setReceiptImage(file);
-
-      // Create a preview URL
-      const fileUrl = URL.createObjectURL(file);
-      setPreviewUrl(fileUrl);
-    }
+    const file = event.dataTransfer.files?.[0] ?? null;
+    handleFileSelect(file);
   };
 
   const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
     event.preventDefault();
   };
 
-  const makeDepositRequest = async (): Promise<boolean> => {
+  const makeDepositRequest = useCallback(async (): Promise<boolean> => {
     setLoading(true);
     try {
       const responses = await axiosInstance.post<ApiResponse<Order>>(
@@ -116,16 +170,50 @@ const DepositModal = () => {
       setLoading(false);
       return true;
     } catch (error) {
-      if (error instanceof ApiError && error.statusCode === 401) {
-        setUser(null);
-        setLoading(false);
-        // setError(error);
-        return false;
+      setLoading(false); // Ensure loading is stopped on error
+      if (error instanceof ApiError) {
+        if (error.statusCode === 401) {
+          setUser(null); // Log out user on authentication error
+          toast({
+            variant: "destructive",
+            title: t("authenticationErrorTitle"),
+            description: t("pleaseLoginAgain"),
+          });
+        } else {
+          // Handle other specific API errors
+          toast({
+            variant: "destructive",
+            title: t("apiErrorOccurred"),
+            description: error.message || t("pleaseTryAgain"),
+          });
+        }
+      } else {
+        // Handle network errors or other unexpected errors
+        console.error("Deposit request failed:", error); // Log the error for debugging
+        toast({
+          variant: "destructive",
+          title: t("networkErrorTitle"),
+          description: t("networkErrorDesc"),
+        });
       }
+      return false; // Indicate failure
     }
-  };
+    // Dependencies: setLoading, user, selectedDepositChannel, senderName, amount, transactionId, receiptImage, t, setUser, setOrder, toast
+  }, [
+    setLoading,
+    user,
+    selectedDepositChannel,
+    senderName,
+    amount,
+    transactionId,
+    receiptImage,
+    t,
+    setUser,
+    setOrder,
+    toast,
+  ]);
 
-  const handleDeposit = async () => {
+  const handleDeposit = useCallback(async () => {
     switch (step) {
       case "amount":
         if (!selectedDepositChannel) {
@@ -198,21 +286,38 @@ const DepositModal = () => {
         break;
       }
       default:
-        setSelectedDepositChannel(null);
-        setAmount(0);
-        setSenderName("");
-        setTransactionId("");
-        setReceiptImage(null);
-        setPreviewUrl(null);
-        setStep("amount");
+        resetState();
         break;
     }
-  };
+  }, [
+    step,
+    selectedDepositChannel,
+    amount,
+    transactionId,
+    senderName,
+    receiptImage,
+    user,
+    toast,
+    t,
+    makeDepositRequest,
+    resetState,
+    setStep,
+  ]);
 
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setActiveModal(null);
-      if (e.key === "Enter") handleDeposit();
+      if (e.key === "Escape") {
+        resetState(); // Also reset state on Escape
+        setActiveModal(null);
+      }
+      // Prevent Enter submission if loading or if not on a submittable step
+      if (
+        e.key === "Enter" &&
+        !loading &&
+        (step === "amount" || step === "detail" || step === "confirm")
+      ) {
+        handleDeposit();
+      }
     };
 
     if (activeModal === "deposit") {
@@ -222,19 +327,31 @@ const DepositModal = () => {
     return () => {
       window.removeEventListener("keydown", handleEscKey);
     };
-  }, [activeModal, amount]);
+    // Dependencies: activeModal, handleDeposit, setActiveModal, resetState, loading, step
+  }, [activeModal, handleDeposit, setActiveModal, resetState, loading, step]);
+
+  // Effect to clean up object URL
+  useEffect(() => {
+    // This function will be called when the component unmounts or before the effect runs again
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]); // Dependency array ensures this runs only when previewUrl changes
 
   return (
     <AnimatePresence>
       {activeModal === "deposit" && (
         <motion.div
+          key="deposit-modal-content" // Added unique key
           className="fixed inset-0 bg-transparent backdrop-blur-xl z-50 flex items-center justify-center px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="bg-casino-deep-blue/80 w-full max-w-3xl max-h-[calc(100vh-1rem)] rounded-lg border border-casino-light-blue p-6 modal-container"
+            className="bg-casino-deep-blue/80 w-full max-w-3xl max-h-[calc(100vh-1rem)] rounded-lg border border-casino-light-blue p-4 sm:p-6 modal-container overflow-y-auto" // Added overflow-y-auto
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
@@ -244,23 +361,16 @@ const DepositModal = () => {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="flex justify-between items-center mb-2"
+              className="flex justify-between items-center mb-1 sm:mb-2"
             >
-              <h2 className="text-xl font-semibold text-casino-silver">
+              <h2 className="text-lg sm:text-xl font-semibold text-casino-silver">
                 {t("deposit")}
               </h2>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={() => {
-                  setSelectedDepositChannel(null);
-                  setAmount(0);
-                  setSenderName("");
-                  setTransactionId("");
-                  setReceiptImage(null);
-                  setPreviewUrl(null);
-                  setStep("amount");
-                  setActiveModal(null);
+                  resetState();
                 }}
                 className="text-casino-silver"
               >
@@ -272,7 +382,7 @@ const DepositModal = () => {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="grid grid-cols-2 gap-4 pb-6"
+                className="grid grid-cols-2 gap-2 sm:gap-4 pb-4 sm:pb-6"
               >
                 <label className="text-casino-silver block">
                   {t("selectPaymentMethod")}
@@ -296,62 +406,57 @@ const DepositModal = () => {
                             onClick={() =>
                               setSelectedDepositChannel(
                                 selectedDepositChannel &&
-                                  selectedDepositChannel.card_bank_name ===
-                                    c.card_bank_name
+                                  selectedDepositChannel.card_id === c.card_id
                                   ? null
                                   : c
                               )
                             }
-                            className="w-full flex flex-col relative bg-casino-deep-blue border border-casino-light-blue rounded-lg p-5 hover:bg-opacity-80 transition-all"
+                            className="w-full flex flex-col relative bg-casino-deep-blue border border-casino-light-blue rounded-lg p-3 sm:p-5 hover:bg-opacity-80 transition-all"
                           >
                             <div className="flex w-full items-center justify-between gap-4">
                               <span className="text-white flex items-center">
                                 {c.card_bank_name}
-                                {selectedDepositChannel &&
-                                  selectedDepositChannel.card_bank_name ===
-                                    c.card_bank_name && (
-                                    <CheckIcon className="text-casino-gold w-4 h-4 mx-2" />
-                                  )}
+                                {selectedDepositChannel?.card_id ===
+                                  c.card_id && (
+                                  <CheckIcon className="text-casino-gold w-4 h-4 mx-2" />
+                                )}
                               </span>
                               <CreditCard className="text-casino-gold w-6 h-6" />
                             </div>
-                            {selectedDepositChannel &&
-                              selectedDepositChannel.card_bank_name ===
-                                c.card_bank_name && (
-                                <div className="flex flex-col items-start mt-4">
-                                  <span className="text-white text-sm">
-                                    {t("receiverLabel", {
-                                      name: c.card_username,
+                            {selectedDepositChannel?.card_id === c.card_id && (
+                              <div className="flex flex-col items-start mt-1 sm:mt-2">
+                                <span className="text-white text-xs sm:text-sm">
+                                  {t("receiverLabel", {
+                                    name: c.card_username,
+                                  })}
+                                </span>
+                                <span className="text-white text-xs sm:text-sm">
+                                  {t("cardNumberLabel", {
+                                    number: c.card_number,
+                                  })}
+                                </span>
+                                <span className="text-white text-xs sm:text-sm hidden md:block">
+                                  {t("oneTimeLimitLabel", {
+                                    min: c.single_min,
+                                    max: c.single_max,
+                                  })}
+                                </span>
+                                {(c.disable_starttime == "00:00" &&
+                                  c.disable_endtime == "00:00") ||
+                                (!c.disable_starttime && !c.disable_endtime) ? (
+                                  <span className="text-white text-xs sm:text-sm hidden md:block">
+                                    {t("available24hLabel")}
+                                  </span>
+                                ) : (
+                                  <span className="text-white text-xs sm:text-sm hidden md:block">
+                                    {t("availableTimeLabel", {
+                                      start: c.disable_endtime,
+                                      end: c.disable_starttime,
                                     })}
                                   </span>
-                                  <span className="text-white text-sm">
-                                    {t("cardNumberLabel", {
-                                      number: c.card_number,
-                                    })}
-                                  </span>
-                                  <span className="text-white text-sm">
-                                    {t("oneTimeLimitLabel", {
-                                      min: c.single_min,
-                                      max: c.single_max,
-                                    })}
-                                  </span>
-                                  {(c.disable_starttime == "00:00" &&
-                                    c.disable_endtime == "00:00") ||
-                                  (!c.disable_starttime &&
-                                    !c.disable_endtime) ? (
-                                    <span className="text-white text-sm">
-                                      {t("available24hLabel")}
-                                    </span>
-                                  ) : (
-                                    <span className="text-white text-sm">
-                                      {t("availableTimeLabel", {
-                                        start: c.disable_endtime,
-                                        end: c.disable_starttime,
-                                      })}
-                                    </span>
-                                  )}
-                                </div>
-                              )}
+                                )}
+                              </div>
+                            )}
                             {/* <span className="text-white">{c.card_number}</span> */}
                             {/* <span className="text-white">{c.card_type}</span> */}
                             {/* <span className="text-white">{c.card_username}</span> */}
@@ -361,9 +466,9 @@ const DepositModal = () => {
                           {selectedDepositChannel &&
                             selectedDepositChannel.card_bank_name ===
                               c.card_bank_name && (
-                              <div className="flex gap-2">
+                              <div className="flex gap-1 sm:gap-2 sm:mt-2 md:mt-4">
                                 <button
-                                  className="flex flex-grow items-center justify-center mt-2 bg-casino-light-blue text-white py-2 rounded-md hover:bg-opacity-80 transition-all"
+                                  className="flex w-1/2 items-center justify-center bg-casino-light-blue text-white py-1 sm:py-2 rounded-md hover:bg-opacity-80 transition-all"
                                   onClick={() => {
                                     copy(c.card_number);
                                     setTimeout(() => copy(""), 2000);
@@ -376,19 +481,24 @@ const DepositModal = () => {
                                     </>
                                   ) : (
                                     <>
-                                      {t("copyCardNumber")}{" "}
-                                      <Copy className="w-4 h-4 mx-2" />
+                                      <span className="hidden md:inline">
+                                        {t("copyNumber")}{" "}
+                                        {/* Changed translation key for shorter label */}
+                                      </span>
+                                      <Copy className="w-5 h-5 mx-2" />
                                     </>
                                   )}
                                 </button>
                                 <button
-                                  className="flex px-4 items-center justify-center mt-2 bg-casino-light-blue text-white py-2 rounded-md hover:bg-opacity-80 transition-all"
+                                  className="flex w-1/2 items-center justify-center bg-casino-light-blue text-white py-1 sm:py-2 rounded-md hover:bg-opacity-80 transition-all"
                                   onClick={() => {
                                     setStep("QR");
                                   }}
                                 >
-                                  {t("showQr")}{" "}
-                                  <QrCode className="w-4 h-4 mx-2" />
+                                  <span className="hidden md:inline">
+                                    {t("showQr")}{" "}
+                                  </span>
+                                  <QrCode className="w-5 h-5 mx-2" />
                                 </button>
                               </div>
                             )}
@@ -398,80 +508,33 @@ const DepositModal = () => {
 
                 {selectedDepositChannel && (
                   <>
-                    <div className="space-y-4">
+                    <div className="space-y-2 sm:space-y-4">
                       <input
                         type="number"
                         value={amount}
                         onChange={(e) => setAmount(parseFloat(e.target.value))}
-                        className="w-full bg-casino-deep-blue border border-casino-light-blue rounded-lg p-4 text-white focus:outline-none focus:ring-2 focus:ring-casino-gold"
+                        className="w-full bg-casino-deep-blue border border-casino-light-blue rounded-lg p-2 sm:p-4 text-white focus:outline-none focus:ring-2 focus:ring-casino-gold"
                         placeholder={t("enterAmountPlaceholder")}
                       />
 
-                      <div className="grid grid-cols-2 gap-2 mt-4">
-                        <>
-                          <button
-                            onClick={() =>
-                              handlePresetAmount(
-                                selectedDepositChannel.single_min * 1
-                              )
-                            }
-                            className="bg-casino-light-blue text-white py-2 rounded-md hover:bg-opacity-80 transition-all"
-                          >
-                            ${selectedDepositChannel.single_min * 1}
-                          </button>
-
-                          <button
-                            onClick={() =>
-                              handlePresetAmount(
-                                selectedDepositChannel.single_min * 2
-                              )
-                            }
-                            className="bg-casino-light-blue text-white py-2 rounded-md hover:bg-opacity-80 transition-all"
-                          >
-                            ${selectedDepositChannel.single_min * 2}
-                          </button>
-
-                          <button
-                            onClick={() =>
-                              handlePresetAmount(
-                                selectedDepositChannel.single_min * 5
-                              )
-                            }
-                            className="bg-casino-light-blue text-white py-2 rounded-md hover:bg-opacity-80 transition-all"
-                          >
-                            ${selectedDepositChannel.single_min * 5}
-                          </button>
-                          <button
-                            onClick={() =>
-                              handlePresetAmount(
-                                selectedDepositChannel.single_min * 10
-                              )
-                            }
-                            className="bg-casino-light-blue text-white py-2 rounded-md hover:bg-opacity-80 transition-all"
-                          >
-                            ${selectedDepositChannel.single_min * 10}
-                          </button>
-                          <button
-                            onClick={() =>
-                              handlePresetAmount(
-                                selectedDepositChannel.single_min * 20
-                              )
-                            }
-                            className="bg-casino-light-blue text-white py-2 rounded-md hover:bg-opacity-80 transition-all"
-                          >
-                            ${selectedDepositChannel.single_min * 20}
-                          </button>
-                          <button
-                            onClick={() =>
-                              handlePresetAmount(
-                                selectedDepositChannel.single_min * 30
-                              )
-                            }
-                            className="bg-casino-light-blue text-white py-2 rounded-md hover:bg-opacity-80 transition-all"
-                          >
-                            ${selectedDepositChannel.single_min * 30}
-                          </button>
-                        </>
+                      <div className="grid grid-cols-2 gap-1 sm:gap-2 mt-2 sm:mt-4">
+                        {[1, 2, 5, 10, 20, 30].map((multiplier, index) => {
+                          const presetValue =
+                            selectedDepositChannel.single_min * multiplier;
+                          // Apply hidden class for multipliers 20 and 30 on smaller screens
+                          const buttonClass = `bg-casino-light-blue text-white py-1 sm:py-2 rounded-md hover:bg-opacity-80 transition-all ${
+                            index >= 4 ? "hidden md:block" : ""
+                          }`;
+                          return (
+                            <button
+                              key={multiplier}
+                              onClick={() => handlePresetAmount(presetValue)}
+                              className={buttonClass}
+                            >
+                              ${presetValue}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
 
@@ -480,13 +543,13 @@ const DepositModal = () => {
                         setSelectedDepositChannel(null);
                         setAmount(0);
                       }}
-                      className="w-full py-2 bg-casino-accent text-silver-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
+                      className="w-full py-1 sm:py-2 bg-casino-accent text-silver-deep-blue rounded-lg font-bold text-base sm:text-lg hover:bg-opacity-90 transition-all"
                     >
                       {t("goBack")}
                     </button>
                     <button
                       onClick={handleDeposit}
-                      className="w-full py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
+                      className="w-full py-1 sm:py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-base sm:text-lg hover:bg-opacity-90 transition-all"
                     >
                       {t("proceedToPayment")}
                     </button>
@@ -508,7 +571,7 @@ const DepositModal = () => {
                 <img
                   src={selectedDepositChannel.img}
                   alt={t("qrCodeAlt")}
-                  className="h-52 mx-auto w-auto col-span-2"
+                  className="h-40 md:h-52 mx-auto w-auto col-span-2"
                 />
 
                 <button
@@ -543,13 +606,13 @@ const DepositModal = () => {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="grid grid-cols-2 gap-4 pb-6"
+                className="grid grid-cols-2 gap-2 sm:gap-4 pb-4 sm:pb-6"
               >
-                <div className="space-y-2">
-                  <label className="text-casino-silver block mb-2">
-                    {t("selectPaymentMethod")}
+                <div>
+                  <label className="text-casino-silver block mb-1 md:mb-2">
+                    {t("provideTransactionInformation")}
                   </label>
-                  <div className="w-full flex flex-col relative bg-casino-deep-blue border border-casino-light-blue rounded-lg p-4 hover:bg-opacity-80 transition-all">
+                  <div className="w-full flex flex-col relative bg-casino-deep-blue border border-casino-light-blue rounded-lg p-3 md:p-4 hover:bg-opacity-80 transition-all">
                     <div className="flex w-full items-center justify-between gap-4">
                       <span className="text-white flex items-center">
                         {selectedDepositChannel.card_bank_name}
@@ -558,10 +621,10 @@ const DepositModal = () => {
                       <CreditCard className="text-casino-gold w-6 h-6" />
                     </div>
                     <div className="grid grid-cols-2 items-start mt-2">
-                      <span className="text-white text-sm">
+                      <span className="text-white text-sm hidden md:block">
                         {t("receiver")}
                       </span>
-                      <span className="text-white text-sm">
+                      <span className="text-white text-sm hidden md:block">
                         : {selectedDepositChannel.card_username}
                       </span>
                       <span className="text-white text-sm">
@@ -576,50 +639,51 @@ const DepositModal = () => {
                       <span className="text-white text-sm">: ${amount}</span>
                     </div>
                   </div>
-
-                  <input
-                    type="text"
-                    name="transactionId"
-                    value={transactionId}
-                    onChange={(e) => setTransactionId(e.target.value)}
-                    className="w-full bg-casino-deep-blue border border-casino-light-blue rounded-lg p-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-casino-gold"
-                    placeholder={t("enterTxIdPlaceholder")}
-                  />
-                  <input
-                    type="text"
-                    name="name"
-                    value={senderName}
-                    onChange={(e) => setSenderName(e.target.value)}
-                    className="w-full bg-casino-deep-blue border border-casino-light-blue rounded-lg p-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-casino-gold"
-                    placeholder={t("enterYourNamePlaceholder")}
-                  />
+                  <div className="mt-1 space-y-1 md:mt-2 md:space-y-2">
+                    <input
+                      type="text"
+                      name="transactionId"
+                      value={transactionId}
+                      onChange={(e) => setTransactionId(e.target.value)}
+                      className="w-full bg-casino-deep-blue border border-casino-light-blue rounded-lg p-2 md:p-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-casino-gold"
+                      placeholder={t("enterTxIdPlaceholder")}
+                    />
+                    <input
+                      type="text"
+                      name="name"
+                      value={senderName}
+                      onChange={(e) => setSenderName(e.target.value)}
+                      className="w-full bg-casino-deep-blue border border-casino-light-blue rounded-lg p-2 md:p-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-casino-gold"
+                      placeholder={t("enterYourNamePlaceholder")}
+                    />
+                  </div>
                 </div>
                 {/* Receipt Image Upload */}
                 <div>
-                  <label className="text-casino-silver block mb-2">
+                  <label className="text-casino-silver block mb-1 md:mb-2">
                     {t("txReceiptImageLabel")}
                   </label>
                   <div
-                    className={`border-2 border-dashed rounded-lg p-6 text-center ${
+                    className={`h-[11.35rem] md:h-[14.6rem] border-2 border-dashed rounded-lg p-2 md:p-6 text-center ${
                       previewUrl ? "border-casino-gold" : "border-white/20"
                     }`}
                     onDrop={handleImageDrop}
                     onDragOver={handleDragOver}
                   >
                     {previewUrl ? (
-                      <div className="space-y-3">
+                      <div className="space-y-1 md:space-y-3">
                         <div className="relative flex items-center justify-center mx-auto w-full max-w-xs overflow-hidden rounded-lg">
                           <img
                             src={previewUrl}
                             alt={t("receiptPreviewAlt")}
-                            className="h-32 w-auto object-cover"
+                            className="h-28 md:h-[8.5rem] w-auto object-contain"
                           />
                         </div>
                         <div>
                           <Button
                             type="button"
                             variant="outline"
-                            className="text-white bg-casino-blue hover:bg-casino-light-blue hover:text-casino-silver"
+                            className="py-1 text-white bg-casino-blue hover:bg-casino-light-blue hover:text-casino-silver"
                             onClick={() => {
                               setReceiptImage(null);
                               setPreviewUrl(null);
@@ -630,9 +694,9 @@ const DepositModal = () => {
                         </div>
                       </div>
                     ) : (
-                      <div className="space-y-2">
-                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-casino-deep-blue">
-                          <Image className="h-10 w-10 text-casino-silver" />
+                      <div className="space-y-2 md:space-y-3">
+                        <div className="mx-auto flex h-10 md:h-16 w-10 md:w-16 items-center justify-center rounded-full bg-casino-deep-blue">
+                          <Image className="h-6 w-6 md:h-10 md:w-10 text-casino-silver" />
                         </div>
                         <div className="space-y-1">
                           <p className="text-sm text-casino-silver">
@@ -645,7 +709,7 @@ const DepositModal = () => {
                         <Button
                           type="button"
                           variant="outline"
-                          className="relative text-casino-silver bg-casino-blue hover:bg-casino-light-blue hover:text-casino-silver"
+                          className="py-1 px-3 text-xs relative text-casino-silver bg-casino-blue hover:bg-casino-light-blue hover:text-casino-silver"
                         >
                           <Upload className="mr-2 h-4 w-4" />
                           {t("uploadReceipt")}
@@ -669,13 +733,13 @@ const DepositModal = () => {
                     setPreviewUrl(null);
                     setStep("amount");
                   }}
-                  className="w-full py-2 bg-casino-accent text-silver-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
+                  className="w-full py-1 sm:py-2 bg-casino-accent text-silver-deep-blue rounded-lg font-bold text-base sm:text-lg hover:bg-opacity-90 transition-all"
                 >
                   {t("goBack")}
                 </button>
                 <button
                   onClick={handleDeposit}
-                  className="w-full py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
+                  className="w-full py-1 sm:py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-base sm:text-lg hover:bg-opacity-90 transition-all"
                 >
                   {t("proceedToPayment")}
                 </button>
@@ -687,12 +751,12 @@ const DepositModal = () => {
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}
-                className="space-y-4"
+                className="space-y-2 md:space-y-4"
               >
-                <div className="text-casino-silver text-sm mb-4">
+                <div className="text-casino-silver text-sm mb-2 md:mb-4">
                   {t("confirmDepositDetailsPrompt")}
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-1 md:space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-casino-silver">{t("bankLabel")}</span>
                     <span className="text-casino-gold">
@@ -721,8 +785,21 @@ const DepositModal = () => {
                     <span className="text-casino-gold">{transactionId}</span>
                   </div>
                 </div>
-
-                <div className="p-3 bg-blue-900 bg-opacity-30 rounded-lg flex items-start gap-3">
+                {/* Image Preview */}
+                {previewUrl && (
+                  <button
+                    type="button"
+                    onClick={() => setIsReceiptModalOpen(true)}
+                    className="h-44 w-full border border-casino-light-blue rounded-lg p-2 flex items-center justify-center hover:border-casino-gold transition-colors"
+                  >
+                    <img
+                      src={previewUrl}
+                      alt={t("receiptPreviewAlt")}
+                      className="h-36 w-auto object-contain"
+                    />
+                  </button>
+                )}
+                <div className="p-2 md:p-3 bg-blue-900 bg-opacity-30 rounded-lg flex items-start gap-3">
                   <AlertCircle className="text-blue-400 w-5 h-5 mt-0.5 flex-shrink-0" />
                   <p className="text-blue-100 text-sm">
                     <span className="font-semibold">{t("importantLabel")}</span>{" "}
@@ -732,7 +809,7 @@ const DepositModal = () => {
                 <button
                   onClick={handleDeposit}
                   disabled={loading}
-                  className="w-full flex items-center justify-center py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
+                  className="w-full flex items-center justify-center py-1 md:py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
                 >
                   {t("confirmDeposit")}{" "}
                   {loading && <Loader2 className="ml-2 animate-spin w-6 h-6" />}
@@ -798,7 +875,7 @@ const DepositModal = () => {
                     setActiveModal(null);
                     navigate("/history/transaction");
                   }}
-                  className="w-full py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
+                  className="w-full py-1 sm:py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-base sm:text-lg hover:bg-opacity-90 transition-all"
                 >
                   {t("checkDepositRequests")}
                 </button>
@@ -844,6 +921,14 @@ const DepositModal = () => {
           </motion.div>
         </motion.div>
       )}
+      {/* Receipt Preview Modal */}
+      <ReceiptPreviewModal
+        key="receipt-preview-modal" // Added unique key
+        isOpen={isReceiptModalOpen}
+        onClose={() => setIsReceiptModalOpen(false)}
+        imageUrl={previewUrl}
+        altText={t("receiptPreviewAlt")}
+      />
     </AnimatePresence>
   );
 };

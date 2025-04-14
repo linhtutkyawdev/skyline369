@@ -19,6 +19,7 @@ const FooterNav = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.5 }}
+      // Reverted gap, icon size, and text size to original sm+ values
       className="fixed bottom-0 w-full py-4 xl:glass-effect flex justify-center items-center gap-8 2xl:gap-12"
     >
       <div

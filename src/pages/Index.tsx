@@ -49,6 +49,7 @@ const Index = () => {
     return index === prevIndex || index === nextIndex;
   };
 
+  // Reverted to original size for sm+
   const IMAGE_CLASS_NAME = "w-20 h-20 2xl:w-[6.5rem] 2xl:h-[6.5rem]";
 
   // 0: "roulette"
@@ -167,8 +168,9 @@ const Index = () => {
   ];
 
   return (
-    <div className="h-screen w-screen flex flex-col overflow-hidden">
+    <div className="h-screen w-screen flex flex-col">
       <NavBar />
+      {/* Reverted margin */}
       <div className="flex flex-col items-center justify-center h-full -mt-12 lg:-mt-8">
         <Logo />
         <Carousel
@@ -184,7 +186,8 @@ const Index = () => {
             {items.map((item, index) => (
               <CarouselItem
                 key={item.title + index}
-                className="px-3 md:px-4 basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
+                // Kept landscape adjustment
+                className="px-3 md:px-4 basis-full sm:basis-1/3 md:basis-1/4 lg:basis-1/5"
               >
                 <GameCategory
                   title={item.title}
@@ -198,6 +201,7 @@ const Index = () => {
             ))}
           </CarouselContent>
 
+          {/* Reverted gap, margin, and button sizes */}
           <div className="hidden xl:flex justify-center gap-6 lg:mt-8">
             <CarouselPrevious className="static bg-casino-deep-blue border-casino-silver hover:bg-casino-light-blue text-white w-6 h-6 2xl:w-8 2xl:h-8" />
             <CarouselNext className="static bg-casino-deep-blue border-casino-silver hover:bg-casino-light-blue text-white w-6 h-6 2xl:w-8 2xl:h-8" />
