@@ -43,11 +43,9 @@ const NavBar = () => {
         </div>
 
         {gameType && (
-          <div className="flex items-center gap-2 xl:gap-4">
-            <h3 className="text-casino-silver capitalize font-bold text-lg 2xl:text-2xl">
-              {gameType}
-            </h3>
-          </div>
+          <h3 className="absolute -z-10 inset-0 w-full h-full flex items-center justify-center text-casino-silver capitalize font-bold text-lg 2xl:text-2xl">
+            {gameType}
+          </h3>
         )}
 
         {/* Inline icons for md and larger screens */}
@@ -105,7 +103,7 @@ const NavBar = () => {
         </div>
 
         {/* Menu Button for sm screens to trigger NavMenuModal */}
-        <div className="block md:hidden">
+        <div className="block md:hidden mx-4">
           <Button
             variant="ghost"
             size="icon"

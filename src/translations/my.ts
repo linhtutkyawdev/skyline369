@@ -274,5 +274,6 @@ export default {
       "စကားဝှက် မွမ်းမံရန် မအောင်မြင်ပါ။ သင်၏ လက်ရှိ စကားဝှက်ကို စစ်ဆေးပြီး ထပ်မံကြိုးစားပါ။",
     // tokenPlaceholder: "ပြန်လည်သတ်မှတ် တိုကင် ထည့်ပါ", // Removed unused translation
     provideTransactionInformation: "ငွေလွှဲအချက်အလက်",
+    navigationMenu: "Navigation Menu",
   },
 };

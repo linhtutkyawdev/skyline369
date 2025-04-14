@@ -276,7 +276,7 @@ const TransationHistory = () => {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex flex-wrap items-center justify-between gap-4" // Added flex-wrap and gap
+          className="flex flex-col md:flex-row items-center justify-between gap-4" // Adjust layout for filters
         >
           {/* Type Filters */}
           <div className="flex gap-2">

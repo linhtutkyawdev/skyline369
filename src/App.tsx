@@ -12,7 +12,6 @@ import { Fullscreen } from "lucide-react";
 import useScreenOrientation from "./hooks/use-screen-orientation";
 import Index from "./pages/Index";
 import Profile from "./pages/Profile";
-import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import Share from "./pages/Share";
 import Messages from "./pages/Messages";
@@ -484,7 +483,6 @@ const AppContent: React.FC<AppContentProps> = ({
           <Route path="/profile" element={<Profile />} />
           <Route path="/type/:gameType" element={<Category />} />
           <Route path="/game/:id" element={<Game />} />
-          <Route path="/contact" element={<Contact />} />
           <Route path="/history/game" element={<GameHistory />} />
           <Route path="/history/transaction" element={<TransationHistory />} />
           <Route path="/share" element={<Share />} />

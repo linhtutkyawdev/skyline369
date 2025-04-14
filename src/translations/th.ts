@@ -259,5 +259,6 @@ export default {
       "ไม่สามารถอัปเดตรหัสผ่านได้ กรุณาตรวจสอบรหัสผ่านปัจจุบันของคุณและลองอีกครั้ง",
     // tokenPlaceholder: "ใส่โทเค็นรีเซ็ต", // Removed unused translation
     provideTransactionInformation: "ข้อมูลธุรกรรม",
+    navigationMenu: "Navigation Menu",
   },
 };

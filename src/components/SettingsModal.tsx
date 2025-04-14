@@ -229,7 +229,7 @@ const SettingsModal = () => {
                         <ToggleGroupItem
                           value={lang}
                           key={lang}
-                          className="data-[state=on]:bg-casino-gold data-[state=on]:text-casino-deep-blue text-casino-silver px-3 py-1 text-xs rounded-md border border-transparent hover:border-casino-light-blue" // Adjusted styling
+                          className="data-[state=on]:bg-casino-gold data-[state=on]:text-casino-deep-blue text-casino-silver px-3 py-1 text-xs rounded-md border border-casino-light-blue hover:border-casino-gold transition-colors duration-200" // Adjusted styling
                         >
                           {t(lang)}
                         </ToggleGroupItem>

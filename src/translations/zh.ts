@@ -254,5 +254,6 @@ export default {
     passwordResetErrorDesc: "更新密码失败。请检查您当前的密码并重试。", // Placeholder: Failed to update password. Please check your current password and try again.
     // tokenPlaceholder: "输入重置令牌", // Removed unused translation
     provideTransactionInformation: "交易信息",
+    navigationMenu: "导航菜单",
   },
 };

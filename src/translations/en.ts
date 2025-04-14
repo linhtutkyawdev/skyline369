@@ -267,5 +267,6 @@ export default {
       "Failed to update password. Please check your current password and try again.",
     // tokenPlaceholder: "Enter Reset Token", // Removed unused translation
     provideTransactionInformation: "Transaction Information",
+    navigationMenu: "Navigation Menu",
   },
 };

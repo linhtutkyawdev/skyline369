@@ -240,10 +240,10 @@ export default function Category() {
       <div className="fixed 2xl:top-32 xl:top-24 top-[4.5rem] w-full z-50 flex justify-between items-center px-12 py-2">
         <button
           onClick={() => navigate("/")}
-          className="flex w-[10rem] items-center gap-2 text-casino-silver hover:text-white transition-colors mt-2 text-sm xl:text-base px-4"
+          className="flex md:w-[10rem] items-center gap-2 text-casino-silver hover:text-white transition-colors mt-2 text-sm xl:text-base px-4"
         >
           <ArrowLeft className="w-4 h-4 xl:w-5 xl:h-5" />
-          <span>{t("back")}</span>
+          <span className="hidden md:block">{t("back")}</span>
         </button>
 
         {/* Provider productCodes */}
@@ -274,7 +274,7 @@ export default function Category() {
           onChange={(e) => setSearchText(e.target.value)}
           type="text"
           placeholder={t("searchPlaceholder")}
-          className="w-[10rem] h-8 xl:h-10 px-3 py-1 xl:px-4 xl:py-2 rounded-full glass-effect text-casino-silver placeholder:text-casino-silver mr-4"
+          className="w-20 md:w-[10rem] h-8 xl:h-10 px-3 py-1 xl:px-4 xl:py-2 rounded-full glass-effect text-casino-silver placeholder:text-casino-silver mr-4"
         />
       </div>
 
@@ -303,7 +303,7 @@ export default function Category() {
                     (isMobile ? game.m_img : game.img) || "/login_modal_bg.png"
                   }
                   alt={game.gameName}
-                  className="object-cover w-full h-36 2xl:h-60 bg-casino-deep-blue"
+                  className="object-cover w-full h-28 md:h-36 2xl:h-60 bg-casino-deep-blue"
                 />
                 {parseInt(game.on_line) > 0 && (
                   <div className="absolute top-3 right-3">
