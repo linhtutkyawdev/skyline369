@@ -30,6 +30,8 @@ import GameHistory from "./pages/GameHistory";
 import TransationHistory from "./pages/TransactionHistory";
 import { User, UserInfo } from "./types/user";
 import { useSettingsStore } from "./store/settings"; // Import settings store
+import { set } from "date-fns";
+import { u } from "node_modules/framer-motion/dist/types.d-6pKw1mTI";
 
 // List of background music files in the public folder
 const bgMusicFiles = [
@@ -59,7 +61,6 @@ const App = () => {
   const {
     activeModal,
     setActiveModal,
-    depositChannels,
     setDepositChannels,
     setLoading,
     setError,
@@ -70,7 +71,6 @@ const App = () => {
 
   const { toast } = useToast();
   const { t } = useTranslation();
-  // Removed useLocation from here
 
   // Effect to detect first user interaction for audio playback
   useEffect(() => {
@@ -132,6 +132,36 @@ const App = () => {
     }
   };
 
+  const transferBalance = async (amount: number) => {
+    if (!user) return;
+    setLoading(true);
+    try {
+      const responses = await axiosInstance.post<
+        ApiResponse<{ balance: string; game_balance: string }>
+      >("/transfer_to_game", {
+        token: user.token,
+        amount,
+      });
+
+      if (
+        responses.data.status.errorCode != 0 &&
+        responses.data.status.errorCode != 200
+      )
+        throw new ApiError(
+          "An error has occured!",
+          responses.data.status.errorCode,
+          responses.data.status.mess
+        );
+    } catch (error) {
+      if (error instanceof ApiError && error.statusCode === 401) {
+        setUser(null);
+        setError(error);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const loadUserInfo = async () => {
     if (!user) return;
     setLoading(true);
@@ -153,37 +183,28 @@ const App = () => {
           responses.data.status.mess
         );
 
-      setUser({ ...user, userInfo: responses.data.data });
-    } catch (error) {
-      if (error instanceof ApiError && error.statusCode === 401) {
-        setUser(null);
-        setError(error);
+      console.log(responses.data.data);
+
+      if (responses.data.data && responses.data.data.balance > 0) {
+        await transferBalance(responses.data.data.balance);
+        setUser({
+          ...user,
+          balance: 0,
+          userInfo: {
+            ...responses.data.data,
+            balance: 0,
+            game_balance:
+              parseFloat(responses.data.data.game_balance + "") +
+              parseFloat(responses.data.data.balance + ""),
+          },
+        });
+        return;
       }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const transferBalance = async () => {
-    if (!user) return;
-    setLoading(true);
-    try {
-      const responses = await axiosInstance.post<
-        ApiResponse<{ balance: string; game_balance: string }>
-      >("/transfer_to_game", {
-        token: user.token,
-        amount: user.userInfo.balance,
+      setUser({
+        ...user,
+        balance: responses.data.data.balance,
+        userInfo: responses.data.data,
       });
-
-      if (
-        responses.data.status.errorCode != 0 &&
-        responses.data.status.errorCode != 200
-      )
-        throw new ApiError(
-          "An error has occured!",
-          responses.data.status.errorCode,
-          responses.data.status.mess
-        );
     } catch (error) {
       if (error instanceof ApiError && error.statusCode === 401) {
         setUser(null);
@@ -268,26 +289,11 @@ const App = () => {
       setError(null); // Clear previous errors
 
       try {
-        // Fetch config first, as it might dictate maintenance mode
         await loadPlatformConfig();
-
-        // Fetch channels and user info (can run in parallel if independent)
-        // If platformConfig fetch failed, subsequent calls might be skipped
-        // depending on error handling in loadPlatformConfig
         if (!error) {
-          // Check if platform config load caused an error
           await Promise.all([loadDepositChannels(), loadUserInfo()]);
-          // Transfer balance logic needs careful consideration
-          // Let's run loadUserInfo again after potential transfer to get updated balance
-          // This might need further refinement based on exact requirements
-          if (user.userInfo && user.userInfo.balance > 0) {
-            await transferBalance();
-            await loadUserInfo(); // Reload user info after transfer
-          }
         }
       } catch (err) {
-        // Errors from loadDepositChannels/loadUserInfo are handled within those functions
-        // Setting the global error state there.
         console.error("Error during initial data load sequence:", err);
       } finally {
         setLoading(false); // Set loading false at the end
@@ -295,24 +301,17 @@ const App = () => {
     };
 
     loadInitialData();
-    // Dependencies: user.token triggers reload on login/logout
-    // Include setters/other dependencies if used directly inside the effect
-  }, [user?.token]); // Use optional chaining for safety
+  }, [
+    user?.token,
+    setDepositChannels,
+    setPlatformConfig,
+    setLoading,
+    setError,
+  ]); // Use optional chaining for safety
 
-  // Removed useEffect dependent on activeModal for data loading
-  // Removed useEffect with window.load listener
-
-  // Effect to set document title from platform config
   useEffect(() => {
-    if (platformConfig?.site_title) {
-      document.title = platformConfig.site_title;
-    }
-    // Optionally, set a default title if config is null or title is missing
-    // else {
-    //   document.title = "Default App Title";
-    // }
-  }, [platformConfig]);
-
+    if (!activeModal) loadUserInfo();
+  }, [activeModal]);
   return (
     <div className="bg-main w-screen h-screen relative" ref={ref}>
       {" "}
@@ -372,6 +371,7 @@ const App = () => {
               setCurrentTrackIndex={setCurrentTrackIndex}
               bgMusicFiles={bgMusicFiles}
               user={user}
+              loadUserInfo={loadUserInfo}
             />
           </BrowserRouter>
         </TooltipProvider>{" "}
@@ -392,6 +392,7 @@ interface AppContentProps {
   setCurrentTrackIndex: React.Dispatch<React.SetStateAction<number | null>>;
   bgMusicFiles: string[];
   user: User | null; // Assuming UserInfo is the correct type for user
+  loadUserInfo: () => Promise<void>;
 }
 
 const AppContent: React.FC<AppContentProps> = ({
@@ -402,9 +403,9 @@ const AppContent: React.FC<AppContentProps> = ({
   setCurrentTrackIndex,
   bgMusicFiles,
   user,
+  loadUserInfo,
 }) => {
   const location = useLocation(); // Now used within Router context
-  const { t } = useTranslation(); // Get the translation function
   // Effect to handle background music playback
   useEffect(() => {
     const audioElement = audioRef.current;
@@ -460,10 +461,6 @@ const AppContent: React.FC<AppContentProps> = ({
         // Check if audioElement exists before removing listener
         audioElement.removeEventListener("ended", handleTrackEnd);
       }
-      // Optional: Pause music on unmount if desired, though settings store handles persistence
-      // if (audioElement) {
-      //   audioElement.pause();
-      // }
     };
   }, [
     musicEnabled,
@@ -474,6 +471,10 @@ const AppContent: React.FC<AppContentProps> = ({
     bgMusicFiles,
     setCurrentTrackIndex,
   ]); // Added missing dependencies
+
+  useEffect(() => {
+    loadUserInfo();
+  }, [location.pathname]);
 
   return (
     <>

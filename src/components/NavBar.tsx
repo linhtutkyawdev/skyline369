@@ -34,7 +34,12 @@ const NavBar = () => {
               {(user && user.name) || t("register_login")}
             </span>
             <span className="text-casino-gold text-xs 2xl:text-sm">
-              {user && user.userInfo && "$ " + user.userInfo.game_balance}
+              {(user &&
+                user.userInfo &&
+                "$ " +
+                  parseFloat(user.userInfo.game_balance + "").toFixed(2)) ||
+                user.userInfo.game_balance ||
+                "0.00"}
             </span>
           </div>
           <button className="" onClick={() => window.location.reload()}>

@@ -1,16 +1,7 @@
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  X,
-  History,
-  Wallet,
-  Sparkles,
-  LogOut,
-  Edit,
-  Gamepad2,
-} from "lucide-react"; // Added Gamepad2
+import { X, LogOut } from "lucide-react"; // Added Gamepad2
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next"; // Import useTranslation
 import { useUserStore } from "@/store/user";
 import { useStateStore } from "@/store/state";
@@ -23,7 +14,6 @@ const ProfileModal = () => {
   const { activeModal, setActiveModal } = useStateStore();
   const { user, setUser } = useUserStore();
   const { toast } = useToast();
-  const navigate = useNavigate();
   const { t } = useTranslation(); // Get translation function
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
@@ -126,7 +116,14 @@ const ProfileModal = () => {
                 <div className="bg-casino-deep-blue rounded-xl p-4 w-full flex justify-between items-center mt-4">
                   <span className="text-casino-silver">{t("balance")}</span>
                   <span className="text-casino-gold font-bold text-xl">
-                    {user && user.userInfo && "$ " + user.userInfo.game_balance}
+                    {(user &&
+                      user.userInfo &&
+                      "$ " +
+                        parseFloat(user.userInfo.game_balance + "").toFixed(
+                          2
+                        )) ||
+                      user.userInfo.game_balance ||
+                      "0.00"}
                   </span>
                 </div>
                 {/* History Links */}

@@ -5,7 +5,6 @@ import {
   X,
   CreditCard,
   Loader2,
-  CheckCircle,
   XCircle,
   CheckIcon,
 } from "lucide-react";
@@ -23,6 +22,9 @@ import { ApiError } from "@/types/api_error"; // Assuming ApiError type exists
 import { useNavigate } from "react-router-dom";
 
 type WithdrawStep = "amount" | "confirm" | "success" | "failed";
+
+const MIN_WITHDRAWAL_AMOUNT = 1000;
+const MAX_WITHDRAWAL_AMOUNT = 100000;
 
 const WithdrawModal = () => {
   const { activeModal, setActiveModal } = useStateStore();
@@ -119,21 +121,19 @@ const WithdrawModal = () => {
     }
   };
 
-  // const presetAmounts = [50, 100, 500, 1000, 5000];
-
-  const handlePresetAmount = (value: number) => {
-    setAmount(value);
-  };
-
   const handleWithdrawSubmit = async () => {
     // Validate amount against limits
-    if (!amount || amount < 1000 || amount > 10000) {
+    if (
+      !amount ||
+      amount < MIN_WITHDRAWAL_AMOUNT ||
+      amount > MAX_WITHDRAWAL_AMOUNT
+    ) {
       toast({
         variant: "destructive",
         title: t("invalidAmountTitle"),
         description: t("withdrawAmountLimitDesc", {
-          min: 1000,
-          max: 10000,
+          min: MIN_WITHDRAWAL_AMOUNT,
+          max: MAX_WITHDRAWAL_AMOUNT,
           amount: amount.toLocaleString(),
         }),
       });
@@ -178,7 +178,7 @@ const WithdrawModal = () => {
       console.log("Attempting transfer to main wallet...");
       const transferToMainResponse = await axiosInstance.post<ApiResponse<any>>(
         "/transfer_to_main",
-        { token: user.token, amount: transferAmountStr }
+        { token: user.token, amount: user.userInfo?.game_balance }
       );
 
       if (transferToMainResponse.data.status.errorCode !== 0) {
@@ -191,7 +191,6 @@ const WithdrawModal = () => {
       }
       transferToMainSuccessful = true;
       console.log("Transfer to main wallet successful.");
-      // TODO: Consider updating local user balance state if necessary after transfer
 
       // Step 2: Request Withdrawal (Drawing)
       console.log("Attempting withdrawal request...");
@@ -399,8 +398,8 @@ const WithdrawModal = () => {
                             className="text-casino-silver block mb-2"
                           >
                             {t("withdrawAmountRangeLabel", {
-                              min: 1000,
-                              max: 10000,
+                              min: MIN_WITHDRAWAL_AMOUNT,
+                              max: MAX_WITHDRAWAL_AMOUNT,
                             })}
                           </Label>
                           <Input
