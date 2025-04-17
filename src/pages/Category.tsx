@@ -231,7 +231,9 @@ export default function Category() {
   return (
     <div
       className={`h-[calc(100vh-9rem)] mt-[9rem] md:h-[calc(100vh-10rem)] md:mt-[10rem] overflow-y-scroll scrollbar-none ${
-        getProduct(gameType).productCodes.length > 7
+        getProduct(gameType).productCodes.length < 5
+          ? "sm:h-[calc(100vh-7.5rem)] mt-[7.5rem] md:h-[calc(100vh-8rem)] md:mt-[8rem] "
+          : getProduct(gameType).productCodes.length > 7
           ? "2xl:h-[calc(100vh-15rem)] 2xl:mt-[15rem] xl:h-[calc(100vh-12.5rem)] xl:mt-[12.5rem]"
           : "2xl:h-[calc(100vh-12.5rem)] 2xl:mt-[12.5rem]"
       }`}

@@ -180,7 +180,7 @@ const Index = () => {
             slidesToScroll: 1,
           }}
           setApi={setApi}
-          className="w-full"
+          className="w-full mt-4 xl:mt-0"
         >
           <CarouselContent>
             {items.map((item, index) => (
