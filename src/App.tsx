@@ -183,8 +183,6 @@ const App = () => {
           responses.data.status.mess
         );
 
-      console.log(responses.data.data);
-
       if (responses.data.data && responses.data.data.balance > 0) {
         await transferBalance(responses.data.data.balance);
         setUser({
