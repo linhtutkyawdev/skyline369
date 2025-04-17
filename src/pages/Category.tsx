@@ -230,7 +230,7 @@ export default function Category() {
 
   return (
     <div
-      className={`h-[calc(100vh-10rem)] mt-[10rem] overflow-y-scroll scrollbar-none ${
+      className={`h-[calc(100vh-9rem)] mt-[9rem] md:h-[calc(100vh-10rem)] md:mt-[10rem] overflow-y-scroll scrollbar-none ${
         getProduct(gameType).productCodes.length > 7
           ? "2xl:h-[calc(100vh-15rem)] 2xl:mt-[15rem] xl:h-[calc(100vh-12.5rem)] xl:mt-[12.5rem]"
           : "2xl:h-[calc(100vh-12.5rem)] 2xl:mt-[12.5rem]"
@@ -248,7 +248,7 @@ export default function Category() {
 
         {/* Provider productCodes */}
         <div className="flex flex-col items-center max-w-[35rem] lg:max-w-[55rem]">
-          <div className="flex items-center gap-2 overflow-scroll flex-wrap scrollbar-none justify-center px-4">
+          <div className="flex items-center md:gap-2 gap-1 overflow-scroll flex-wrap scrollbar-none justify-center px-4">
             {getProduct(gameType).productCodes.length > 0 &&
               getProduct(gameType).productCodes.map((tab) => (
                 <button
@@ -256,7 +256,7 @@ export default function Category() {
                   onClick={() => {
                     setProductCode(tab == productCode ? "" : tab);
                   }}
-                  className={`px-3 py-1 xl:px-4 xl:py-2 rounded-full whitespace-nowrap text-sm 2xl:text-base font-semibold ${
+                  className={`px-2 py-1 md:px-3 xl:px-4 xl:py-2 rounded-full whitespace-nowrap text-xs md:text-sm 2xl:text-base font-semibold ${
                     productCode === tab
                       ? "bg-casino-gold text-casino-deep-blue font-medium"
                       : "bg-gradient-to-r from-[#001] to-casino-deep-blue text-casino-silver"
@@ -282,7 +282,7 @@ export default function Category() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.2 }}
-        className="grid grid-cols-3 lg:grid-cols-4 gap-6 px-12"
+        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 px-12"
       >
         {filteredGames.map((game, index) => {
           return (
@@ -317,14 +317,14 @@ export default function Category() {
                   {t("playersOnline", { count: parseInt(game.on_line) || 0 })}
                 </div>
               </div>
-              <div className="px-4 py-1 2xl:pt-6 bg-gradient-to-t h-40 2xl:h-48 from-casino-deep-blue to-transparent flex flex-col justify-center">
-                <h3 className="text-white text-lg 2xl:text-2xl font-semibold">
+              <div className="px-4 py-1 2xl:pt-6 bg-gradient-to-t h-28 md:h-40 2xl:h-48 from-casino-deep-blue to-transparent flex flex-col justify-center">
+                <h3 className="text-white text-base md:text-lg 2xl:text-2xl font-semibold">
                   {game.gameName}
                 </h3>
-                <p className="text-casino-silver text-sm 2xl:text-lg mt-1">
+                <p className="text-casino-silver text-xs md:text-sm 2xl:text-lg md:mt-1">
                   {game.productCode}
                 </p>
-                <button className="mt-3 2xl:mt-6 px-4 py-2 bg-casino-gold text-casino-deep-blue rounded-md font-medium hover:bg-opacity-90 transition-all 2xl:text-xl">
+                <button className="mt-2 md:mt-3 2xl:mt-6 px-4 py-1 md:py-2 bg-casino-gold text-casino-deep-blue rounded-md font-medium hover:bg-opacity-90 transition-all 2xl:text-xl">
                   {t("playNow")}
                 </button>
               </div>
