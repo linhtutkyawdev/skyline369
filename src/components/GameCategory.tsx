@@ -30,10 +30,10 @@ const GameCategory = ({
         // Reverted padding, height, margin, text size to original sm+ values
         "game-card flex flex-col items-center justify-center p-4 sm:p-6 relative my-5",
         isSelected
-          ? "h-40 2xl:h-56 w-full scale-105 z-10"
+          ? "h-[9.5rem] 2xl:h-56 w-full scale-105 z-10"
           : isAdjacent
-          ? "h-36 2xl:h-52 w-full scale-103 z-5"
-          : "h-32 2xl:h-48 w-full"
+          ? "h-[8.5rem] 2xl:h-52 w-full scale-103 z-5"
+          : "h-[7.5rem] 2xl:h-48 w-full"
       )}
       onClick={onClick}
     >
