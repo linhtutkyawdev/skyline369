@@ -187,7 +187,7 @@ const Index = () => {
               <CarouselItem
                 key={item.title + index}
                 // Kept landscape adjustment
-                className="px-3 md:px-4 basis-full sm:basis-1/3 md:basis-1/4 lg:basis-1/5"
+                className="px-3 md:px-4 basis-full sm:basis-1/3 lg:basis-1/4 xl:basis-1/5"
               >
                 <GameCategory
                   title={item.title}
