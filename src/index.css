@@ -127,3 +127,25 @@
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }
+
+@media (max-height: 349px) {
+  footer .nav-icon {
+    width: auto;
+  }
+  footer .nav-icon .gold-badge {
+    display: none;
+  }
+  footer .nav-icon span {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+    background-color: var(
+      --casino-deep-blue,
+      #0a182d
+    ); /* Use theme color, fallback to dark blue */
+    border-radius: 1rem;
+    margin-top: 4px; /* Add some space since the icon badge is gone */
+  }
+  .logo {
+    margin-top: 2rem;
+  }
+}

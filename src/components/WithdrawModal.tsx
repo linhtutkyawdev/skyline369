@@ -323,7 +323,7 @@ const WithdrawModal = () => {
           exit={{ opacity: 0 }}
         >
           <motion.div
-            className="bg-casino-deep-blue/80 w-full max-w-3xl max-h-[calc(100vh-2rem)] rounded-lg border border-casino-light-blue p-6 shadow-lg modal-container" // Reduced padding and max-height
+            className="bg-casino-deep-blue/80 w-full max-w-3xl max-h-[calc(100vh-2rem)] overflow-y-auto rounded-lg border border-casino-light-blue p-6 shadow-lg modal-container" // Reduced padding and max-height
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
@@ -351,7 +351,7 @@ const WithdrawModal = () => {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="grid grid-cols-1 gap-4 pb-4 overflow-y-auto max-h-[calc(100vh-8rem)]" // Adjusted scroll height and padding
+              className="grid grid-cols-1 gap-4 pb-4" // Adjusted scroll height and padding
             >
               {user.userInfo && user.userInfo.bank_card ? (
                 // --- Withdraw Form (Bank Info Exists) ---

@@ -153,7 +153,7 @@ const Messages = () => {
 
   return (
     // Keep existing outer div and back button structure
-    <div className="h-screen pb-8 pt-12 lg:pt-16 px-6 bg-casino-primary">
+    <div className="h-screen pt-12 lg:pt-16 px-6">
       {" "}
       {/* Keep outer padding for content below */}
       {/* Header Section - Matches TransactionHistory */}
@@ -213,7 +213,7 @@ const Messages = () => {
           initial={{ opacity: 0 }} // Animate opacity for the list container
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
-          className="space-y-3 overflow-y-auto scrollbar-thin scrollbar-thumb-casino-gold scrollbar-track-casino-secondary max-h-[calc(100vh-12rem)] lg:max-h-[calc(100vh-14rem)] pr-2 scrollbar-none" // Adjusted height, added scrollbar styling & padding-right
+          className="space-y-3 overflow-y-auto scrollbar-thin scrollbar-thumb-casino-gold scrollbar-track-casino-secondary max-h-[calc(100vh-10rem)] lg:max-h-[calc(100vh-14rem)] pr-2 scrollbar-none" // Adjusted height, added scrollbar styling & padding-right
         >
           {filteredMessages.length > 0 ? (
             filteredMessages.map((message) => (

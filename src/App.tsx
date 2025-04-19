@@ -312,9 +312,6 @@ const App = () => {
   }, [activeModal]);
   return (
     <div className="bg-main w-screen h-screen relative" ref={ref}>
-      {" "}
-      {/* Added relative positioning */}
-      {/* Maintenance Mode Overlay */}
       {platformConfig?.is_maintain === "yes" && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-sm">
           <div className="text-center p-8 bg-casino-deep-blue/90 rounded-lg shadow-xl border border-casino-black">
@@ -333,7 +330,7 @@ const App = () => {
         orientation === "portrait-secondary") && (
         <div className="fixed top-0 z-[110] w-screen h-screen cursor-pointer bg-zinc-950/60 glass-effect">
           <div className="flex w-full h-full items-center justify-center">
-            <div className="flex flex-col w-full h-full items-center justify-center">
+            <div className="flex mx-4 text-center flex-col w-full h-full items-center justify-center">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"

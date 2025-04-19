@@ -8,7 +8,7 @@ const Logo = () => {
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="flex flex-col items-center justify-center mt-4 md:mt-6 lg:mt-20 2xl:my-20"
+      className="flex flex-col items-center justify-center mt-6 md:mt-12 lg:mt-20 2xl:my-20"
     >
       <motion.h1
         className="text-3xl xl:text-4xl 2xl:text-5xl font-bold text-white logo-text"

@@ -139,7 +139,7 @@ const SettingsModal = () => {
         >
           <motion.div
             // ref={modalContainerRef} // Remove ref attachment
-            className="bg-casino-deep-blue/80 w-full max-w-md rounded-lg border border-casino-light-blue p-6 modal-container" // Reverted to max-w-md, can adjust if needed
+            className="bg-casino-deep-blue/80 w-full max-w-md max-h-[90%] overflow-y-auto rounded-lg border border-casino-light-blue p-6 modal-container" // Reverted to max-w-md, can adjust if needed
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
@@ -171,7 +171,7 @@ const SettingsModal = () => {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="space-y-4 max-h-[calc(100vh-8rem)] overflow-y-auto pr-2" // Added max-height, scroll, and right padding for scrollbar
+              className="space-y-4 pr-2" // Added max-height, scroll, and right padding for scrollbar
             >
               {!showPasswordReset ? (
                 // Main Settings View
