@@ -101,19 +101,19 @@ const ProfileModal = () => {
               transition={{ delay: 0.3 }}
               className="flex flex-col items-center pb-8"
             >
-              <div className="w-24 h-24 -mt-8 rounded-full overflow-hidden border-2 border-casino-gold flex items-center justify-center">
+              <div className="w-20 h-20 lg:w-24 lg:h-24 -mt-8 rounded-full overflow-hidden border-2 border-casino-gold flex items-center justify-center">
                 <img
                   src="/login_modal_bg.png"
                   alt={t("profileAlt")}
                   className="w-full h-full object-cover"
                 />
               </div>
-              <h2 className="mt-4 text-xl font-semibold text-white">
+              <h2 className="mt-2 lg:mt-4 text-xl font-semibold text-white">
                 {user.name}
               </h2>
               <p className="text-casino-silver text-sm">{user.email}</p>
-              <div className="space-y-4 w-full">
-                <div className="bg-casino-deep-blue rounded-xl p-4 w-full flex justify-between items-center mt-4">
+              <div className="space-y-3 lg:space-y-4 w-full">
+                <div className="bg-casino-deep-blue rounded-xl p-3 lg:p-4 w-full flex justify-between items-center mt-4">
                   <span className="text-casino-silver">{t("balance")}</span>
                   <span className="text-casino-gold font-bold text-xl">
                     {user && user.userInfo
