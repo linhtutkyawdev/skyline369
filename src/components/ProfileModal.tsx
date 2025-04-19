@@ -116,14 +116,10 @@ const ProfileModal = () => {
                 <div className="bg-casino-deep-blue rounded-xl p-4 w-full flex justify-between items-center mt-4">
                   <span className="text-casino-silver">{t("balance")}</span>
                   <span className="text-casino-gold font-bold text-xl">
-                    {(user &&
-                      user.userInfo &&
-                      "$ " +
-                        parseFloat(user.userInfo.game_balance + "").toFixed(
-                          2
-                        )) ||
-                      user.userInfo.game_balance ||
-                      "0.00"}
+                    {user && user.userInfo
+                      ? "$ " +
+                        parseFloat(user.userInfo.game_balance + "").toFixed(2)
+                      : "loading..."}
                   </span>
                 </div>
                 {/* History Links */}
