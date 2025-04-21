@@ -31,8 +31,8 @@ const ViberIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const ContactUsModal = () => {
-  const { activeModal, setActiveModal, platformConfig } = useStateStore(); // Get platformConfig
-  const { t } = useTranslation(); // Get translation function
+  const { activeModal, setActiveModal, platformConfig } = useStateStore();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
@@ -46,7 +46,7 @@ const ContactUsModal = () => {
     return () => {
       window.removeEventListener("keydown", handleEscKey);
     };
-  }, [activeModal, setActiveModal]); // Added setActiveModal dependency
+  }, [activeModal, setActiveModal]);
 
   // --- Helper function to get icon and href prefix based on type ---
   const getContactDetails = (type: string, link: string) => {
@@ -57,37 +57,27 @@ const ContactUsModal = () => {
 
     // --- Map known types to specific icons and details ---
     if (lowerType.includes("email") || lowerType.includes("mail")) {
-      IconComponent = Mail; // Use the imported Mail icon
+      IconComponent = Mail;
       hrefPrefix = "mailto:";
       displayType = t("email_support", "Email Support");
     } else if (lowerType.includes("phone") || lowerType.includes("tel")) {
-      IconComponent = Phone; // Use the imported Phone icon
+      IconComponent = Phone;
       hrefPrefix = "tel:";
       displayType = t("phone_support", "Phone Support");
     } else if (lowerType.includes("viber")) {
-      IconComponent = ViberIcon; // Use the defined ViberIcon component
+      IconComponent = ViberIcon;
       // Assuming tel: prefix is appropriate for Viber link (phone number)
       // Adjust if a different URI scheme like viber:// is needed
       hrefPrefix = `tel:${link}`;
       displayType = t("viber", "Viber");
-    }
-    // Add more 'else if' blocks here for other specific types (Telegram, WhatsApp, etc.)
-    // if you have corresponding icons imported or defined.
-    // Example:
-    // else if (lowerType.includes("telegram")) {
-    //   IconComponent = TelegramIcon; // Assuming TelegramIcon is imported/defined
-    //   hrefPrefix = `https://t.me/${link}`; // Example Telegram link format
-    //   displayType = t("telegram", "Telegram");
-    // }
-    else {
+    } else {
       // --- Fallback for unknown types ---
-      IconComponent = LinkIcon; // Use the generic LinkIcon
+      IconComponent = LinkIcon;
       // Make it a clickable link, adding // if protocol seems missing
       hrefPrefix = link.startsWith("http") || link.startsWith("//") ? "" : "//";
-      displayType = type; // Show the original type name
+      displayType = type;
     }
 
-    // Return the determined details
     return { IconComponent, href: `${hrefPrefix}${link}`, displayType };
   };
 
@@ -112,7 +102,6 @@ const ContactUsModal = () => {
         link: platformConfig.service_link_2,
       });
     }
-    // Add more checks if there are service_link_3, _4, etc.
   }
 
   return (
@@ -157,8 +146,6 @@ const ContactUsModal = () => {
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {" "}
-                {/* Adjusted grid */}
-                {/* Dynamically render services from platformConfig */}
                 {services.length > 0 ? (
                   services.map((service, index) => {
                     const { IconComponent, href, displayType } =
@@ -167,27 +154,22 @@ const ContactUsModal = () => {
                       <a
                         key={index}
                         href={href}
-                        target="_blank" // Open external links in new tab
-                        rel="noopener noreferrer" // Security best practice
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="w-full py-4 px-5 rounded-lg bg-casino-light-blue flex items-center gap-4 transition-all hover:bg-opacity-80"
                       >
                         <div className="w-10 h-10 rounded-full gold-badge flex items-center justify-center flex-shrink-0">
                           {" "}
-                          {/* Added flex-shrink-0 */}
-                          {/* Render the specific icon component */}
                           <IconComponent className="w-5 h-5 text-casino-deep-blue" />
                         </div>
                         <div className="overflow-hidden">
                           {" "}
-                          {/* Added overflow hidden */}
                           <h3 className="text-white font-medium truncate">
                             {" "}
-                            {/* Added truncate */}
                             {displayType}
                           </h3>
                           <p className="text-casino-silver text-sm truncate">
                             {" "}
-                            {/* Added truncate */}
                             {service.link}
                           </p>
                         </div>
@@ -200,13 +182,11 @@ const ContactUsModal = () => {
                     {t("noContactMethods", "Contact methods not available.")}
                   </p>
                 )}
-                {/* Keep Live Chat Button */}
                 <a
                   href="#" // Replace with actual live chat link or function call
                   onClick={(e) => {
                     e.preventDefault();
                     // Add your live chat opening logic here
-                    console.log("Open Live Chat");
                     // Example: window.open('your-live-chat-url', '_blank');
                     // Or trigger a function: openLiveChatWidget();
                   }}
@@ -226,7 +206,6 @@ const ContactUsModal = () => {
                 </a>
               </div>
 
-              {/* Office Hours Section - Kept as is */}
               <div className="mt-8 p-4 rounded-lg bg-casino-deep-blue">
                 <h3 className="text-casino-gold font-medium mb-2">
                   {t("office_hours", "Office Hours")}

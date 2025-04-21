@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useStateStore } from "@/store/state";
 import {
-  GameHistoryRecord,
   GameHistoryInfo,
   ProcessedGameHistoryRecord,
 } from "@/types/game_history"; // Import new types
@@ -23,9 +22,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
-import { useTranslation } from "react-i18next"; // Import useTranslation
-// Potentially add ToggleGroup if using that component
-// import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { useTranslation } from "react-i18next";
 
 const GameHistory = () => {
   // Global state and navigation
@@ -286,9 +283,6 @@ const GameHistory = () => {
       // This check prevents potential rapid firing if the API is slow to update hasMore state.
       // However, the primary check is !isLoadingMore && hasMore.
 
-      console.log(
-        "Auto-fetching next page due to short/empty filter results..."
-      );
       // Debounce or add a small delay? Maybe not necessary if isLoadingMore check is robust.
       loadGameHistory(currentPage + 1, date?.from, date?.to, true);
     }

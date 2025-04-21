@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useTranslation } from "react-i18next"; // Import useTranslation
+import { useTranslation } from "react-i18next";
 import { useToast } from "@/hooks/use-toast";
 import { useStateStore } from "@/store/state";
 
 const ShareModal = () => {
   const { activeModal, setActiveModal } = useStateStore();
   const { toast } = useToast();
-  const { t } = useTranslation(); // Get translation function
+  const { t } = useTranslation();
   const link = "https://skyline369.me";
   const [copied, setCopied] = useState(false);
 

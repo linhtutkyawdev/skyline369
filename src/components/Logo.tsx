@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
-import { useTranslation } from "react-i18next"; // Import useTranslation
+import { useTranslation } from "react-i18next";
 
 const Logo = () => {
-  const { t } = useTranslation(); // Get translation function
+  const { t } = useTranslation();
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}

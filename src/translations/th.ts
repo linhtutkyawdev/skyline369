@@ -257,11 +257,10 @@ export default {
     passwordResetSuccessDesc: "อัปเดตรหัสผ่านของคุณเรียบร้อยแล้ว",
     passwordResetErrorDesc:
       "ไม่สามารถอัปเดตรหัสผ่านได้ กรุณาตรวจสอบรหัสผ่านปัจจุบันของคุณและลองอีกครั้ง",
-    // tokenPlaceholder: "ใส่โทเค็นรีเซ็ต", // Removed unused translation
     provideTransactionInformation: "ข้อมูลธุรกรรม",
     navigationMenu: "Navigation Menu",
-    lastUpdated: "อัปเดตล่าสุด", // Changed key to camelCase
-    userDataNotLoaded: "ไม่ได้โหลดข้อมูลผู้ใช้", // Changed key to camelCase
-    loadingIndicator: "กำลังโหลด...", // Added for inline loading
+    lastUpdated: "อัปเดตล่าสุด",
+    userDataNotLoaded: "ไม่ได้โหลดข้อมูลผู้ใช้",
+    loadingIndicator: "กำลังโหลด...",
   },
 };

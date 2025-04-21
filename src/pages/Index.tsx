@@ -12,7 +12,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { useState, useEffect } from "react";
-import { useTranslation } from "react-i18next"; // Import useTranslation
+import { useTranslation } from "react-i18next";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -49,7 +49,6 @@ const Index = () => {
     return index === prevIndex || index === nextIndex;
   };
 
-  // Reverted to original size for sm+
   const IMAGE_CLASS_NAME = "w-20 h-20 2xl:w-[6.5rem] 2xl:h-[6.5rem]";
 
   // 0: "roulette"
@@ -170,7 +169,6 @@ const Index = () => {
   return (
     <div className="h-screen w-screen flex flex-col">
       <NavBar />
-      {/* Reverted margin */}
       <div className="flex flex-col items-center justify-center h-full -mt-12 lg:-mt-8">
         <Logo />
         <Carousel

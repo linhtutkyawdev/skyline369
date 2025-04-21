@@ -272,11 +272,10 @@ export default {
     passwordResetSuccessDesc: "သင့်စကားဝှက်ကို အောင်မြင်စွာ မွမ်းမံပြီးပါပြီ။",
     passwordResetErrorDesc:
       "စကားဝှက် မွမ်းမံရန် မအောင်မြင်ပါ။ သင်၏ လက်ရှိ စကားဝှက်ကို စစ်ဆေးပြီး ထပ်မံကြိုးစားပါ။",
-    // tokenPlaceholder: "ပြန်လည်သတ်မှတ် တိုကင် ထည့်ပါ", // Removed unused translation
     provideTransactionInformation: "ငွေလွှဲအချက်အလက်",
     navigationMenu: "Navigation Menu",
-    lastUpdated: "နောက်ဆုံး အပ်ဒိတ်လုပ်သည်", // Changed key to camelCase
-    userDataNotLoaded: "အသုံးပြုသူဒေတာ မတင်ရသေးပါ", // Changed key to camelCase
-    loadingIndicator: "တင်နေသည်...", // Added for inline loading
+    lastUpdated: "နောက်ဆုံး အပ်ဒိတ်လုပ်သည်",
+    userDataNotLoaded: "အသုံးပြုသူဒေတာ မတင်ရသေးပါ",
+    loadingIndicator: "တင်နေသည်...",
   },
 };

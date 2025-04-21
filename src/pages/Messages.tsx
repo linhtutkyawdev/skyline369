@@ -1,7 +1,7 @@
-import { ArrowLeft, Mail } from "lucide-react"; // Added Mail icon
+import { ArrowLeft, Mail } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useState, useMemo } from "react"; // Added useMemo
+import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Badge } from "@/components/ui/badge"; // Import Badge for unread status
 

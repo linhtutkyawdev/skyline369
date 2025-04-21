@@ -1,25 +1,24 @@
 import { Share, MessageSquare, Settings, RefreshCcw, Menu } from "lucide-react";
-import { useIsMobile } from "@/hooks/use-mobile"; // Import the hook
+import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/tooltip"; // Import Tooltip components
+} from "@/components/ui/tooltip";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStateStore } from "@/store/state";
-import { useUserStore } from "@/store/user"; // Import user store and fetch function
-// Removed Dropdown imports
+import { useUserStore } from "@/store/user";
 import { Button } from "@/components/ui/button";
 
 const NavBar = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { setActiveModal, loading } = useStateStore();
-  const isMobile = useIsMobile(); // Use the hook
-  const { user, lastUpdatedAt, loadUserInfo } = useUserStore(); // Get loadUserInfo from store
+  const isMobile = useIsMobile();
+  const { user, lastUpdatedAt, loadUserInfo } = useUserStore();
 
   const { gameType } = useParams();
 
@@ -144,7 +143,7 @@ const NavBar = () => {
             variant="ghost"
             size="icon"
             className="text-casino-silver hover:text-white hover:bg-casino-light-blue/20"
-            onClick={() => setActiveModal("nav_menu")} // Trigger the new modal
+            onClick={() => setActiveModal("nav_menu")}
           >
             <Menu className="h-6 w-6" />
           </Button>

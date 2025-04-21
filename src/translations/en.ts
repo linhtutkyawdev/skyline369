@@ -265,11 +265,10 @@ export default {
     passwordResetSuccessDesc: "Your password has been updated successfully.",
     passwordResetErrorDesc:
       "Failed to update password. Please check your current password and try again.",
-    // tokenPlaceholder: "Enter Reset Token", // Removed unused translation
     provideTransactionInformation: "Transaction Information",
     navigationMenu: "Navigation Menu",
-    lastUpdated: "Last Updated", // Changed key to camelCase
-    userDataNotLoaded: "User data not loaded", // Changed key to camelCase
-    loadingIndicator: "Loading...", // Added for inline loading
+    lastUpdated: "Last Updated",
+    userDataNotLoaded: "User data not loaded",
+    loadingIndicator: "Loading...",
   },
 };

@@ -5,7 +5,7 @@ import { ApiError } from "@/types/api_error";
 import { ApiResponse } from "@/types/api_response";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next"; // Import useTranslation
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 const Game = () => {

@@ -174,7 +174,6 @@ const RegisterModal = () => {
       {activeModal === "register" && (
         <motion.div
           className="fixed inset-0 bg-main z-50 flex items-center justify-center px-4"
-          // className="fixed inset-0 bg-zinc-950/30 backdrop-blur-md z-50 flex items-center justify-center px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -358,14 +357,6 @@ const RegisterModal = () => {
                     required
                     value={watchOtp("otp")}
                   />
-                  {/* <Input
-
-                    type="text"
-                    placeholder="Full Name"
-                    value={fullname}
-                    onChange={(e) => setFullname(e.target.value)}
-                    className="pl-10"
-                  /> */}
                 </div>
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 h-5 w-5 text-casino-silver" />

@@ -97,7 +97,6 @@ const MessageDetail = () => {
     // Mark message as read (simulation)
     if (foundMessage && !foundMessage.read) {
       // In a real app, you'd send an API request to mark as read
-      console.log(`Simulating marking message ${messageId} as read`);
       // Update local dummy data state (won't persist)
       const updatedMessages = dummyMessages.map((msg) =>
         msg.id.toString() === messageId ? { ...msg, read: true } : msg

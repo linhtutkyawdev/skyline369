@@ -56,16 +56,6 @@ const LoginModal = () => {
         password: data.password,
       });
 
-      // if (
-      //   responses.data.status.errorCode != 0 &&
-      //   responses.data.status.errorCode != 200
-      // )
-      //   throw new ApiError(
-      //     "An error has occured!",
-      //     responses.data.status.errorCode,
-      //     responses.data.status.mess
-      //   );
-
       if (res.data.status.mess)
         toast({
           title: res.data.status.mess,
@@ -89,7 +79,6 @@ const LoginModal = () => {
     }
   };
   const onForgotPasswordSubmit: SubmitHandler<EmailInput> = (data) => {
-    // Handle login logic here
     toast({
       title: t("request_successful"),
       description: t("weve_sent", { email: data.email }),

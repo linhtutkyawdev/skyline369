@@ -198,7 +198,6 @@ const DepositModal = () => {
       }
       return false; // Indicate failure
     }
-    // Dependencies: setLoading, user, selectedDepositChannel, senderName, amount, transactionId, receiptImage, t, setUser, setOrder, toast
   }, [
     setLoading,
     user,
@@ -327,7 +326,6 @@ const DepositModal = () => {
     return () => {
       window.removeEventListener("keydown", handleEscKey);
     };
-    // Dependencies: activeModal, handleDeposit, setActiveModal, resetState, loading, step
   }, [activeModal, handleDeposit, setActiveModal, resetState, loading, step]);
 
   // Effect to clean up object URL
@@ -457,11 +455,6 @@ const DepositModal = () => {
                                 )}
                               </div>
                             )}
-                            {/* <span className="text-white">{c.card_number}</span> */}
-                            {/* <span className="text-white">{c.card_type}</span> */}
-                            {/* <span className="text-white">{c.card_username}</span> */}
-                            {/* <span className="text-white">{c.single_min}</span> */}
-                            {/* <span className="text-white">{c.single_max}</span> */}
                           </button>
                           {selectedDepositChannel &&
                             selectedDepositChannel.card_bank_name ===

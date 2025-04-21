@@ -1,15 +1,8 @@
 import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
-import { useTranslation } from "react-i18next"; // Import useTranslation
+import { useTranslation } from "react-i18next";
 const NotFound = () => {
   const location = useLocation();
-  const { t } = useTranslation(); // Get translation function
-  useEffect(() => {
-    console.error(
-      "404 Error: User attempted to access non-existent route:",
-      location.pathname
-    );
-  }, [location.pathname]);
+  const { t } = useTranslation();
 
   return (
     <div className="h-screen overflow-y-scroll flex items-center justify-center bg-gray-100">

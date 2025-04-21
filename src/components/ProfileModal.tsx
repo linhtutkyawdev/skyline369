@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, LogOut, RefreshCcw } from "lucide-react"; // Added RefreshCcw
+import { X, LogOut, RefreshCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useTranslation } from "react-i18next"; // Import useTranslation
+import { useTranslation } from "react-i18next";
 import { useUserStore } from "@/store/user";
 import { useStateStore } from "@/store/state";
 import { useToast } from "@/hooks/use-toast";
@@ -12,9 +12,9 @@ import { ApiError } from "@/types/api_error";
 
 const ProfileModal = () => {
   const { activeModal, setActiveModal, loading } = useStateStore();
-  const { user, setUser, lastUpdatedAt, loadUserInfo } = useUserStore(); // Get loadUserInfo from store
+  const { user, setUser, lastUpdatedAt, loadUserInfo } = useUserStore();
   const { toast } = useToast();
-  const { t } = useTranslation(); // Get translation function
+  const { t } = useTranslation();
   useEffect(() => {
     const handleEscKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setActiveModal(null);
@@ -127,7 +127,7 @@ const ProfileModal = () => {
                   variant="ghost"
                   size="icon"
                   className="h-5 w-5 text-casino-silver hover:text-white hover:bg-transparent hover:-rotate-45 hover:scale-110 transition-all"
-                  onClick={loadUserInfo} // Use the store function
+                  onClick={loadUserInfo}
                 >
                   <RefreshCcw className="h-3 w-3" />
                 </Button>
@@ -144,33 +144,6 @@ const ProfileModal = () => {
                       : t("loadingIndicator")}
                   </span>
                 </div>
-                {/* History Links */}
-                {/* <div className="grid grid-cols-2 gap-3 w-full">
-                  <button
-                    onClick={() => {
-                      setActiveModal(null); // Close modal
-                      navigate("/history/transaction");
-                    }}
-                    className="p-3 rounded-lg bg-casino-light-blue w-full flex items-center justify-center gap-2 transition-all hover:bg-opacity-80"
-                  >
-                    <History className="w-5 h-5 text-casino-gold" />
-                    <span className="text-white text-sm">{t("transactions")}</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setActiveModal(null); // Close modal
-                      navigate("/history/game");
-                    }}
-                    className="p-3 rounded-lg bg-casino-light-blue w-full flex items-center justify-center gap-2 transition-all hover:bg-opacity-80"
-                  >
-                    <Gamepad2 className="w-5 h-5 text-casino-gold" />
-                    <span className="text-white text-sm">{t("game_history")}</span>
-                  </button>
-                </div> */}
-                {/* <button className="p-3 rounded-lg bg-casino-light-blue w-full flex items-center justify-center gap-3 transition-all hover:bg-opacity-80">
-                  <Edit className="w-5 h-5 text-casino-gold" />
-                  <span className="text-white">{t("editProfile")}</span>
-                </button> */}
                 <button
                   onClick={async () => {
                     await logout();

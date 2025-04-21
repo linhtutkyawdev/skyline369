@@ -18,7 +18,7 @@ import { Label } from "@/components/ui/label";
 import axiosInstance from "@/lib/axiosInstance";
 import { ApiResponse } from "@/types/api_response";
 import { UserInfo } from "@/types/user";
-import { ApiError } from "@/types/api_error"; // Assuming ApiError type exists
+import { ApiError } from "@/types/api_error";
 import { useNavigate } from "react-router-dom";
 
 type WithdrawStep = "amount" | "confirm" | "success" | "failed";
@@ -99,7 +99,6 @@ const WithdrawModal = () => {
         });
         setOldBankInfo(null); // Reset old info on success
         // Optionally close modal or switch view if needed
-        // setActiveModal(null);
       } else {
         toast({
           variant: "destructive",
@@ -109,7 +108,6 @@ const WithdrawModal = () => {
         });
       }
     } catch (error: any) {
-      console.error("Error updating bank info:", error);
       toast({
         variant: "destructive",
         title: t("updateErrorTitle"),
@@ -175,7 +173,6 @@ const WithdrawModal = () => {
 
     try {
       // Step 1: Transfer to Main Wallet
-      console.log("Attempting transfer to main wallet...");
       const transferToMainResponse = await axiosInstance.post<ApiResponse<any>>(
         "/transfer_to_main",
         { token: user.token, amount: user.userInfo?.game_balance }
@@ -190,17 +187,14 @@ const WithdrawModal = () => {
         );
       }
       transferToMainSuccessful = true;
-      console.log("Transfer to main wallet successful.");
 
       // Step 2: Request Withdrawal (Drawing)
-      console.log("Attempting withdrawal request...");
       const drawingResponse = await axiosInstance.post<ApiResponse<any>>(
         "/player_drawing",
         { token: user.token, amount: transferAmountStr }
       );
 
       if (drawingResponse.data.status.errorCode === 0) {
-        console.log("Withdrawal request successful.");
         // TODO: Update user balance state after successful withdrawal
         // Example: Fetch new balance or subtract amount if API doesn't return it
         setUser({ ...user, balance: (user.balance ?? 0) - amount }); // Example local update
@@ -217,7 +211,6 @@ const WithdrawModal = () => {
         );
       }
     } catch (error: any) {
-      console.error("Withdrawal process error:", error);
       const withdrawalErrorMessage =
         error.message ||
         error.response?.data?.status?.msg ||
@@ -225,18 +218,13 @@ const WithdrawModal = () => {
 
       // Step 3: Rollback Transfer if Step 1 succeeded but Step 2 (or Step 1 itself) failed
       if (transferToMainSuccessful) {
-        console.warn(
-          "Withdrawal failed after transfer. Attempting rollback..."
-        );
         try {
           await axiosInstance.post<ApiResponse<any>>("/transfer_to_game", {
             token: user.token,
             amount: transferAmountStr,
           });
-          console.log("Rollback transfer successful.");
           // TODO: Consider updating local user balance state if necessary after rollback
         } catch (rollbackError: any) {
-          console.error("CRITICAL: Rollback transfer failed!", rollbackError);
           // Notify user or admin about the critical state
           toast({
             variant: "destructive",
@@ -296,10 +284,6 @@ const WithdrawModal = () => {
     const handleEscKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setActiveModal(null);
       // Enter key handling might need adjustment based on the current step
-      // if (e.key === "Enter" && activeModal === "withdraw" && withdrawStep === 'amount')
-      //   handleWithdrawSubmit();
-      // if (e.key === "Enter" && activeModal === "withdraw" && withdrawStep === 'confirm')
-      //   makeWithdrawalRequest();
     };
 
     if (activeModal === "withdraw") {
@@ -309,7 +293,7 @@ const WithdrawModal = () => {
     return () => {
       window.removeEventListener("keydown", handleEscKey);
     };
-  }, [activeModal, amount, withdrawStep]); // Add withdrawStep dependency
+  }, [activeModal, amount, withdrawStep]);
 
   const navigate = useNavigate();
 

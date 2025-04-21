@@ -1,7 +1,7 @@
 import { ArrowLeft, Wallet, Sparkles, History, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useTranslation } from "react-i18next"; // Import useTranslation
+import { useTranslation } from "react-i18next";
 const Profile = () => {
   const navigate = useNavigate();
   const { t } = useTranslation(); // Get translation function

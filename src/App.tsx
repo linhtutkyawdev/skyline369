@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import React, { useEffect, useRef, useState } from "react";
-import { useTranslation } from "react-i18next"; // Import useTranslation
+import { useTranslation } from "react-i18next";
 import { useFullscreen, useToggle } from "react-use";
 import { isMobile } from "react-device-detect";
 import { Fullscreen } from "lucide-react";
@@ -15,23 +15,21 @@ import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import Share from "./pages/Share";
 import Messages from "./pages/Messages";
-import MessageDetail from "./pages/MessageDetail"; // Import the new component
+import MessageDetail from "./pages/MessageDetail";
 import Category from "./pages/Category";
 import ModalContainer from "./components/ModalContainer";
 import Game from "./pages/Game";
 import { useUserStore } from "./store/user";
 import { DepositChannel } from "./types/deposit_channel";
 import { ApiResponse } from "./types/api_response";
-import { useStateStore, PlatformConfig } from "./store/state"; // Import PlatformConfig type
+import { useStateStore, PlatformConfig } from "./store/state";
 import { useToast } from "./hooks/use-toast";
 import { ApiError } from "./types/api_error";
 import axiosInstance from "./lib/axiosInstance";
 import GameHistory from "./pages/GameHistory";
 import TransationHistory from "./pages/TransactionHistory";
-import { User, UserInfo } from "./types/user";
-import { useSettingsStore } from "./store/settings"; // Import settings store
-import { set } from "date-fns";
-import { u } from "node_modules/framer-motion/dist/types.d-6pKw1mTI";
+import { User } from "./types/user";
+import { useSettingsStore } from "./store/settings";
 
 // List of background music files in the public folder
 const bgMusicFiles = [
@@ -57,7 +55,7 @@ const App = () => {
     onClose: () => toggle(false),
   });
 
-  const { user, setUser, loadUserInfo: storeLoadUserInfo } = useUserStore(); // Import loadUserInfo from store
+  const { user, setUser, loadUserInfo: storeLoadUserInfo } = useUserStore();
   const {
     activeModal,
     setActiveModal,
@@ -65,8 +63,8 @@ const App = () => {
     setLoading,
     setError,
     error,
-    platformConfig, // Get platformConfig state
-    setPlatformConfig, // Get setter for platformConfig
+    platformConfig,
+    setPlatformConfig,
   } = useStateStore();
 
   const { toast } = useToast();
@@ -76,7 +74,6 @@ const App = () => {
   useEffect(() => {
     const handleInteraction = () => {
       if (!hasInteracted) {
-        console.log("User interacted, enabling audio playback.");
         setHasInteracted(true);
         // Remove listeners after first interaction
         document.removeEventListener("click", handleInteraction);
@@ -132,12 +129,9 @@ const App = () => {
     }
   };
 
-  // Removed local transferBalance and loadUserInfo functions as they are now in useUserStore
-
   const loadPlatformConfig = async () => {
     // Check for user and token since it's required for the POST request
     if (!user || !user.token) {
-      console.log("User or token missing, skipping platform config load.");
       setPlatformConfig(null); // Ensure config is cleared if no user
       return; // Exit if no user/token
     }
@@ -154,7 +148,7 @@ const App = () => {
         response.data.status.errorCode !== 200
       ) {
         throw new ApiError(
-          t("apiErrorTitle"), // Use translation
+          t("apiErrorTitle"),
           response.data.status.errorCode,
           response.data.status.mess
         );
@@ -167,11 +161,7 @@ const App = () => {
       const apiError =
         err instanceof ApiError
           ? err
-          : new ApiError(
-              t("networkErrorTitle"), // Use translation
-              500,
-              t("fetchDataFailedDesc") // Use translation
-            );
+          : new ApiError(t("networkErrorTitle"), 500, t("fetchDataFailedDesc"));
       setError(apiError); // Set global error state
       setPlatformConfig(null); // Clear config on error
     } finally {
@@ -293,8 +283,7 @@ const App = () => {
               loadUserInfo={storeLoadUserInfo} // Pass store's loadUserInfo
             />
           </BrowserRouter>
-        </TooltipProvider>{" "}
-        {/* Remove duplicate closing tag */}
+        </TooltipProvider>
         {/* Add the audio element, hidden from view, just before the main div closes */}
         <audio ref={audioRef} loop={false}></audio>
       </QueryClientProvider>
@@ -310,7 +299,7 @@ interface AppContentProps {
   currentTrackIndex: number | null;
   setCurrentTrackIndex: React.Dispatch<React.SetStateAction<number | null>>;
   bgMusicFiles: string[];
-  user: User | null; // Assuming UserInfo is the correct type for user
+  user: User | null;
   loadUserInfo: () => Promise<void>;
 }
 
@@ -389,7 +378,7 @@ const AppContent: React.FC<AppContentProps> = ({
     audioRef,
     bgMusicFiles,
     setCurrentTrackIndex,
-  ]); // Added missing dependencies
+  ]);
 
   useEffect(() => {
     loadUserInfo(); // Call prop loadUserInfo (which is store's function)
@@ -407,8 +396,7 @@ const AppContent: React.FC<AppContentProps> = ({
           <Route path="/history/transaction" element={<TransationHistory />} />
           <Route path="/share" element={<Share />} />
           <Route path="/messages" element={<Messages />} />
-          <Route path="/messages/:messageId" element={<MessageDetail />} />{" "}
-          {/* Add route for message detail */}
+          <Route path="/messages/:messageId" element={<MessageDetail />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

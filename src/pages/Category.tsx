@@ -1,6 +1,6 @@
 import { Game } from "@/types/game";
 import { motion } from "framer-motion";
-import { ArrowLeft, Loader2, LoaderPinwheel, User } from "lucide-react";
+import { ArrowLeft, Loader2, LoaderPinwheel } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { isMobile } from "react-device-detect";
@@ -77,9 +77,6 @@ export default function Category() {
         setError(error);
       }
     }
-    // finally {
-    //   setLoading(false);
-    // }
   };
   const loadProductCodesAndPages = async () => {
     setLoading(true);
@@ -156,7 +153,6 @@ export default function Category() {
             .replace(" ", "")
             .toLowerCase()
             .includes(searchText.replace(" ", "").toLowerCase())
-        // && game.is_mobile === (isMobile ? "1" : "0")
       );
       if (
         isIntersecting &&

@@ -6,7 +6,7 @@ import SettingsModal from "./SettingsModal";
 import DepositModal from "./DepositModal";
 import ProfileModal from "./ProfileModal";
 import WithdrawModal from "./WithdrawModal";
-import NavMenuModal from "./NavMenuModal"; // Import the new modal
+import NavMenuModal from "./NavMenuModal";
 
 const ModalContainer = () => {
   return (
@@ -19,7 +19,7 @@ const ModalContainer = () => {
       <SettingsModal />
       <DepositModal />
       <WithdrawModal />
-      <NavMenuModal /> {/* Render the new modal */}
+      <NavMenuModal />
     </>
   );
 };

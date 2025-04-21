@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { useTranslation } from "react-i18next"; // Import useTranslation
+import { useTranslation } from "react-i18next";
 interface GameCategoryProps {
   title: string;
   icon: React.ReactNode;
@@ -19,7 +19,7 @@ const GameCategory = ({
   isAdjacent = false,
   isLive = false,
 }: GameCategoryProps) => {
-  const { t } = useTranslation(); // Get translation function
+  const { t } = useTranslation();
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -27,7 +27,6 @@ const GameCategory = ({
       transition={{ duration: 0.5 }}
       whileHover={{ y: -5, transition: { duration: 0.2 } }}
       className={cn(
-        // Reverted padding, height, margin, text size to original sm+ values
         "game-card flex flex-col items-center justify-center p-4 sm:p-6 relative my-5",
         isSelected
           ? "h-[9.5rem] 2xl:h-56 w-full scale-105 z-10"

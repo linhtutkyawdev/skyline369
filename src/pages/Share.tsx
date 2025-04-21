@@ -1,8 +1,8 @@
-import { ArrowLeft, Copy, Facebook, Link, Link2, Share2 } from "lucide-react";
+import { ArrowLeft, Copy, Link2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { useTranslation } from "react-i18next"; // Import useTranslation
+import { useTranslation } from "react-i18next";
 import { useToast } from "@/components/ui/use-toast";
 
 const Share = () => {
