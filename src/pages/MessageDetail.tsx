@@ -64,7 +64,7 @@ const dummyMessages: Message[] = [
     timestamp: "2024-04-06 14:00",
     title: "Special Offer Just For You",
     content:
-      "As a valued player, enjoy 50 free spins on your next deposit of $50 or more. Use code: SPIN50",
+      "As a valued player, enjoy 50 free spins on your next deposit of ฿50 or more. Use code: SPIN50",
     read: false,
   },
   {

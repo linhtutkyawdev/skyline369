@@ -71,8 +71,8 @@ export default {
     invalidPaymentMethodTitle: "Invalid payment method",
     invalidPaymentMethodDesc: "Please select a payment method.",
     invalidAmountTitle: "Invalid amount",
-    minDepositAmountDesc: "Minimun deposit amount is ${{amount}}.",
-    maxDepositAmountDesc: "Maximun deposit amount is ${{amount}}.",
+    minDepositAmountDesc: "Minimun deposit amount is ฿{{amount}}.",
+    maxDepositAmountDesc: "Maximun deposit amount is ฿{{amount}}.",
     invalidTxIdTitle: "Invalid transaction ID",
     invalidTxIdDesc: "Please enter your transaction ID.",
     invalidSenderNameTitle: "Invalid sender name",
@@ -156,10 +156,10 @@ export default {
     updateErrorTitle: "Update Error",
     unexpectedErrorDesc: "An unexpected error occurred. Please try again.",
     withdrawAmountLimitDesc:
-      "Withdrawal amount must be between ${{min}} and ${{max}}. You entered ${{amount}}.",
+      "Withdrawal amount must be between ฿{{min}} and ฿{{max}}. You entered ฿{{amount}}.",
     insufficientBalanceTitle: "Insufficient Balance",
     insufficientBalanceDesc:
-      "Your current game balance of ${{balance}} is less than the requested withdrawal amount of ${{amount}}.",
+      "Your current game balance of ${{balance}} is less than the requested withdrawal amount of ฿{{amount}}.",
     errorTitle: "Error",
     missingRequiredInfoDesc: "Missing required information.",
     transferFailedTitle: "Transfer Failed",
@@ -174,7 +174,7 @@ export default {
     bankBranchLabel: "Bank Branch:",
     accountHolderLabel: "Account Holder:",
     cardNumberLabelColon: "Card Number:",
-    withdrawAmountRangeLabel: "Withdraw Amount (${{min}} - ${{max}})",
+    withdrawAmountRangeLabel: "Withdraw Amount (฿{{min}} - ฿{{max}})",
     updateBankInfo: "Update Bank Info",
     requestWithdrawal: "Request Withdrawal",
     confirmWithdrawalDetailsPrompt: "Please confirm your withdrawal details.",
@@ -182,7 +182,7 @@ export default {
     confirmWithdrawal: "Confirm Withdrawal",
     withdrawalSuccessTitle: "Withdrawal Request Successful",
     withdrawalSuccessDesc:
-      "Your request to withdraw ${{amount}} has been submitted. It may take some time to process.",
+      "Your request to withdraw ฿{{amount}} has been submitted. It may take some time to process.",
     checkWithdrawals: "Check your withdrawals",
     withdrawalRequestFailedTitle: "Withdrawal Request Failed",
     withdrawalFailedDesc:

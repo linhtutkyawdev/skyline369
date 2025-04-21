@@ -387,7 +387,7 @@ const TransationHistory = () => {
               >
                 <div>
                   <h3 className="text-casino-gold font-medium">
-                    {d.type === "Deposit" ? "+" : "-"} ${d.money}
+                    {d.type === "Deposit" ? "+" : "-"} ฿{d.money}
                   </h3>
                   <p className="text-casino-silver text-sm">{d.type}</p>
                   <p className="text-casino-silver text-xs mt-1">

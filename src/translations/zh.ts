@@ -67,8 +67,8 @@ export default {
     invalidPaymentMethodTitle: "无效的支付方式", // Placeholder: Invalid payment method
     invalidPaymentMethodDesc: "请选择一个支付方式。", // Placeholder: Please select a payment method.
     invalidAmountTitle: "无效金额", // Placeholder: Invalid amount
-    minDepositAmountDesc: "最低存款金额为 ${{amount}}。", // Placeholder: Minimun deposit amount is ${{amount}}.
-    maxDepositAmountDesc: "最高存款金额为 ${{amount}}。", // Placeholder: Maximun deposit amount is ${{amount}}.
+    minDepositAmountDesc: "最低存款金额为 ฿{{amount}}。", // Placeholder: Minimun deposit amount is ${{amount}}.
+    maxDepositAmountDesc: "最高存款金额为 ฿{{amount}}。", // Placeholder: Maximun deposit amount is ${{amount}}.
     invalidTxIdTitle: "无效的交易ID", // Placeholder: Invalid transaction ID
     invalidTxIdDesc: "请输入您的交易ID。", // Placeholder: Please enter your transaction ID.
     invalidSenderNameTitle: "无效的发件人姓名", // Placeholder: Invalid sender name
@@ -150,10 +150,10 @@ export default {
     updateErrorTitle: "更新错误", // Placeholder: Update Error
     unexpectedErrorDesc: "发生意外错误。请再试一次。", // Placeholder: An unexpected error occurred. Please try again.
     withdrawAmountLimitDesc:
-      "取款金额必须在 ${{min}} 和 ${{max}} 之间。您输入了 ${{amount}}。", // Placeholder: Withdrawal amount must be between ${{min}} and ${{max}}. You entered ${{amount}}.
+      "取款金额必须在 ฿{{min}} 和 ฿{{max}} 之间。您输入了 ฿{{amount}}。", // Placeholder: Withdrawal amount must be between ${{min}} and ${{max}}. You entered ${{amount}}.
     insufficientBalanceTitle: "余额不足", // Placeholder: Insufficient Balance
     insufficientBalanceDesc:
-      "您当前的游戏余额 ${{balance}} 少于请求的取款金额 ${{amount}}。", // Placeholder: Your current game balance of ${{balance}} is less than the requested withdrawal amount of ${{amount}}.
+      "您当前的游戏余额 ${{balance}} 少于请求的取款金额 ฿{{amount}}。", // Placeholder: Your current game balance of ${{balance}} is less than the requested withdrawal amount of ${{amount}}.
     errorTitle: "错误", // Placeholder: Error
     missingRequiredInfoDesc: "缺少必要信息。", // Placeholder: Missing required information.
     transferFailedTitle: "转账失败", // Placeholder: Transfer Failed
@@ -166,7 +166,7 @@ export default {
     bankBranchLabel: "银行分行：", // Placeholder: Bank Branch:
     accountHolderLabel: "账户持有人：", // Placeholder: Account Holder:
     cardNumberLabelColon: "卡号：", // Placeholder: Card Number:
-    withdrawAmountRangeLabel: "取款金额 (${{min}} - ${{max}})", // Placeholder: Withdraw Amount (${{min}} - ${{max}})
+    withdrawAmountRangeLabel: "取款金额 (฿{{min}} - ฿{{max}})", // Placeholder: Withdraw Amount (${{min}} - ${{max}})
     updateBankInfo: "更新银行信息", // Placeholder: Update Bank Info
     requestWithdrawal: "请求取款", // Placeholder: Request Withdrawal
     confirmWithdrawalDetailsPrompt: "请确认您的取款详情。", // Placeholder: Please confirm your withdrawal details.
@@ -174,7 +174,7 @@ export default {
     confirmWithdrawal: "确认取款", // Placeholder: Confirm Withdrawal
     withdrawalSuccessTitle: "取款请求成功", // Placeholder: Withdrawal Request Successful
     withdrawalSuccessDesc:
-      "您提取 ${{amount}} 的请求已提交。处理可能需要一些时间。", // Placeholder: Your request to withdraw ${{amount}} has been submitted. It may take some time to process.
+      "您提取 ฿{{amount}} 的请求已提交。处理可能需要一些时间。", // Placeholder: Your request to withdraw ${{amount}} has been submitted. It may take some time to process.
     checkWithdrawals: "检查您的取款", // Placeholder: Check your withdrawals
     withdrawalRequestFailedTitle: "取款请求失败", // Placeholder: Withdrawal Request Failed
     withdrawalFailedDesc: "提交您的取款请求时出现问题。请再试一次或联系支持。", // Placeholder: There was an issue submitting your withdrawal request. Please try again or contact support.

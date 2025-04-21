@@ -524,7 +524,7 @@ const DepositModal = () => {
                               onClick={() => handlePresetAmount(presetValue)}
                               className={buttonClass}
                             >
-                              ${presetValue}
+                              ฿{presetValue}
                             </button>
                           );
                         })}
@@ -629,7 +629,7 @@ const DepositModal = () => {
                       <span className="text-white text-sm">
                         {t("amountToTransfer")}
                       </span>
-                      <span className="text-white text-sm">: ${amount}</span>
+                      <span className="text-white text-sm">: ฿{amount}</span>
                     </div>
                   </div>
                   <div className="mt-1 space-y-1 md:mt-2 md:space-y-2">
@@ -760,7 +760,7 @@ const DepositModal = () => {
                     <span className="text-casino-silver">
                       {t("amountLabelColon")}
                     </span>
-                    <span className="text-casino-gold">${amount}</span>
+                    <span className="text-casino-gold">฿{amount}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-casino-silver">{t("fromLabel")}</span>
@@ -835,7 +835,7 @@ const DepositModal = () => {
                     <span className="text-casino-silver">
                       {t("amountLabelColon")}
                     </span>
-                    <span className="text-casino-gold">${order.money}</span>
+                    <span className="text-casino-gold">฿{order.money}</span>
                   </div>
 
                   <div className="flex items-center justify-between">
@@ -899,7 +899,7 @@ const DepositModal = () => {
                     <span className="text-casino-silver">
                       {t("amountLabelColon")}
                     </span>
-                    <span className="text-casino-gold">${amount}</span>
+                    <span className="text-casino-gold">฿{amount}</span>
                   </div>
                 </div>
 

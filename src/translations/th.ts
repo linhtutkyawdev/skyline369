@@ -68,8 +68,8 @@ export default {
     invalidPaymentMethodTitle: "วิธีการชำระเงินไม่ถูกต้อง",
     invalidPaymentMethodDesc: "กรุณาเลือกวิธีการชำระเงิน",
     invalidAmountTitle: "จำนวนเงินไม่ถูกต้อง",
-    minDepositAmountDesc: "จำนวนเงินฝากขั้นต่ำคือ ${{amount}}",
-    maxDepositAmountDesc: "จำนวนเงินฝากสูงสุดคือ ${{amount}}",
+    minDepositAmountDesc: "จำนวนเงินฝากขั้นต่ำคือ ฿{{amount}}",
+    maxDepositAmountDesc: "จำนวนเงินฝากสูงสุดคือ ฿{{amount}}",
     invalidTxIdTitle: "รหัสธุรกรรมไม่ถูกต้อง",
     invalidTxIdDesc: "กรุณาใส่รหัสธุรกรรมของคุณ",
     invalidSenderNameTitle: "ชื่อผู้ส่งไม่ถูกต้อง",
@@ -153,10 +153,10 @@ export default {
     updateErrorTitle: "ข้อผิดพลาดในการอัปเดต",
     unexpectedErrorDesc: "เกิดข้อผิดพลาดที่ไม่คาดคิด กรุณาลองอีกครั้ง",
     withdrawAmountLimitDesc:
-      "จำนวนเงินที่ถอนต้องอยู่ระหว่าง ${{min}} ถึง ${{max}} คุณป้อน ${{amount}}",
+      "จำนวนเงินที่ถอนต้องอยู่ระหว่าง ฿{{min}} ถึง ฿{{max}} คุณป้อน ฿{{amount}}",
     insufficientBalanceTitle: "ยอดเงินไม่เพียงพอ",
     insufficientBalanceDesc:
-      "ยอดเงินปัจจุบัน ${{balance}} น้อยกว่าจำนวนเงินที่ต้องการถอน ${{amount}}",
+      "ยอดเงินปัจจุบัน ${{balance}} น้อยกว่าจำนวนเงินที่ต้องการถอน ฿{{amount}}",
     errorTitle: "ข้อผิดพลาด",
     missingRequiredInfoDesc: "ข้อมูลที่จำเป็นไม่ครบถ้วน",
     transferFailedTitle: "โอนเงินไม่สำเร็จ",
@@ -170,7 +170,7 @@ export default {
     bankBranchLabel: "สาขาธนาคาร:",
     accountHolderLabel: "เจ้าของบัญชี:",
     cardNumberLabelColon: "หมายเลขบัตร:",
-    withdrawAmountRangeLabel: "จำนวนเงินที่ถอน (${{min}} - ${{max}})",
+    withdrawAmountRangeLabel: "จำนวนเงินที่ถอน (฿{{min}} - ฿{{max}})",
     updateBankInfo: "อัปเดตข้อมูลธนาคาร",
     requestWithdrawal: "ขอถอนเงิน",
     confirmWithdrawalDetailsPrompt: "กรุณายืนยันรายละเอียดการถอนเงินของคุณ",
@@ -178,7 +178,7 @@ export default {
     confirmWithdrawal: "ยืนยันการถอนเงิน",
     withdrawalSuccessTitle: "ส่งคำขอถอนเงินสำเร็จ",
     withdrawalSuccessDesc:
-      "คำขอถอนเงิน ${{amount}} ของคุณได้รับการส่งแล้ว อาจใช้เวลาบ้างในการดำเนินการ",
+      "คำขอถอนเงิน ฿{{amount}} ของคุณได้รับการส่งแล้ว อาจใช้เวลาบ้างในการดำเนินการ",
     checkWithdrawals: "ตรวจสอบการถอนเงินของคุณ",
     withdrawalRequestFailedTitle: "ส่งคำขอถอนเงินไม่สำเร็จ",
     withdrawalFailedDesc:

@@ -72,8 +72,8 @@ export default {
     invalidPaymentMethodTitle: "မှားယွင်းသော ငွေပေးချေမှုနည်းလမ်း",
     invalidPaymentMethodDesc: "ကျေးဇူးပြု၍ ငွေပေးချေမှုနည်းလမ်းကို ရွေးချယ်ပါ။",
     invalidAmountTitle: "မှားယွင်းသော ပမာဏ",
-    minDepositAmountDesc: "အနည်းဆုံး ငွေသွင်းငွေပမာဏမှာ ${{amount}} ဖြစ်သည်။",
-    maxDepositAmountDesc: "အများဆုံး ငွေသွင်းငွေပမာဏမှာ ${{amount}} ဖြစ်သည်။",
+    minDepositAmountDesc: "အနည်းဆုံး ငွေသွင်းငွေပမာဏမှာ ฿{{amount}} ဖြစ်သည်။",
+    maxDepositAmountDesc: "အများဆုံး ငွေသွင်းငွေပမာဏမှာ ฿{{amount}} ဖြစ်သည်။",
     invalidTxIdTitle: "မှားယွင်းသော ငွေလွှဲအမှတ်",
     invalidTxIdDesc: "ကျေးဇူးပြု၍ သင့်ငွေလွှဲအမှတ်ကို ထည့်သွင်းပါ။",
     invalidSenderNameTitle: "မှားယွင်းသော ပေးပို့သူအမည်",
@@ -160,10 +160,10 @@ export default {
     unexpectedErrorDesc:
       "မမျှော်လင့်ထားသောအမှားတစ်ခု ဖြစ်ပေါ်ခဲ့သည်။ ကျေးဇူးပြု၍ ထပ်ကြိုးစားပါ။",
     withdrawAmountLimitDesc:
-      "ငွေထုတ်ယူမှုပမာဏသည် ${{min}} နှင့် ${{max}} အကြားရှိရပါမည်။ သင်ထည့်သွင်းသော ပမာဏမှာ ${{amount}} ဖြစ်သည်။",
+      "ငွေထုတ်ယူမှုပမာဏသည် ฿{{min}} နှင့် ฿{{max}} အကြားရှိရပါမည်။ သင်ထည့်သွင်းသော ပမာဏမှာ ฿{{amount}} ဖြစ်သည်။",
     insufficientBalanceTitle: "လက်ကျန်ငွေမလုံလောက်ပါ။",
     insufficientBalanceDesc:
-      "သင့်လက်ရှိဂိမ်းလက်ကျန်ငွေ ${{balance}} သည် တောင်းဆိုထားသော ငွေထုတ်ယူမှုပမာဏ ${{amount}} ထက် နည်းနေပါသည်။",
+      "သင့်လက်ရှိဂိမ်းလက်ကျန်ငွေ ${{balance}} သည် တောင်းဆိုထားသော ငွေထုတ်ယူမှုပမာဏ ฿{{amount}} ထက် နည်းနေပါသည်။",
     errorTitle: "အမှား",
     missingRequiredInfoDesc: "လိုအပ်သောအချက်အလက်များ ပျောက်နေပါသည်။",
     transferFailedTitle: "ငွေလွှဲမှု မအောင်မြင်ပါ။",
@@ -178,7 +178,7 @@ export default {
     bankBranchLabel: "ဘဏ်ခွဲ:",
     accountHolderLabel: "အကောင့်ရှင်:",
     cardNumberLabelColon: "ကတ်နံပါတ်:",
-    withdrawAmountRangeLabel: "ငွေထုတ်ပမာဏ (${{min}} - ${{max}})",
+    withdrawAmountRangeLabel: "ငွေထုတ်ပမာဏ (฿{{min}} - ฿{{max}})",
     updateBankInfo: "ဘဏ်အချက်အလက် မွမ်းမံပါ",
     requestWithdrawal: "ငွေထုတ်ယူမှုတောင်းဆိုပါ",
     confirmWithdrawalDetailsPrompt:
@@ -187,7 +187,7 @@ export default {
     confirmWithdrawal: "ငွေထုတ်ယူမှုကို အတည်ပြုပါ။",
     withdrawalSuccessTitle: "ငွေထုတ်ယူမှုတောင်းဆိုမှု အောင်မြင်ပါသည်။",
     withdrawalSuccessDesc:
-      "သင့်ငွေထုတ်ယူမှု ${{amount}} တောင်းဆိုမှုကို လက်ခံပြီးပါပြီ။ လုပ်ငန်းစဉ်ပြီးမြောက်ရန် အချိန်အနည်းငယ် ကြာမြင့်နိုင်ပါသည်။",
+      "သင့်ငွေထုတ်ယူမှု ฿{{amount}} တောင်းဆိုမှုကို လက်ခံပြီးပါပြီ။ လုပ်ငန်းစဉ်ပြီးမြောက်ရန် အချိန်အနည်းငယ် ကြာမြင့်နိုင်ပါသည်။",
     checkWithdrawals: "သင့်ငွေထုတ်ယူမှုများကို စစ်ဆေးပါ",
     withdrawalRequestFailedTitle: "ငွေထုတ်ယူမှုတောင်းဆိုမှု မအောင်မြင်ပါ။",
     withdrawalFailedDesc:

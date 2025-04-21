@@ -444,7 +444,7 @@ const WithdrawModal = () => {
                           <span className="text-casino-silver">
                             {t("amountLabelColon")}
                           </span>
-                          <span className="text-casino-gold">${amount}</span>
+                          <span className="text-casino-gold">฿{amount}</span>
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-casino-silver">

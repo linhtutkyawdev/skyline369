@@ -43,7 +43,7 @@ const NavBar = () => {
               {loading
                 ? t("loadingIndicator")
                 : user && user.userInfo
-                ? "$ " + parseFloat(user.userInfo.game_balance + "").toFixed(2)
+                ? "฿ " + parseFloat(user.userInfo.game_balance + "").toFixed(2)
                 : t("loadingIndicator")}
             </span>
           </div>
