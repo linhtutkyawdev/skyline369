@@ -50,14 +50,17 @@ const NavBar = () => {
             </span>
           </div>
           {isMobile ? (
-            <button className="" onClick={loadUserInfo}>
+            <button className="hover:bg-transparent" onClick={loadUserInfo}>
               <RefreshCcw className="w-4 h-4 text-casino-silver cursor-pointer active:scale-95 transition-transform" />
             </button>
           ) : (
             <TooltipProvider delayDuration={100}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button className="" onClick={loadUserInfo}>
+                  <button
+                    className="hover:bg-transparent"
+                    onClick={loadUserInfo}
+                  >
                     <RefreshCcw className="w-4 h-4 text-casino-silver cursor-pointer hover:-rotate-45 hover:scale-110 transition-all" />
                   </button>
                 </TooltipTrigger>

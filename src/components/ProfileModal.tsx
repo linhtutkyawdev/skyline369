@@ -126,7 +126,7 @@ const ProfileModal = () => {
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-5 w-5 text-casino-silver hover:text-white"
+                  className="h-5 w-5 text-casino-silver hover:text-white hover:bg-transparent hover:-rotate-45 hover:scale-110 transition-all"
                   onClick={loadUserInfo} // Use the store function
                 >
                   <RefreshCcw className="h-3 w-3" />
