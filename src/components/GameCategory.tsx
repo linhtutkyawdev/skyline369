@@ -29,10 +29,10 @@ const GameCategory = ({
       className={cn(
         "game-card flex flex-col items-center justify-center p-4 sm:p-6 relative my-5",
         isSelected
-          ? "h-[9.5rem] 2xl:h-56 w-full scale-105 z-10"
+          ? "h-[8.5rem] 2xl:h-56 w-full scale-105 z-10"
           : isAdjacent
-          ? "h-[8.5rem] 2xl:h-52 w-full scale-103 z-5"
-          : "h-[7.5rem] 2xl:h-48 w-full"
+          ? "h-[7.5rem] 2xl:h-52 w-full scale-103 z-5"
+          : "h-[6.5rem] 2xl:h-48 w-full"
       )}
       onClick={onClick}
     >

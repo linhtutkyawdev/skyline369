@@ -49,7 +49,7 @@ const Index = () => {
     return index === prevIndex || index === nextIndex;
   };
 
-  const IMAGE_CLASS_NAME = "w-20 h-20 2xl:w-[6.5rem] 2xl:h-[6.5rem]";
+  const IMAGE_CLASS_NAME = "w-16 h-16 2xl:w-[6.5rem] 2xl:h-[6.5rem]";
 
   // 0: "roulette"
   // 1: "blackjack"
