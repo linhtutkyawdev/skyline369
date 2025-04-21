@@ -536,7 +536,7 @@ const DepositModal = () => {
                         setSelectedDepositChannel(null);
                         setAmount(0);
                       }}
-                      className="w-full py-1 sm:py-2 bg-casino-accent text-silver-deep-blue rounded-lg font-bold text-base sm:text-lg hover:bg-opacity-90 transition-all"
+                      className="w-full py-1 sm:py-2 bg-casino-accent rounded-lg font-bold text-base sm:text-lg hover:bg-opacity-90 transition-all"
                     >
                       {t("goBack")}
                     </button>
@@ -571,7 +571,7 @@ const DepositModal = () => {
                   onClick={() => {
                     setStep("amount");
                   }}
-                  className="w-full py-2 bg-casino-accent text-silver-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
+                  className="w-full py-2 bg-casino-accent rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
                 >
                   {t("goBack")}
                 </button>
@@ -726,7 +726,7 @@ const DepositModal = () => {
                     setPreviewUrl(null);
                     setStep("amount");
                   }}
-                  className="w-full py-1 sm:py-2 bg-casino-accent text-silver-deep-blue rounded-lg font-bold text-base sm:text-lg hover:bg-opacity-90 transition-all"
+                  className="w-full py-1 sm:py-2 bg-casino-accent rounded-lg font-bold text-base sm:text-lg hover:bg-opacity-90 transition-all"
                 >
                   {t("goBack")}
                 </button>

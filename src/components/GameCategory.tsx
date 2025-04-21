@@ -31,8 +31,8 @@ const GameCategory = ({
         isSelected
           ? "h-[8.5rem] 2xl:h-56 w-full scale-105 z-10"
           : isAdjacent
-          ? "h-[7.5rem] 2xl:h-52 w-full scale-103 z-5"
-          : "h-[6.5rem] 2xl:h-48 w-full"
+          ? "h-[8rem] 2xl:h-52 w-full scale-103 z-5"
+          : "h-[7.5rem] 2xl:h-48 w-full"
       )}
       onClick={onClick}
     >

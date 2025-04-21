@@ -148,7 +148,7 @@ const ProfileModal = () => {
                   onClick={async () => {
                     await logout();
                   }}
-                  className="p-3 rounded-lg bg-red-600/70 w-full flex items-center justify-center gap-3 transition-all hover:bg-red-600/60"
+                  className="p-3 font-bold rounded-lg bg-red-600/70 w-full flex items-center justify-center gap-3 transition-all hover:bg-red-600/60"
                 >
                   <LogOut className="w-5 h-5 text-casino-gold" />
                   <span className="text-white">{t("log_out")}</span>

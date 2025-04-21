@@ -244,6 +244,7 @@ const SettingsModal = () => {
                     <Lock className="absolute left-3 top-3 h-5 w-5 text-casino-silver" />
                     <Input
                       type="password"
+                      name="newPassword"
                       placeholder={t("newPassword")}
                       className="pl-10"
                       {...register("newPassword")}
@@ -265,6 +266,7 @@ const SettingsModal = () => {
                     <Lock className="absolute left-3 top-3 h-5 w-5 text-casino-silver" />
                     <Input
                       type="password"
+                      name="confirmNewPassword"
                       placeholder={t("confirmNewPassword")}
                       className="pl-10"
                       {...register("confirmNewPassword")}
@@ -291,9 +293,9 @@ const SettingsModal = () => {
                         setShowPasswordReset(false);
                         reset();
                       }}
-                      className="flex-1 bg-casino-accent hover:bg-casino-accent/90 text-casino-deep-blue"
+                      className="flex-1 bg-casino-accent text-white font-bold hover:bg-casino-accent/90 "
                     >
-                      <ArrowLeft className="mr-2 h-4 w-4" />
+                      <ArrowLeft className="mr-2 -ml-4 h-4 w-4" />
                       {t("back")}
                     </Button>
 
@@ -301,7 +303,7 @@ const SettingsModal = () => {
                     <Button
                       type="submit"
                       disabled={isSubmitting}
-                      className="flex-1 bg-casino-gold hover:bg-casino-gold/90 text-casino-deep-blue"
+                      className="flex-1 bg-casino-gold font-bold hover:bg-casino-gold/90 text-casino-deep-blue"
                     >
                       {isSubmitting ? (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
