@@ -14,7 +14,6 @@ import { useUserStore } from "@/store/user";
 import { Button } from "@/components/ui/button";
 
 const NavBar = () => {
-  const navigate = useNavigate();
   const { t } = useTranslation();
   const { setActiveModal, loading } = useStateStore();
   const isMobile = useIsMobile();

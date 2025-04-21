@@ -201,18 +201,50 @@ const ShareModal = () => {
                 </Button>
               </div>
               <div className="flex justify-between bg-casino-deep-blue p-6 gap-4 rounded-lg">
-                {shareOptions.map((option) => (
-                  <button
-                    key={option.name}
-                    className="justify-items-center glass-effect p-4 rounded-md hover:scale-105 transition-all"
-                    style={{ backgroundColor: `${option.color}70` }}
-                  >
-                    <div className="text-white flex flex-col items-center w-10">
-                      {option.icon}
-                      <span className="text-xs mt-2">{option.name}</span>
-                    </div>
-                  </button>
-                ))}
+                {shareOptions.map((option) => {
+                  const shareURL = () => {
+                    switch (option.name) {
+                      case t("facebook"):
+                        return `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                          link
+                        )}`;
+                      case t("tiktok"):
+                        return `https://www.tiktok.com/upload?utm_source=desktop_web&utm_campaign=share_button_web&refer=embed&text=${encodeURIComponent(
+                          link
+                        )}`;
+                      case t("viber"):
+                        return `viber://share?text=${encodeURIComponent(link)}`;
+                      case t("telegram"):
+                        return `https://telegram.me/share/url?url=${encodeURIComponent(
+                          link
+                        )}&text=${t("shareText")}`;
+                      case t("messenger"):
+                        return `http://www.facebook.com/dialog/send?app_id=1234567890&link=${encodeURIComponent(
+                          link
+                        )}&redirect_uri=${encodeURIComponent(link)}`;
+                      default:
+                        return link;
+                    }
+                  };
+
+                  const handleClick = () => {
+                    window.open(shareURL(), "_blank");
+                  };
+
+                  return (
+                    <button
+                      key={option.name}
+                      className="justify-items-center glass-effect p-4 rounded-md hover:scale-105 transition-all"
+                      style={{ backgroundColor: `${option.color}70` }}
+                      onClick={handleClick}
+                    >
+                      <div className="text-white flex flex-col items-center w-10">
+                        {option.icon}
+                        <span className="text-xs mt-2">{option.name}</span>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
               <div className="flex items-center justify-center gap-2">
                 <span className="text-casino-silver text-sm">

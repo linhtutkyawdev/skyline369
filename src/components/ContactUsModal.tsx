@@ -66,7 +66,7 @@ const ContactUsModal = () => {
       displayType = t("phone_support", "Phone Support");
     } else if (lowerType.includes("viber")) {
       IconComponent = ViberIcon;
-      hrefPrefix = `tel:`;
+      hrefPrefix = `viber://add?number=`;
       displayType = t("viber", "Viber");
     } else {
       // --- Fallback for unknown types ---
