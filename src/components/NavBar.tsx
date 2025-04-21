@@ -112,7 +112,7 @@ const NavBar = () => {
             </span>
           </div>
           {/* Messages Icon */}
-          <div
+          {/* <div
             className="nav-icon group cursor-pointer"
             onClick={() => navigate("/messages")}
           >
@@ -122,7 +122,7 @@ const NavBar = () => {
             <span className="text-casino-silver text-[10px] 2xl:text-[13px]">
               {t("messages")}
             </span>
-          </div>
+          </div> */}
           {/* Settings Icon */}
           <div
             className="nav-icon group cursor-pointer"

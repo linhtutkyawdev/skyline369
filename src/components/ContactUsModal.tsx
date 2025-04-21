@@ -66,9 +66,7 @@ const ContactUsModal = () => {
       displayType = t("phone_support", "Phone Support");
     } else if (lowerType.includes("viber")) {
       IconComponent = ViberIcon;
-      // Assuming tel: prefix is appropriate for Viber link (phone number)
-      // Adjust if a different URI scheme like viber:// is needed
-      hrefPrefix = `tel:${link}`;
+      hrefPrefix = `viber://add?number=`;
       displayType = t("viber", "Viber");
     } else {
       // --- Fallback for unknown types ---
@@ -182,7 +180,7 @@ const ContactUsModal = () => {
                     {t("noContactMethods", "Contact methods not available.")}
                   </p>
                 )}
-                <a
+                {/* <a
                   href="#" // Replace with actual live chat link or function call
                   onClick={(e) => {
                     e.preventDefault();
@@ -203,7 +201,7 @@ const ContactUsModal = () => {
                       {t("available247", "Available 24/7")}
                     </p>
                   </div>
-                </a>
+                </a> */}
               </div>
 
               <div className="mt-8 p-4 rounded-lg bg-casino-deep-blue">
