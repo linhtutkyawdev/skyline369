@@ -262,5 +262,6 @@ export default {
     navigationMenu: "Navigation Menu",
     lastUpdated: "อัปเดตล่าสุด", // Changed key to camelCase
     userDataNotLoaded: "ไม่ได้โหลดข้อมูลผู้ใช้", // Changed key to camelCase
+    loadingIndicator: "กำลังโหลด...", // Added for inline loading
   },
 };

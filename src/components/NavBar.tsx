@@ -10,16 +10,16 @@ import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStateStore } from "@/store/state";
-import { useUserStore } from "@/store/user"; // Import user store
+import { useUserStore } from "@/store/user"; // Import user store and fetch function
 // Removed Dropdown imports
 import { Button } from "@/components/ui/button";
 
 const NavBar = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { setActiveModal } = useStateStore();
+  const { setActiveModal, loading } = useStateStore();
   const isMobile = useIsMobile(); // Use the hook
-  const { user, lastUpdatedAt } = useUserStore(); // Get lastUpdatedAt from store
+  const { user, lastUpdatedAt, loadUserInfo } = useUserStore(); // Get loadUserInfo from store
 
   const { gameType } = useParams();
 
@@ -42,20 +42,22 @@ const NavBar = () => {
               {(user && user.name) || t("register_login")}
             </span>
             <span className="text-casino-gold text-xs 2xl:text-sm">
-              {user && user.userInfo
+              {loading
+                ? t("loadingIndicator")
+                : user && user.userInfo
                 ? "$ " + parseFloat(user.userInfo.game_balance + "").toFixed(2)
-                : "loading..."}
+                : t("loadingIndicator")}
             </span>
           </div>
           {isMobile ? (
-            <button className="" onClick={() => window.location.reload()}>
+            <button className="" onClick={loadUserInfo}>
               <RefreshCcw className="w-4 h-4 text-casino-silver cursor-pointer active:scale-95 transition-transform" />
             </button>
           ) : (
             <TooltipProvider delayDuration={100}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button className="" onClick={() => window.location.reload()}>
+                  <button className="" onClick={loadUserInfo}>
                     <RefreshCcw className="w-4 h-4 text-casino-silver cursor-pointer hover:-rotate-45 hover:scale-110 transition-all" />
                   </button>
                 </TooltipTrigger>

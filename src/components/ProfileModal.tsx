@@ -11,8 +11,8 @@ import { ApiResponse } from "@/types/api_response";
 import { ApiError } from "@/types/api_error";
 
 const ProfileModal = () => {
-  const { activeModal, setActiveModal } = useStateStore();
-  const { user, setUser, lastUpdatedAt } = useUserStore(); // Get lastUpdatedAt
+  const { activeModal, setActiveModal, loading } = useStateStore();
+  const { user, setUser, lastUpdatedAt, loadUserInfo } = useUserStore(); // Get loadUserInfo from store
   const { toast } = useToast();
   const { t } = useTranslation(); // Get translation function
   useEffect(() => {
@@ -116,16 +116,18 @@ const ProfileModal = () => {
               <div className="flex items-center justify-center gap-2 mt-1">
                 <p className="text-casino-silver text-xs">
                   {lastUpdatedAt
-                    ? `${t("lastUpdated")}: ${new Date(
-                        lastUpdatedAt
-                      ).toLocaleString()}`
+                    ? `${t("lastUpdated")}: ${
+                        loading
+                          ? t("loadingIndicator")
+                          : new Date(lastUpdatedAt).toLocaleString()
+                      }`
                     : t("userDataNotLoaded")}
                 </p>
                 <Button
                   variant="ghost"
                   size="icon"
                   className="h-5 w-5 text-casino-silver hover:text-white"
-                  onClick={() => window.location.reload()}
+                  onClick={loadUserInfo} // Use the store function
                 >
                   <RefreshCcw className="h-3 w-3" />
                 </Button>
@@ -134,10 +136,12 @@ const ProfileModal = () => {
                 <div className="bg-casino-deep-blue rounded-xl p-3 lg:p-4 w-full flex justify-between items-center mt-4">
                   <span className="text-casino-silver">{t("balance")}</span>
                   <span className="text-casino-gold font-bold text-xl">
-                    {user && user.userInfo
+                    {loading
+                      ? t("loadingIndicator")
+                      : user && user.userInfo
                       ? "$ " +
                         parseFloat(user.userInfo.game_balance + "").toFixed(2)
-                      : "loading..."}
+                      : t("loadingIndicator")}
                   </span>
                 </div>
                 {/* History Links */}

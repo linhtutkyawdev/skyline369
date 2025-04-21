@@ -270,5 +270,6 @@ export default {
     navigationMenu: "Navigation Menu",
     lastUpdated: "Last Updated", // Changed key to camelCase
     userDataNotLoaded: "User data not loaded", // Changed key to camelCase
+    loadingIndicator: "Loading...", // Added for inline loading
   },
 };

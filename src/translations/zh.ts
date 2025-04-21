@@ -257,5 +257,6 @@ export default {
     navigationMenu: "导航菜单",
     lastUpdated: "最后更新", // Changed key to camelCase
     userDataNotLoaded: "用户数据未加载", // Changed key to camelCase
+    loadingIndicator: "加载中...", // Added for inline loading
   },
 };

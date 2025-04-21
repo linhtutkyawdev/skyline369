@@ -277,5 +277,6 @@ export default {
     navigationMenu: "Navigation Menu",
     lastUpdated: "နောက်ဆုံး အပ်ဒိတ်လုပ်သည်", // Changed key to camelCase
     userDataNotLoaded: "အသုံးပြုသူဒေတာ မတင်ရသေးပါ", // Changed key to camelCase
+    loadingIndicator: "တင်နေသည်...", // Added for inline loading
   },
 };

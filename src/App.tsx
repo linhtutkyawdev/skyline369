@@ -57,7 +57,7 @@ const App = () => {
     onClose: () => toggle(false),
   });
 
-  const { user, setUser } = useUserStore();
+  const { user, setUser, loadUserInfo: storeLoadUserInfo } = useUserStore(); // Import loadUserInfo from store
   const {
     activeModal,
     setActiveModal,
@@ -132,86 +132,7 @@ const App = () => {
     }
   };
 
-  const transferBalance = async (amount: number) => {
-    if (!user) return;
-    setLoading(true);
-    try {
-      const responses = await axiosInstance.post<
-        ApiResponse<{ balance: string; game_balance: string }>
-      >("/transfer_to_game", {
-        token: user.token,
-        amount,
-      });
-
-      if (
-        responses.data.status.errorCode != 0 &&
-        responses.data.status.errorCode != 200
-      )
-        throw new ApiError(
-          "An error has occured!",
-          responses.data.status.errorCode,
-          responses.data.status.mess
-        );
-    } catch (error) {
-      if (error instanceof ApiError && error.statusCode === 401) {
-        setUser(null);
-        setError(error);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadUserInfo = async () => {
-    if (!user) return;
-    setLoading(true);
-    try {
-      const responses = await axiosInstance.post<ApiResponse<UserInfo>>(
-        "/player_info",
-        {
-          token: user.token,
-        }
-      );
-
-      if (
-        responses.data.status.errorCode != 0 &&
-        responses.data.status.errorCode != 200
-      )
-        throw new ApiError(
-          "An error has occured!",
-          responses.data.status.errorCode,
-          responses.data.status.mess
-        );
-
-      if (responses.data.data && responses.data.data.balance > 0) {
-        await transferBalance(responses.data.data.balance);
-        setUser({
-          ...user,
-          balance: 0,
-          userInfo: {
-            ...responses.data.data,
-            balance: 0,
-            game_balance:
-              parseFloat(responses.data.data.game_balance + "") +
-              parseFloat(responses.data.data.balance + ""),
-          },
-        });
-        return;
-      }
-      setUser({
-        ...user,
-        balance: responses.data.data.balance,
-        userInfo: responses.data.data,
-      });
-    } catch (error) {
-      if (error instanceof ApiError && error.statusCode === 401) {
-        setUser(null);
-        setError(error);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Removed local transferBalance and loadUserInfo functions as they are now in useUserStore
 
   const loadPlatformConfig = async () => {
     // Check for user and token since it's required for the POST request
@@ -288,8 +209,11 @@ const App = () => {
 
       try {
         await loadPlatformConfig();
-        if (!error) {
-          await Promise.all([loadDepositChannels(), loadUserInfo()]);
+        // Check for error from loadPlatformConfig before proceeding
+        const currentError = useStateStore.getState().error;
+        if (!currentError) {
+          // Call store's loadUserInfo
+          await Promise.all([loadDepositChannels(), storeLoadUserInfo()]);
         }
       } catch (err) {
         console.error("Error during initial data load sequence:", err);
@@ -308,7 +232,7 @@ const App = () => {
   ]); // Use optional chaining for safety
 
   useEffect(() => {
-    if (!activeModal) loadUserInfo();
+    if (!activeModal) storeLoadUserInfo(); // Call store's loadUserInfo
   }, [activeModal]);
   return (
     <div className="bg-main w-screen h-screen relative" ref={ref}>
@@ -366,7 +290,7 @@ const App = () => {
               setCurrentTrackIndex={setCurrentTrackIndex}
               bgMusicFiles={bgMusicFiles}
               user={user}
-              loadUserInfo={loadUserInfo}
+              loadUserInfo={storeLoadUserInfo} // Pass store's loadUserInfo
             />
           </BrowserRouter>
         </TooltipProvider>{" "}
@@ -468,7 +392,7 @@ const AppContent: React.FC<AppContentProps> = ({
   ]); // Added missing dependencies
 
   useEffect(() => {
-    loadUserInfo();
+    loadUserInfo(); // Call prop loadUserInfo (which is store's function)
   }, [location.pathname]);
 
   return (
