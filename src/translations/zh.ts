@@ -255,5 +255,7 @@ export default {
     // tokenPlaceholder: "输入重置令牌", // Removed unused translation
     provideTransactionInformation: "交易信息",
     navigationMenu: "导航菜单",
+    lastUpdated: "最后更新", // Changed key to camelCase
+    userDataNotLoaded: "用户数据未加载", // Changed key to camelCase
   },
 };

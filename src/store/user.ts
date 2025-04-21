@@ -5,6 +5,7 @@ import { useToastStore } from "./toast";
 
 type Store = {
   user: User | null;
+  lastUpdatedAt: number | null; // Add last updated timestamp
   setUser: (user: User | null) => void;
 };
 
@@ -12,6 +13,7 @@ export const useUserStore = create<Store>()(
   persist(
     (set) => ({
       user: null,
+      lastUpdatedAt: null, // Initialize last updated timestamp
       setUser: (user: User | null) => {
         if (user) {
           // Generate a new session ID and update both session and local storage
@@ -23,7 +25,7 @@ export const useUserStore = create<Store>()(
           sessionStorage.removeItem("session-id");
           localStorage.removeItem("session-lock");
         }
-        set({ user });
+        set({ user, lastUpdatedAt: user ? Date.now() : null }); // Update timestamp
       },
     }),
     {

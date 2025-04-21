@@ -275,5 +275,7 @@ export default {
     // tokenPlaceholder: "ပြန်လည်သတ်မှတ် တိုကင် ထည့်ပါ", // Removed unused translation
     provideTransactionInformation: "ငွေလွှဲအချက်အလက်",
     navigationMenu: "Navigation Menu",
+    lastUpdated: "နောက်ဆုံး အပ်ဒိတ်လုပ်သည်", // Changed key to camelCase
+    userDataNotLoaded: "အသုံးပြုသူဒေတာ မတင်ရသေးပါ", // Changed key to camelCase
   },
 };

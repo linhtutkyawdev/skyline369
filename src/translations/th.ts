@@ -260,5 +260,7 @@ export default {
     // tokenPlaceholder: "ใส่โทเค็นรีเซ็ต", // Removed unused translation
     provideTransactionInformation: "ข้อมูลธุรกรรม",
     navigationMenu: "Navigation Menu",
+    lastUpdated: "อัปเดตล่าสุด", // Changed key to camelCase
+    userDataNotLoaded: "ไม่ได้โหลดข้อมูลผู้ใช้", // Changed key to camelCase
   },
 };

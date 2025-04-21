@@ -1,9 +1,16 @@
 import { Share, MessageSquare, Settings, RefreshCcw, Menu } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile"; // Import the hook
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"; // Import Tooltip components
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { useStateStore } from "@/store/state";
-import { useUserStore } from "@/store/user";
+import { useUserStore } from "@/store/user"; // Import user store
 // Removed Dropdown imports
 import { Button } from "@/components/ui/button";
 
@@ -11,7 +18,8 @@ const NavBar = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { setActiveModal } = useStateStore();
-  const { user } = useUserStore();
+  const isMobile = useIsMobile(); // Use the hook
+  const { user, lastUpdatedAt } = useUserStore(); // Get lastUpdatedAt from store
 
   const { gameType } = useParams();
 
@@ -39,9 +47,30 @@ const NavBar = () => {
                 : "loading..."}
             </span>
           </div>
-          <button className="" onClick={() => window.location.reload()}>
-            <RefreshCcw className="w-4 h-4 text-casino-silver cursor-pointer hover:-rotate-45 hover:scale-110 transition-all" />
-          </button>
+          {isMobile ? (
+            <button className="" onClick={() => window.location.reload()}>
+              <RefreshCcw className="w-4 h-4 text-casino-silver cursor-pointer active:scale-95 transition-transform" />
+            </button>
+          ) : (
+            <TooltipProvider delayDuration={100}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button className="" onClick={() => window.location.reload()}>
+                    <RefreshCcw className="w-4 h-4 text-casino-silver cursor-pointer hover:-rotate-45 hover:scale-110 transition-all" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>
+                    {lastUpdatedAt
+                      ? `${t("lastUpdated")}: ${new Date(
+                          lastUpdatedAt
+                        ).toLocaleString()}`
+                      : t("userDataNotLoaded")}
+                  </p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
         </div>
 
         {gameType && (

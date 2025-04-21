@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, LogOut } from "lucide-react"; // Added Gamepad2
+import { X, LogOut, RefreshCcw } from "lucide-react"; // Added RefreshCcw
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next"; // Import useTranslation
 import { useUserStore } from "@/store/user";
@@ -12,7 +12,7 @@ import { ApiError } from "@/types/api_error";
 
 const ProfileModal = () => {
   const { activeModal, setActiveModal } = useStateStore();
-  const { user, setUser } = useUserStore();
+  const { user, setUser, lastUpdatedAt } = useUserStore(); // Get lastUpdatedAt
   const { toast } = useToast();
   const { t } = useTranslation(); // Get translation function
   useEffect(() => {
@@ -112,6 +112,24 @@ const ProfileModal = () => {
                 {user.name}
               </h2>
               <p className="text-casino-silver text-sm">{user.email}</p>
+              {/* Last Updated Timestamp and Refresh Button */}
+              <div className="flex items-center justify-center gap-2 mt-1">
+                <p className="text-casino-silver text-xs">
+                  {lastUpdatedAt
+                    ? `${t("lastUpdated")}: ${new Date(
+                        lastUpdatedAt
+                      ).toLocaleString()}`
+                    : t("userDataNotLoaded")}
+                </p>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-5 w-5 text-casino-silver hover:text-white"
+                  onClick={() => window.location.reload()}
+                >
+                  <RefreshCcw className="h-3 w-3" />
+                </Button>
+              </div>
               <div className="space-y-3 lg:space-y-4 w-full">
                 <div className="bg-casino-deep-blue rounded-xl p-3 lg:p-4 w-full flex justify-between items-center mt-4">
                   <span className="text-casino-silver">{t("balance")}</span>
