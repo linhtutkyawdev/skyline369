@@ -76,7 +76,7 @@ const GameHistory = () => {
         "yyyy-MM-dd 23:59:59"
       );
 
-      let success = false; // Track if the fetch was successful
+      // let success = false; // Track if the fetch was successful
       try {
         const responses = await axiosInstance.post<
           ApiResponse<GameHistoryInfo> // Updated response type structure
@@ -156,7 +156,21 @@ const GameHistory = () => {
             });
 
             i++; // IMPORTANT: Increment i again because we processed two records (record1 and record2)
-          } else {
+          } else if (record1 && record1.bet_type.toLowerCase() === "bet") {
+            processedHistory.push({
+              game_name: record1.game_name,
+              game_provider: record1.game_provider,
+              // Use bet_id from the 'bet' record. Displaying both might be confusing.
+              bet_id: record1.bet_id,
+              bet_time: record1.bet_time, // Use bet time as the primary time
+              currency: record1.currency,
+              bet_amount: record1.amount,
+              win_amount: 0,
+              net_amount: record1.amount * -1,
+              final_status: "loss",
+              bet_type: record1.bet_type, // Preserve original bet_type from 'bet' record
+              freespin_id: record1.freespin_id, // Preserve freespin_id from 'bet' record
+            });
             // Handle potential unpaired records or different ordering (e.g., win then bet)
             // Current logic: Skip records that don't fit the bet -> win pattern.
             // console.warn("Skipping potentially unpaired record or unexpected order:", record1);
@@ -178,7 +192,7 @@ const GameHistory = () => {
         if (isLoadMore) {
           setCurrentPage(page);
         }
-        success = true; // Mark as successful
+        // success = true; // Mark as successful
       } catch (err) {
         console.error("Error loading game history:", err);
         const apiError =
