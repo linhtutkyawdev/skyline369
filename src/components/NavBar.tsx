@@ -15,9 +15,9 @@ import { Button } from "@/components/ui/button";
 
 const NavBar = () => {
   const { t } = useTranslation();
-  const { setActiveModal, loading } = useStateStore();
+  const { setActiveModal } = useStateStore();
   const isMobile = useIsMobile();
-  const { user, lastUpdatedAt, loadUserInfo } = useUserStore();
+  const { user, lastUpdatedAt, loadUserInfo, userInfoLoading } = useUserStore();
 
   const { gameType } = useParams();
 
@@ -40,7 +40,7 @@ const NavBar = () => {
               {(user && user.name) || t("register_login")}
             </span>
             <span className="text-casino-gold text-xs 2xl:text-sm">
-              {loading
+              {userInfoLoading
                 ? t("loadingIndicator")
                 : user && user.userInfo
                 ? "฿ " + parseFloat(user.userInfo.game_balance + "").toFixed(2)
@@ -65,9 +65,11 @@ const NavBar = () => {
                 <TooltipContent>
                   <p>
                     {lastUpdatedAt
-                      ? `${t("lastUpdated")}: ${new Date(
-                          lastUpdatedAt
-                        ).toLocaleString()}`
+                      ? `${t("lastUpdated")}: ${
+                          userInfoLoading
+                            ? t("loadingIndicator")
+                            : new Date(lastUpdatedAt).toLocaleString()
+                        }`
                       : t("userDataNotLoaded")}
                   </p>
                 </TooltipContent>

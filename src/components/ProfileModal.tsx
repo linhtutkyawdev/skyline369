@@ -11,8 +11,9 @@ import { ApiResponse } from "@/types/api_response";
 import { ApiError } from "@/types/api_error";
 
 const ProfileModal = () => {
-  const { activeModal, setActiveModal, loading } = useStateStore();
-  const { user, setUser, lastUpdatedAt, loadUserInfo } = useUserStore();
+  const { activeModal, setActiveModal } = useStateStore();
+  const { user, setUser, lastUpdatedAt, loadUserInfo, userInfoLoading } =
+    useUserStore();
   const { toast } = useToast();
   const { t } = useTranslation();
   useEffect(() => {
@@ -117,7 +118,7 @@ const ProfileModal = () => {
                 <p className="text-casino-silver text-xs">
                   {lastUpdatedAt
                     ? `${t("lastUpdated")}: ${
-                        loading
+                        userInfoLoading
                           ? t("loadingIndicator")
                           : new Date(lastUpdatedAt).toLocaleString()
                       }`
@@ -136,7 +137,7 @@ const ProfileModal = () => {
                 <div className="bg-casino-deep-blue rounded-xl p-3 lg:p-4 w-full flex justify-between items-center mt-4">
                   <span className="text-casino-silver">{t("balance")}</span>
                   <span className="text-casino-gold font-bold text-xl">
-                    {loading
+                    {userInfoLoading
                       ? t("loadingIndicator")
                       : user && user.userInfo
                       ? "฿ " +

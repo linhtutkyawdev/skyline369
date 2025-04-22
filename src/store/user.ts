@@ -11,7 +11,9 @@ import { useStateStore } from "./state"; // Import state store for loading/error
 type Store = {
   user: User | null;
   lastUpdatedAt: number | null; // Add last updated timestamp
+  userInfoLoading: boolean; // Add loading state for user info
   setUser: (user: User | null) => void;
+  setUserInfoLoading: (loading: boolean) => void; // Add setter for user info loading
   loadUserInfo: () => Promise<void>; // Add loadUserInfo type
   transferBalance: (amount: number) => Promise<void>; // Add transferBalance type
 };
@@ -21,6 +23,7 @@ export const useUserStore = create<Store>()(
     (set, get) => ({
       user: null,
       lastUpdatedAt: null, // Initialize last updated timestamp
+      userInfoLoading: false, // Initialize user info loading state
       setUser: (user: User | null) => {
         if (user) {
           // Generate a new session ID and update both session and local storage
@@ -34,16 +37,18 @@ export const useUserStore = create<Store>()(
         }
         set({ user, lastUpdatedAt: user ? Date.now() : null }); // Update timestamp
       },
+      setUserInfoLoading: (userInfoLoading: boolean) =>
+        set({ userInfoLoading }), // Setter for user info loading
 
       // --- Moved from App.tsx ---
       transferBalance: async (amount: number) => {
         const user = get().user;
-        const { setLoading, setError } = useStateStore.getState(); // Get state setters from useStateStore
-        const { setUser } = get(); // Get setUser from the current store (useUserStore)
+        const { setError } = useStateStore.getState(); // Get state setters from useStateStore
+        const { setUser, setUserInfoLoading } = get(); // Get setUser and setUserInfoLoading from the current store (useUserStore)
         const toastState = useToastStore.getState();
 
         if (!user) return;
-        setLoading(true);
+        setUserInfoLoading(true); // Use user info loading
         try {
           const responses = await axiosInstance.post<
             ApiResponse<{ balance: string; game_balance: string }>
@@ -94,18 +99,18 @@ export const useUserStore = create<Store>()(
             ],
           });
         } finally {
-          setLoading(false);
+          setUserInfoLoading(false); // Use user info loading
         }
       },
 
       loadUserInfo: async () => {
         const user = get().user;
-        const { setLoading, setError } = useStateStore.getState(); // Get state setters directly
-        const { transferBalance } = get(); // Get transferBalance from the store itself
+        const { setError } = useStateStore.getState(); // Get state setters directly
+        const { transferBalance, setUserInfoLoading } = get(); // Get transferBalance and setUserInfoLoading from the store itself
         const toastState = useToastStore.getState();
 
         if (!user || !user.token) return; // Check token existence
-        setLoading(true);
+        setUserInfoLoading(true); // Use user info loading
         try {
           const responses = await axiosInstance.post<ApiResponse<UserInfo>>(
             "/player_info",
@@ -187,7 +192,7 @@ export const useUserStore = create<Store>()(
             ],
           });
         } finally {
-          setLoading(false);
+          setUserInfoLoading(false); // Use user info loading
         }
       },
       // --- End of moved code ---

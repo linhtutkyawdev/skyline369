@@ -228,7 +228,7 @@ export default function Category() {
     <div
       className={`overflow-y-scroll scrollbar-none ${
         getProduct(gameType).productCodes.length < 5
-          ? "h-[calc(100vh-7.5rem)] mt-[7.5rem] md:h-[calc(100vh-8rem)] md:mt-[8rem]"
+          ? "h-[calc(100vh-7.5rem)] mt-[7.5rem] md:h-[calc(100vh-8rem)] md:mt-[8rem]  xl:h-[calc(100vh-10rem)] xl:mt-[10rem]"
           : "h-[calc(100vh-9rem)] mt-[9rem] md:h-[calc(100vh-10rem)] md:mt-[10rem]"
       } ${
         getProduct(gameType).productCodes.length > 7
