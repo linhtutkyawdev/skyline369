@@ -47,7 +47,7 @@ const Game = () => {
   useEffect(() => {
     if (!url && id) (async () => gameInit())();
   }, []);
-  if (error) return t("errorState");
+  if (error) return navigate(searchParams.get("back"));
   if (loading || !url)
     return (
       <div className="h-screen flex items-center justify-center">
