@@ -46,9 +46,8 @@ export default defineConfig(() => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  // build: {
-  //   outDir: "/www/wwwroot/skyline/public/dist", // Change this to your desired folder
-  //   emptyOutDir: true,
-  // },
-  // && sed -i 's|/assets|../dist/assets|g' ../skyline/public/dist/index.html
+  build: {
+    outDir: "/www/wwwroot/skyline_backend/public",
+    emptyOutDir: true,
+  },
 }));
