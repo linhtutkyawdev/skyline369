@@ -48,6 +48,7 @@ const Game = () => {
     if (!url && id) (async () => gameInit())();
   }, []);
   if (error) {
+    setError(null);
     navigate(searchParams.get("back"));
     return "";
   }
