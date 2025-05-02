@@ -48,6 +48,5 @@ export default defineConfig(() => ({
   },
   build: {
     outDir: "/www/wwwroot/skyline_backend/public",
-    emptyOutDir: true,
   },
 }));
