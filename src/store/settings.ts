@@ -17,7 +17,7 @@ export const useSettingsStore = create<SettingsState>()(
   persist(
     (set) => ({
       soundEnabled: true, // Default value for sound effects
-      musicEnabled: true, // Default value for background music
+      musicEnabled: false, // Default value for background music
       notificationsEnabled: true, // Default value
       // darkMode: window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false, // Default to system preference or false
       setSoundEnabled: (enabled) => set({ soundEnabled: enabled }),

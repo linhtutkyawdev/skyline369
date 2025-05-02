@@ -67,16 +67,16 @@ export const useUserStore = create<Store>()(
               responses.data.status.mess
             );
           // No need to update user here, loadUserInfo will fetch the final state
-          toastState.setState({
-            toasts: [
-              ...toastState.state.toasts,
-              {
-                id: Date.now().toString(),
-                title: "Transfer Successful",
-                description: `Successfully transferred ${amount}.`,
-              },
-            ],
-          });
+          // toastState.setState({
+          //   toasts: [
+          //     ...toastState.state.toasts,
+          //     {
+          //       id: Date.now().toString(),
+          //       title: "Transfer Successful",
+          //       description: `Successfully transferred ${amount}.`,
+          //     },
+          //   ],
+          // });
         } catch (error) {
           console.error("Transfer balance error:", error);
           let errorMsg = "Transfer failed.";

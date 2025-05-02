@@ -513,7 +513,10 @@ const WithdrawModal = () => {
                       <button
                         onClick={() => {
                           closeModalAndReset();
-                          navigate("/history/transaction");
+                          setTimeout(
+                            () => navigate("/history/transaction"),
+                            500
+                          );
                         }}
                         className="w-full flex items-center justify-center py-2 bg-casino-gold text-casino-deep-blue rounded-lg font-bold text-lg hover:bg-opacity-90 transition-all"
                       >
