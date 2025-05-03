@@ -199,34 +199,27 @@ const TransationHistory = () => {
       switch (status) {
         case "Unpaid": // 0
           return "text-red-400"; // Or maybe text-gray-400? Using red for now.
-        case "Unconfirmed": // 1
+        case "Pending Confirmation": // 1
           return "text-amber-500";
         case "Remittance Successful": // 2
           return "text-green-400";
-        case "Failed": // 3
+        case "Remittance Failed": // 3
           return "text-red-400";
-        default:
-          return "text-white"; // Default to white if unknown failure/other
       }
-    }
-
-    // Drawing Statuses (Withdrawal)
-    if (type === "Withdrawal") {
+    } else if (type === "Withdrawal") {
       switch (status) {
         case "Pending Review": // 1
           return "text-amber-500";
-        case "Successful, Pending Payment": // 2
+        case "Review Successful, Pending Payment": // 2
           return "text-amber-500"; // Still pending actual payment
-        case "Paying": // 3
-          return "text-amber-500";
+        case "In Payment": // 3
+          return "text-indigo-400";
         case "Payment Successful": // 4
           return "text-green-400";
         case "Rejected": // 5
           return "text-red-400";
         case "Reject Deduction": // 6
           return "text-red-400";
-        default:
-          return "text-white"; // Default to white if unknown
       }
     }
 
@@ -240,7 +233,13 @@ const TransationHistory = () => {
     ) {
       return "text-amber-500";
     }
-    return "text-white"; // Default to white
+    if (
+      lowerStatus.includes("reject") ||
+      lowerStatus.includes("fail") ||
+      lowerStatus.includes("unpaid")
+    )
+      return "text-red-400";
+    return "text-white";
   };
 
   return (
