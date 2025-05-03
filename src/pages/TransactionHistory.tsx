@@ -227,9 +227,9 @@ const TransationHistory = () => {
     if (lowerStatus.includes("success") || lowerStatus.includes("approved"))
       return "text-green-400";
     if (
-      lowerStatus.includes("pending") ||
       lowerStatus.includes("unconfirmed") ||
-      lowerStatus.includes("review")
+      lowerStatus.includes("review") ||
+      lowerStatus.includes("ing")
     ) {
       return "text-amber-500";
     }
