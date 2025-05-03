@@ -391,8 +391,8 @@ const AppContent: React.FC<AppContentProps> = ({
           <Route path="/game/:id" element={<Game />} />
           <Route path="/history/game" element={<GameHistory />} />
           <Route path="/history/transaction" element={<TransationHistory />} />
-          <Route path="/messages" element={<Messages />} />
-          <Route path="/messages/:messageId" element={<MessageDetail />} />
+          <Route path="/message" element={<Messages />} />
+          <Route path="/message/:messageId" element={<MessageDetail />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

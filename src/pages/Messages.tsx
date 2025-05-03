@@ -82,7 +82,7 @@ const MessageItem = ({ message }: { message: Message }) => {
   const navigate = useNavigate(); // Add useNavigate hook
 
   const handleClick = () => {
-    navigate(`/messages/${message.id}`); // Navigate to detail page
+    navigate(`/message/${message.id}`); // Navigate to detail page
   };
 
   return (

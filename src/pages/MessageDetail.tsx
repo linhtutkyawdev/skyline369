@@ -117,7 +117,7 @@ const MessageDetail = () => {
           className="flex items-center mb-4 absolute top-6 left-6 z-20"
         >
           <button
-            onClick={() => navigate("/messages")} // Navigate back to messages list
+            onClick={() => navigate("/message")} // Navigate back to messages list
             className="flex items-center gap-2 text-casino-silver hover:text-white transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -141,7 +141,7 @@ const MessageDetail = () => {
         className="flex items-center mb-4 absolute top-6 left-6 z-20"
       >
         <button
-          onClick={() => navigate("/messages")} // Navigate back to messages list
+          onClick={() => navigate("/message")} // Navigate back to messages list
           className="flex items-center gap-2 text-casino-silver hover:text-white transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />

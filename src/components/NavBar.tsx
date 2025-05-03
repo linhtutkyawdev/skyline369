@@ -115,7 +115,7 @@ const NavBar = () => {
           {/* Messages Icon */}
           {/* <div
             className="nav-icon group cursor-pointer"
-            onClick={() => navigate("/messages")}
+            onClick={() => navigate("/message")}
           >
             <div className="w-10 h-10 2xl:w-12 2xl:h-12 rounded-full metal-badge flex items-center justify-center 2xl:mb-1 group-hover:animate-pulse-glow">
               <MessageSquare className="w-5 h-5 2xl:w-6 2xl:h-6 text-[#b3c8e7]" />

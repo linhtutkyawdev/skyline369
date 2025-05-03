@@ -118,16 +118,16 @@ const NavMenuModal = () => {
                 </Button>
               </motion.div>
 
-              <motion.div variants={itemVariants}>
+              {/* <motion.div variants={itemVariants}>
                 <Button
                   variant="ghost"
                   className="w-full justify-start text-casino-silver glass-effect hover:bg-casino-light-blue/20 hover:text-white focus-visible:bg-casino-light-blue/20 focus-visible:ring-1 focus-visible:ring-casino-light-blue py-3 px-4 rounded-md"
-                  onClick={() => handleNavigation("/messages")}
+                  onClick={() => handleNavigation("/message")}
                 >
                   <MessageSquare className="mr-3 h-5 w-5 text-casino-gold" />
                   <span>{t("messages")}</span>
                 </Button>
-              </motion.div>
+              </motion.div> */}
 
               <motion.div variants={itemVariants}>
                 <Button
