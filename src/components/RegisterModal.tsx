@@ -85,8 +85,7 @@ const RegisterModal = () => {
         variant: res.data.status.errorCode === 1 ? "destructive" : "default",
       });
 
-    if (res.data.data) {
-      const response = await res.data.data;
+    if (await res.data.data) {
       setStep("otp");
     }
   };
@@ -112,8 +111,7 @@ const RegisterModal = () => {
         variant: res.data.status.errorCode === 1 ? "destructive" : "default",
       });
 
-    if (res.data.data) {
-      const response = await res.data.data;
+    if (await res.data.data) {
       setStep("details");
     }
   };
@@ -140,10 +138,10 @@ const RegisterModal = () => {
         variant: res.data.status.errorCode === 1 ? "destructive" : "default",
       });
 
-    if (res.data.data) {
-      const response = await res.data.data;
+    const userData = await res.data.data;
+    if (userData) {
       setStep("email");
-      setUser(response);
+      setUser(userData);
       toast({
         title: t("registrationSuccessTitle"),
         description: t("registrationSuccessDesc"),
@@ -152,6 +150,17 @@ const RegisterModal = () => {
       resetEmailAndOtpForm();
       resetFinalForm();
       setActiveModal(null);
+    } else {
+      toast({
+        title: t("Something went wrong!"),
+        description: "Please try again!",
+        variant: "destructive",
+      });
+      setStep("otp");
+      setUser(null);
+      resetEmailForm();
+      resetEmailAndOtpForm();
+      resetFinalForm();
     }
   };
 
