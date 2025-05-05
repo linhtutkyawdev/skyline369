@@ -10,11 +10,13 @@ import {
   Loader2,
   ArrowLeft,
   Edit,
+  Music4,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
 import { Switch } from "./ui/switch";
+import { Slider } from "./ui/slider";
 import { SupportedLanguages } from "@/i18n";
 import { ToggleGroup, ToggleGroupItem } from "./ui/toggle-group";
 import { useStateStore } from "@/store/state";
@@ -30,7 +32,12 @@ const SettingsModal = () => {
   const { activeModal, setActiveModal } = useStateStore();
   const { user } = useUserStore();
   const { toast } = useToast();
-  const { musicEnabled, setMusicEnabled } = useSettingsStore();
+  const {
+    backgroundMusicEnabled,
+    setBackgroundMusicEnabled,
+    volume,
+    setVolume,
+  } = useSettingsStore();
   const { t, i18n } = useTranslation();
   const [showPasswordReset, setShowPasswordReset] = useState(false);
 
@@ -158,20 +165,37 @@ const SettingsModal = () => {
               {!showPasswordReset ? (
                 // Main Settings View
                 <>
-                  {/* Background Music Switch */}
+                  {/* Background Music Toggle */}
                   <div className="flex items-center justify-between bg-casino-deep-blue rounded-lg p-4">
                     <div className="flex items-center gap-3">
-                      {musicEnabled ? (
+                      <Music4 className="text-casino-silver" />
+                      <span className="text-white">
+                        {t("background_music_toggle")}
+                      </span>
+                    </div>
+                    <Switch
+                      checked={backgroundMusicEnabled}
+                      onCheckedChange={setBackgroundMusicEnabled}
+                      className="data-[state=checked]:bg-casino-gold"
+                    />
+                  </div>
+
+                  {/* Background Music Slider */}
+                  <div className="flex items-center justify-between bg-casino-deep-blue rounded-lg p-4">
+                    <div className="flex items-center gap-3 w-full">
+                      {backgroundMusicEnabled && volume > 0 ? (
                         <Volume2 className="text-casino-silver" />
                       ) : (
                         <VolumeX className="text-casino-silver" />
                       )}
-                      <span className="text-white">{t("sound_effects")}</span>
+                      <span className="text-white">{t("volume")}</span>
                     </div>
-                    <Switch
-                      checked={musicEnabled}
-                      onCheckedChange={setMusicEnabled}
-                      className="data-[state=checked]:bg-casino-gold"
+                    <Slider
+                      value={[volume]}
+                      max={100}
+                      step={5}
+                      onValueChange={(val) => setVolume(val[0])}
+                      className="w-full"
                     />
                   </div>
 

@@ -49,7 +49,8 @@ export default {
     office_hours_value:
       "ကျွန်ုပ်တို့၏ဖောက်သည်ပံ့ပိုးမှုအဖွဲ့သည် တစ်ပတ်လုံး 24 နာရီ ရရှိနိုင်ပါသည်။",
     notifications: "အသိပေးချက်များ",
-    sound_effects: "ဂီတ",
+    background_music_toggle: "နောက်ခံဂီတ",
+    volume: "အသံအတိုးအကျယ်",
     language: "Language",
     "Login Successfully": "အကောင့်ကိုအောင်မြင်စွာဝင်ရောက်လိုက်ပါပြီ 🎉",
     "Wrong Password.": "မှန်ကန်သောစကားဝှက်ကိုထည့်သွင်းပါ!",

@@ -41,7 +41,7 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const audioRef = useRef<HTMLAudioElement>(null); // Ref for the audio element
-  const { musicEnabled } = useSettingsStore(); // Get music setting state
+  const { backgroundMusicEnabled, volume } = useSettingsStore(); // Get music setting state and volume
   const [currentTrackIndex, setCurrentTrackIndex] = useState<number | null>(
     null
   ); // Keep track of the current song
@@ -272,7 +272,8 @@ const App = () => {
           <BrowserRouter>
             <AppContent
               audioRef={audioRef}
-              musicEnabled={musicEnabled}
+              backgroundMusicEnabled={backgroundMusicEnabled}
+              volume={volume}
               hasInteracted={hasInteracted}
               currentTrackIndex={currentTrackIndex}
               setCurrentTrackIndex={setCurrentTrackIndex}
@@ -292,7 +293,8 @@ const App = () => {
 // New component to handle routing and music playback logic
 interface AppContentProps {
   audioRef: React.RefObject<HTMLAudioElement>;
-  musicEnabled: boolean;
+  backgroundMusicEnabled: boolean;
+  volume: number;
   hasInteracted: boolean;
   currentTrackIndex: number | null;
   setCurrentTrackIndex: React.Dispatch<React.SetStateAction<number | null>>;
@@ -303,7 +305,8 @@ interface AppContentProps {
 
 const AppContent: React.FC<AppContentProps> = ({
   audioRef,
-  musicEnabled,
+  backgroundMusicEnabled,
+  volume,
   hasInteracted,
   currentTrackIndex,
   setCurrentTrackIndex,
@@ -337,11 +340,11 @@ const AppContent: React.FC<AppContentProps> = ({
       playRandomTrack();
     };
 
-    // Play only if music is enabled, user has interacted, AND not on a game page
-    if (musicEnabled && hasInteracted && !isGamePage) {
-      audioElement.volume = 0.3; // Set a default volume (adjust as needed)
+    // Play only if background music is enabled, volume is greater than 0, user has interacted, AND not on a game page
+    if (backgroundMusicEnabled && volume > 0 && hasInteracted && !isGamePage) {
+      audioElement.volume = volume / 100; // Set volume based on slider value (0-1)
       if (audioElement.paused || audioElement.src === "") {
-        playRandomTrack(); // Start playing if enabled and not already playing
+        playRandomTrack(); // Start playing if enabled, volume > 0 and not already playing
       } else {
         // If already playing (e.g., navigated back), ensure it continues
         audioElement
@@ -350,13 +353,13 @@ const AppContent: React.FC<AppContentProps> = ({
       }
       audioElement.addEventListener("ended", handleTrackEnd);
     } else {
-      // Pause if music is disabled, user hasn't interacted, OR is on a game page
+      // Pause if background music is disabled, volume is 0, user hasn't interacted, OR is on a game page
       audioElement.pause();
       // audioElement.currentTime = 0; // Optional: Reset track position
       // audioElement.src = ""; // Optional: Clear source
       // Don't reset currentTrackIndex when pausing due to game page, keep it for resume
-      if (!musicEnabled || !hasInteracted) {
-        setCurrentTrackIndex(null); // Reset track index only if music is off or no interaction
+      if (!backgroundMusicEnabled || volume === 0 || !hasInteracted) {
+        setCurrentTrackIndex(null); // Reset track index only if music is off, volume is 0 or no interaction
       }
       audioElement.removeEventListener("ended", handleTrackEnd);
     }
@@ -369,7 +372,8 @@ const AppContent: React.FC<AppContentProps> = ({
       }
     };
   }, [
-    musicEnabled,
+    backgroundMusicEnabled,
+    volume,
     hasInteracted,
     currentTrackIndex,
     location.pathname,
