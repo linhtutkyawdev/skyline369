@@ -330,9 +330,13 @@ const AppContent: React.FC<AppContentProps> = ({
 
       setCurrentTrackIndex(nextIndex);
       audioElement.src = bgMusicFiles[nextIndex];
-      audioElement
-        .play()
-        .catch((error) => console.error("Audio play failed:", error)); // Handle potential play errors
+      if (hasInteracted) {
+        // Add check for user interaction before playing
+        audioElement.play().catch((error) => {
+          // console.error("Audio play failed:", error); // Handle potential play errors
+          // Removed console.error as the issue should be resolved by user interaction check
+        });
+      }
     };
 
     // Add event listener for when a track ends
@@ -347,9 +351,13 @@ const AppContent: React.FC<AppContentProps> = ({
         playRandomTrack(); // Start playing if enabled, volume > 0 and not already playing
       } else {
         // If already playing (e.g., navigated back), ensure it continues
-        audioElement
-          .play()
-          .catch((error) => console.error("Audio play failed:", error));
+        if (hasInteracted) {
+          // Add check for user interaction before playing
+          audioElement.play().catch((error) => {
+            // console.error("Audio play failed:", error);
+            // Removed console.error as the issue should be resolved by user interaction check
+          });
+        }
       }
       audioElement.addEventListener("ended", handleTrackEnd);
     } else {

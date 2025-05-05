@@ -6,7 +6,13 @@ import { DateRange } from "react-day-picker";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"; // Import Dialog components
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  DialogTitle,
+} from "@/components/ui/dialog"; // Import Dialog components
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 interface DateRangePickerModalProps {
   date: DateRange | undefined;
@@ -23,6 +29,9 @@ export function DateRangePickerModal({
     <Dialog>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="p-8 min-w-fit max-h-[90vh] rounded-lg border bg-casino-deep-blue/90 backdrop-blur-lg modal-container overflow-y-auto text-white">
+        <VisuallyHidden>
+          <DialogTitle>Select Date Range</DialogTitle>
+        </VisuallyHidden>
         <Calendar
           initialFocus
           mode="range"
