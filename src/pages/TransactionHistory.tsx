@@ -13,11 +13,7 @@ import { DateRange } from "react-day-picker";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { DateRangePickerModal } from "@/components/DateRangePickerModal";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
 const TransationHistory = () => {
@@ -297,8 +293,10 @@ const TransationHistory = () => {
           {/* Date and Search Filters */}
           <div className="flex items-center gap-2">
             {/* Date Range Picker */}
-            <Popover>
-              <PopoverTrigger asChild>
+            <DateRangePickerModal
+              date={date}
+              setDate={setDate}
+              trigger={
                 <Button
                   id="date"
                   variant={"outline"}
@@ -321,22 +319,8 @@ const TransationHistory = () => {
                     <span>{t("pickDateRange")}</span>
                   )}
                 </Button>
-              </PopoverTrigger>
-              <PopoverContent
-                className="w-auto p-0 bg-casino-deep-blue border-casino-black"
-                align="end"
-              >
-                <Calendar
-                  initialFocus
-                  mode="range"
-                  defaultMonth={date?.from}
-                  selected={date}
-                  onSelect={setDate}
-                  numberOfMonths={1}
-                  className="text-white [&>div>table>tbody>tr>td>button]:text-white [&>div>table>tbody>tr>td>button:hover]:bg-casino-gold [&>div>table>tbody>tr>td>button:hover]:text-casino-deep-blue [&>div>div>button]:text-white [&>div>div>button:hover]:bg-casino-gold [&>div>div>button:hover]:text-casino-deep-blue [&>div>table>tbody>tr>td>button[aria-selected=true]]:bg-casino-gold [&>div>table>tbody>tr>td>button[aria-selected=true]]:text-casino-deep-blue"
-                />
-              </PopoverContent>
-            </Popover>
+              }
+            />
 
             {/* Search Input */}
             <div className="relative">
