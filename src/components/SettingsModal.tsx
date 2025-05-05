@@ -32,14 +32,10 @@ const SettingsModal = () => {
   const { activeModal, setActiveModal } = useStateStore();
   const { user } = useUserStore();
   const { toast } = useToast();
-  const {
-    backgroundMusicEnabled,
-    setBackgroundMusicEnabled,
-    volume,
-    setVolume,
-  } = useSettingsStore();
+  const { volume, setVolume } = useSettingsStore();
   const { t, i18n } = useTranslation();
   const [showPasswordReset, setShowPasswordReset] = useState(false);
+  const [lastVolume, setLastVolume] = useState(volume > 0 ? volume : 5); // State to store volume before muting
 
   const {
     register,
@@ -174,8 +170,15 @@ const SettingsModal = () => {
                       </span>
                     </div>
                     <Switch
-                      checked={backgroundMusicEnabled}
-                      onCheckedChange={setBackgroundMusicEnabled}
+                      checked={volume > 0} // Checked when volume is greater than 0
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          setVolume(lastVolume); // Set to last non-zero volume
+                        } else {
+                          setLastVolume(volume); // Store current volume before muting
+                          setVolume(0); // Set volume to 0 to mute
+                        }
+                      }}
                       className="data-[state=checked]:bg-casino-gold"
                     />
                   </div>
@@ -183,7 +186,7 @@ const SettingsModal = () => {
                   {/* Background Music Slider */}
                   <div className="flex items-center justify-between bg-casino-deep-blue rounded-lg p-4">
                     <div className="flex items-center gap-3 w-full">
-                      {backgroundMusicEnabled && volume > 0 ? (
+                      {volume > 0 ? ( // Check if volume is greater than 0
                         <Volume2 className="text-casino-silver" />
                       ) : (
                         <VolumeX className="text-casino-silver" />
@@ -194,7 +197,12 @@ const SettingsModal = () => {
                       value={[volume]}
                       max={100}
                       step={5}
-                      onValueChange={(val) => setVolume(val[0])}
+                      onValueChange={(val) => {
+                        setVolume(val[0]);
+                        if (val[0] > 0) {
+                          setLastVolume(val[0]); // Update lastVolume when slider is moved to a non-zero value
+                        }
+                      }}
                       className="w-full"
                     />
                   </div>
