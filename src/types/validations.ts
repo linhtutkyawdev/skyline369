@@ -48,7 +48,7 @@ export const registerSchema = emailSchema
       .max(15, { message: "Password must be at most 15 characters long" })
       .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,15}$/, {
         message:
-          "Password must contain letters, numbers, and at least one uppercase letter",
+          "Password must contain letters, numbers, and a uppercase letter.",
       }),
     confirmPassword: z.string(),
   })
