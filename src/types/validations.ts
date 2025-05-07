@@ -44,8 +44,12 @@ export const registerSchema = emailSchema
     otp: z.string().min(6, { message: "OTP is required" }),
     password: z
       .string()
-      .min(8, { message: "Password is too short" })
-      .max(20, { message: "Password is too long" }),
+      .min(8, { message: "Password must be at least 8 characters long" })
+      .max(15, { message: "Password must be at most 15 characters long" })
+      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,15}$/, {
+        message:
+          "Password must contain letters, numbers, and at least one uppercase letter",
+      }),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
