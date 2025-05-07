@@ -151,11 +151,12 @@ const RegisterModal = () => {
       resetFinalForm();
       setActiveModal(null);
     } else {
-      toast({
-        title: t("Something went wrong!"),
-        description: "Please try again!",
-        variant: "destructive",
-      });
+      if (!res.data.status.mess)
+        toast({
+          title: t("Something went wrong!"),
+          description: "Please try again!",
+          variant: "destructive",
+        });
       setStep("otp");
       setUser(null);
       resetEmailForm();
