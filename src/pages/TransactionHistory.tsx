@@ -324,7 +324,7 @@ const TransationHistory = () => {
 
             {/* Search Input */}
             <div className="relative">
-              <input
+              <Input
                 type="text"
                 placeholder={t("searchPlaceholderDots")}
                 value={searchTerm}
