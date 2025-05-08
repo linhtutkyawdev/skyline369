@@ -15,7 +15,6 @@ import { format, subDays } from "date-fns";
 import { DateRange } from "react-day-picker";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
 import { DateRangePickerModal } from "@/components/DateRangePickerModal";
@@ -309,12 +308,12 @@ const GameHistory = () => {
   ]); // gameHistory removed as filteredHistory reflects display
 
   return (
-    <div className="h-screen pb-8 pt-12 lg:pt-16 px-6">
+    <div className="h-screen pb-8 pt-12 lg:pt-16 px-12">
       {/* Back Button & Title */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
-        className="flex items-center justify-between w-full absolute top-0 left-0 px-6 xl:px-16 xl:pt-6 pt-4"
+        className="flex items-center justify-between w-full absolute top-0 left-0 px-12 xl:px-16 xl:pt-6 pt-4"
       >
         <button
           onClick={() => navigate("/")}
@@ -397,7 +396,7 @@ const GameHistory = () => {
 
             {/* Search Input */}
             <div className="relative">
-              <Input
+              <input
                 type="text"
                 placeholder={t("searchPlaceholderDots")}
                 value={searchTerm}

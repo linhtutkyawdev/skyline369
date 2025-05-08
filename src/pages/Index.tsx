@@ -169,7 +169,7 @@ const Index = () => {
   return (
     <div className="h-screen w-screen flex flex-col">
       <NavBar />
-      <div className="flex flex-col items-center justify-center h-full -mt-12 lg:-mt-8">
+      <div className="flex flex-col items-center justify-center h-full -mt-12 lg:-mt-8 px-12">
         <Logo />
         <Carousel
           opts={{

@@ -23,7 +23,7 @@ const NavBar = () => {
 
   return (
     <>
-      <header className="fixed top-0 w-full py-4 px-8 z-50 flex justify-between items-center xl:glass-effect animate-fade-in">
+      <header className="fixed top-0 w-full py-4 z-50 flex justify-between items-center xl:glass-effect animate-fade-in px-12">
         <div className="flex items-center gap-2 xl:gap-4 w-[13rem]">
           <div
             onClick={() => setActiveModal(user ? "profile" : "login")}

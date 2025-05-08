@@ -239,12 +239,12 @@ const TransationHistory = () => {
   };
 
   return (
-    <div className="h-screen pb-8 pt-12 lg:pt-16 px-6">
+    <div className="h-screen pb-8 pt-12 lg:pt-16 px-12">
       {/* Back Button */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
-        className="flex items-center justify-between w-full absolute top-0 left-0 px-6 xl:px-16 xl:pt-6 pt-4"
+        className="flex items-center justify-between w-full absolute top-0 left-0 px-12 xl:px-16 xl:pt-6 pt-4"
       >
         <button
           onClick={() => navigate("/")}
@@ -324,7 +324,7 @@ const TransationHistory = () => {
 
             {/* Search Input */}
             <div className="relative">
-              <Input
+              <input
                 type="text"
                 placeholder={t("searchPlaceholderDots")}
                 value={searchTerm}
