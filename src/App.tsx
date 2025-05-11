@@ -279,6 +279,8 @@ const App = () => {
               bgMusicFiles={bgMusicFiles}
               user={user}
               loadUserInfo={storeLoadUserInfo} // Pass store's loadUserInfo
+              fullscreen={fullscreen} // Pass fullscreen state
+              fullscreenRef={ref} // Pass fullscreen element ref
             />
           </BrowserRouter>
         </TooltipProvider>
@@ -299,6 +301,8 @@ interface AppContentProps {
   bgMusicFiles: string[];
   user: User | null;
   loadUserInfo: () => Promise<void>;
+  fullscreen: boolean; // Add fullscreen prop
+  fullscreenRef: React.RefObject<HTMLDivElement>; // Add fullscreenRef prop
 }
 
 const AppContent: React.FC<AppContentProps> = ({
@@ -310,6 +314,8 @@ const AppContent: React.FC<AppContentProps> = ({
   bgMusicFiles,
   user,
   loadUserInfo,
+  fullscreen, // Destructure fullscreen prop
+  fullscreenRef, // Destructure fullscreenRef prop
 }) => {
   const location = useLocation(); // Now used within Router context
   // Effect to handle background music playback
@@ -397,8 +403,25 @@ const AppContent: React.FC<AppContentProps> = ({
           <Route path="/" element={<Index />} />
           <Route path="/type/:gameType" element={<Category />} />
           <Route path="/game/:id" element={<Game />} />
-          <Route path="/history/game" element={<GameHistory />} />
-          <Route path="/history/transaction" element={<TransationHistory />} />
+          <Route
+            path="/history/game"
+            element={
+              <GameHistory
+                fullscreen={fullscreen}
+                fullscreenRef={fullscreenRef}
+              />
+            }
+          />{" "}
+          {/* Pass fullscreen props */}
+          <Route
+            path="/history/transaction"
+            element={
+              <TransationHistory
+                fullscreen={fullscreen}
+                fullscreenRef={fullscreenRef}
+              />
+            }
+          />
           <Route path="/message" element={<Messages />} />
           <Route path="/message/:messageId" element={<MessageDetail />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
@@ -406,6 +429,7 @@ const AppContent: React.FC<AppContentProps> = ({
         </Routes>
       )}
       <ModalContainer />
+      {/* Pass fullscreen props */}
     </>
   );
 };

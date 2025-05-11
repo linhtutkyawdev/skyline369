@@ -4,9 +4,9 @@ export type Modal =
   | "profile"
   | "share"
   | "contact_us"
-  | "messages"
   | "settings"
   | "deposit"
   | "withdraw"
-  | "history"
-  | "nav_menu"; // Added nav_menu modal type
+  | "nav_menu";
+// | "messages"
+// | "history"

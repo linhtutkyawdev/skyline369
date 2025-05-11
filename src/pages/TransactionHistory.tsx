@@ -15,7 +15,10 @@ import { Button } from "@/components/ui/button";
 import { DateRangePickerModal } from "@/components/DateRangePickerModal";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
-const TransationHistory = () => {
+const TransationHistory: React.FC<{
+  fullscreen: boolean;
+  fullscreenRef: React.RefObject<HTMLDivElement>;
+}> = ({ fullscreen, fullscreenRef }) => {
   // Global state and navigation
   const { loading, setLoading, error, setError } = useStateStore();
   const { user, setUser } = useUserStore();
@@ -295,6 +298,8 @@ const TransationHistory = () => {
             <DateRangePickerModal
               date={date}
               setDate={setDate}
+              fullscreen={fullscreen} // Pass fullscreen state
+              fullscreenRef={fullscreenRef} // Pass fullscreen ref
               trigger={
                 <Button
                   id="date"

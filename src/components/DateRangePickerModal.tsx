@@ -14,17 +14,24 @@ interface DateRangePickerModalProps {
   date: DateRange | undefined;
   setDate: (date: DateRange | undefined) => void;
   trigger: React.ReactNode; // The button or element that triggers the picker
+  fullscreen: boolean; // Add fullscreen prop
+  fullscreenRef: React.RefObject<HTMLDivElement>; // Add fullscreenRef prop
 }
 
 export function DateRangePickerModal({
   date,
   setDate,
   trigger,
+  fullscreen, // Destructure fullscreen prop
+  fullscreenRef, // Destructure fullscreenRef prop
 }: DateRangePickerModalProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="p-8 min-w-fit max-h-[90vh] rounded-lg border bg-casino-deep-blue/90 backdrop-blur-lg modal-container overflow-y-auto text-white">
+      <DialogContent
+        className="p-8 min-w-fit max-h-[90vh] rounded-lg border bg-casino-deep-blue/90 backdrop-blur-lg modal-container overflow-y-auto text-white"
+        container={fullscreen ? fullscreenRef.current : undefined} // Pass container conditionally
+      >
         <VisuallyHidden>
           <DialogTitle>Select Date Range</DialogTitle>
         </VisuallyHidden>

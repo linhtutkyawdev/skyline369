@@ -19,7 +19,17 @@ import { Input } from "@/components/ui/input";
 import { useTranslation } from "react-i18next";
 import { DateRangePickerModal } from "@/components/DateRangePickerModal";
 
-const GameHistory = () => {
+import React from "react"; // Import React
+
+interface GameHistoryProps {
+  fullscreen: boolean;
+  fullscreenRef: React.RefObject<HTMLDivElement>;
+}
+
+const GameHistory: React.FC<GameHistoryProps> = ({
+  fullscreen,
+  fullscreenRef,
+}) => {
   // Global state and navigation
   const { loading, setLoading, error, setError } = useStateStore();
   const { user, setUser } = useUserStore();
@@ -368,6 +378,8 @@ const GameHistory = () => {
             <DateRangePickerModal
               date={date}
               setDate={setDate}
+              fullscreen={fullscreen} // Pass fullscreen state
+              fullscreenRef={fullscreenRef} // Pass fullscreen ref
               trigger={
                 <Button
                   id="date"
