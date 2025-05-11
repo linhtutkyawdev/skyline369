@@ -249,12 +249,24 @@ export default function Category() {
         {/* Provider productCodes */}
         <div className="flex flex-col items-center max-w-[35rem] lg:max-w-[55rem]">
           <div className="flex items-center md:gap-2 gap-1 overflow-scroll flex-wrap scrollbar-none justify-center px-4">
+            <button
+              onClick={() => {
+                setProductCode("");
+              }}
+              className={`px-2 py-1 md:px-3 xl:px-4 xl:py-2 rounded-full whitespace-nowrap text-xs md:text-sm 2xl:text-base font-semibold ${
+                productCode === ""
+                  ? "bg-casino-gold text-casino-deep-blue font-medium"
+                  : "bg-gradient-to-r from-[#001] to-casino-deep-blue text-casino-silver"
+              }`}
+            >
+              All
+            </button>
             {getProduct(gameType).productCodes.length > 0 &&
               getProduct(gameType).productCodes.map((tab) => (
                 <button
                   key={tab}
                   onClick={() => {
-                    setProductCode(tab == productCode ? "" : tab);
+                    setProductCode(tab);
                   }}
                   className={`px-2 py-1 md:px-3 xl:px-4 xl:py-2 rounded-full whitespace-nowrap text-xs md:text-sm 2xl:text-base font-semibold ${
                     productCode === tab
