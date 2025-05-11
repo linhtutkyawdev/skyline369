@@ -10,7 +10,7 @@ export const loginSchema = z.object({
   password: z
     .string()
     .min(8, { message: "Password is too short" })
-    .max(20, { message: "Password is too long" }),
+    .max(15, { message: "Password is too long" }),
 });
 
 export type EmailInput = {
